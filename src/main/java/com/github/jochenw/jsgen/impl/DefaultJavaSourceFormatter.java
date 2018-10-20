@@ -1,0 +1,559 @@
+package com.github.jochenw.jsgen.impl;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import com.github.jochenw.jsgen.api.ICommentOwner;
+import com.github.jochenw.jsgen.api.IField;
+import com.github.jochenw.jsgen.api.IProtectable;
+import com.github.jochenw.jsgen.api.IStaticable;
+import com.github.jochenw.jsgen.api.IVolatilable;
+import com.github.jochenw.jsgen.api.JSGClass;
+import com.github.jochenw.jsgen.api.JSGComment;
+import com.github.jochenw.jsgen.api.JSGConstructor;
+import com.github.jochenw.jsgen.api.JSGDoWhileBlock;
+import com.github.jochenw.jsgen.api.JSGField;
+import com.github.jochenw.jsgen.api.JSGForBlock;
+import com.github.jochenw.jsgen.api.JSGIfBlock;
+import com.github.jochenw.jsgen.api.JSGImportSorter;
+import com.github.jochenw.jsgen.api.JSGInnerClass;
+import com.github.jochenw.jsgen.api.JSGMethod;
+import com.github.jochenw.jsgen.api.JSGQName;
+import com.github.jochenw.jsgen.api.JSGSource;
+import com.github.jochenw.jsgen.api.JSGStaticInitializer;
+import com.github.jochenw.jsgen.api.JSGSubroutine;
+import com.github.jochenw.jsgen.api.JSGThrow;
+import com.github.jochenw.jsgen.api.JSGWhileBlock;
+import com.github.jochenw.jsgen.api.LocalField;
+import com.github.jochenw.jsgen.api.Block.Line;
+import com.github.jochenw.jsgen.api.IAnnotatable.Annotation;
+import com.github.jochenw.jsgen.api.IAnnotatable.AnnotationSet;
+import com.github.jochenw.jsgen.api.JSGSubroutine.Parameter;
+import com.github.jochenw.jsgen.util.Objects;
+
+
+public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
+	public static class Data implements JSGSourceTarget {
+		private final JSGSourceTarget target;
+		private final Format format;
+		private int numIndents;
+
+		public Data(JSGSourceTarget pTarget, Format pFormat) {
+			target = pTarget;
+			format = pFormat;
+		}
+
+		public void incIndent() {
+			++numIndents;
+		}
+
+		public void decIndent() {
+			--numIndents;
+		}
+
+		public void indent() {
+			final String indentString = format.getIndentString();
+			if (indentString != null) {
+				for (int i = 0;  i < numIndents;  i++) {
+					write(indentString);
+				}
+			}
+		}
+
+		@Override
+		public void write(Object pObject) {
+			target.write(pObject);
+		}
+
+		@Override
+		public void newLine() {
+			write(format.getLineTerminator());
+		}
+
+		@Override
+		public void close() {
+			target.close();
+		}
+	}
+
+	private final Format format;
+	private List<JSGQName> importedNames;
+	private JSGImportSorter importSorter;
+
+	public DefaultJavaSourceFormatter(Format pFormat) {
+		format = pFormat;
+	}
+
+	public List<JSGQName> getImportedNames() {
+		return importedNames;
+	}
+
+	public void setImportedNames(List<JSGQName> importedNames) {
+		this.importedNames = importedNames;
+	}
+
+	
+	public JSGImportSorter getImportSorter() {
+		return importSorter;
+	}
+
+	public void setImportSorter(JSGImportSorter importSorter) {
+		this.importSorter = importSorter;
+	}
+
+	protected List<List<JSGQName>> getSortedImports() {
+		final List<List<JSGQName>> lists = new ArrayList<>();
+		if (importedNames != null) {
+			if (importSorter == null) {
+				lists.add(importedNames);
+			} else {
+				for (JSGQName name : importedNames) {
+					final int category = importSorter.getCategory(name);
+					while(lists.size() < category+1) {
+						lists.add(null);
+					}
+					List<JSGQName> names = lists.get(category);
+					if (names == null) {
+						names = new ArrayList<>();
+						lists.set(category, names);
+					}
+					names.add(name);
+				}
+			}
+		}
+		for (List<JSGQName> list : lists) {
+			if (list != null) {
+				final Comparator<JSGQName> comparator;
+				if (importSorter == null) {
+					comparator = (n1, n2) -> n1.getQName().compareToIgnoreCase(n2.getQName());
+				} else {
+					comparator = (n1, n2) -> importSorter.compare(n1, n2);
+				}
+				Collections.sort(list, comparator);
+			}
+		}
+		return lists;
+	}
+
+	@Override
+	public void write(JSGSource pSource, JSGSourceTarget pTarget) {
+		final Data data = new Data(pTarget, format);
+		final JSGQName type = pSource.getType();
+		write(pSource.getPackageComment(), data);
+		final String packageName = type.getPackageName();
+		if (packageName != null) {
+			writeObject("package ", data);
+			writeObject(packageName, data);
+			writeObject(";", data);
+			data.newLine();
+			data.newLine();
+		}
+		final List<List<JSGQName>> importLists = getSortedImports();
+		if (importLists != null  &&  !importLists.isEmpty()) {
+			for (int i = 0;  i < importLists.size();  i++) {
+				final List<JSGQName> importList = importLists.get(i);
+				if (importList != null) {
+					for (JSGQName n : importList) {
+						writeObject("import ", data);
+						writeObject(n.getQName(), data);
+						writeObject(";", data);
+						data.newLine();
+					}
+					data.newLine();
+				}
+			}
+		}
+		writeClass((JSGClass<?>) pSource, data);
+	}
+
+	protected void writeClass(JSGClass<?> pClass, Data pTarget) {
+		writeObject(format.getClassCommentPrefix(), pTarget);
+		write(pClass.getComment(), pTarget);
+		writeObject(format.getClassCommentSuffix(), pTarget);
+		write(pClass.getAnnotations(), pTarget);
+		write(pClass.getProtection(), pTarget);
+		if (pClass instanceof JSGInnerClass  &&  ((JSGInnerClass) pClass).isStatic()) {
+			writeObject("static ", pTarget);
+		}
+		if (pClass.isInterface()) {
+			writeObject("interface ", pTarget);
+		} else {
+			writeObject("class ", pTarget);
+		}
+		writeObject(pClass.getType().getSimpleClassName(), pTarget);
+		final List<JSGQName> extendedClasses = pClass.getExtendedClasses();
+		if (!extendedClasses.isEmpty()) {
+			for (int i = 0;  i < extendedClasses.size();  i++) {
+				if (i == 0) {
+					writeObject(" extends ", pTarget);
+				} else {
+					writeObject(", ", pTarget);
+				}
+				writeObject(extendedClasses.get(i), pTarget);
+			}
+		}
+		final List<JSGQName> implementedInterfaces = pClass.getImplementedInterfaces();
+		if (!implementedInterfaces.isEmpty()) {
+			for (int i = 0;  i < implementedInterfaces.size();  i++) {
+				if (i == 0) {
+					writeObject(" implements", pTarget);
+				} else {
+					writeObject(", ", pTarget);
+				}
+				writeObject(implementedInterfaces.get(i), pTarget);
+			}
+		}
+		writeObject(format.getClassBlockHeader(), pTarget);
+		writeList(pClass.getContent(), pTarget);
+		writeObject(format.getClassBlockFooter(), pTarget);
+	}
+
+	protected void writeFieldDeclaration(IField pField, Data pTarget) {
+		if (pField instanceof ICommentOwner) {
+			final JSGComment comment = ((ICommentOwner) pField).getComment();
+			write(comment, pTarget);
+		}
+		write(pField.getAnnotations(), pTarget);
+		writeObject(format.getFieldPrefix(), pTarget);
+		if (pField instanceof IProtectable) {
+			final IProtectable.Protection protection = ((IProtectable) pField).getProtection();
+			write(protection, pTarget);
+		}
+		if (pField instanceof IStaticable) {
+			final IStaticable staticable = (IStaticable) pField;
+			if (staticable.isStatic()) {
+				writeObject("static ", pTarget);
+			}
+		}
+		if (pField.isFinal()) {
+			writeObject("final ", pTarget);
+		}
+		if (pField instanceof IVolatilable) {
+			final IVolatilable volatilable = (IVolatilable) pField;
+			if (volatilable.isVolatile()) {
+				writeObject("volatile ", pTarget);
+			}
+		}
+		writeObject(pField.getType(), pTarget);
+		writeObject(" ", pTarget);
+		writeObject(pField.getName(), pTarget);
+		final Object value = pField.getValue();
+		if (value != null) {
+			writeObject(format.getFieldValueAssignment(), pTarget);
+			writeObject(value, pTarget);
+		}
+		writeObject(format.getFieldSuffix(), pTarget);
+	}
+
+	protected void write(IProtectable.Protection pProtection, Data pTarget) {
+		if (pProtection == null) {
+			throw new NullPointerException();
+		}
+		switch (pProtection) {
+		  case PUBLIC: writeObject("public ", pTarget); break;
+		  case PROTECTED: writeObject("protected ", pTarget); break;
+		  case PRIVATE: writeObject("private ", pTarget); break;
+		  case PACKAGE: break;
+		  default: throw new IllegalStateException("Invalid protection: " + pProtection);
+		}
+	}
+
+	protected void write(AnnotationSet pAnnotations, Data pTarget) {
+		if (!pAnnotations.isEmpty()) {
+			writeObject(format.getAnnotationSetPrefix(), pTarget);
+			boolean first = true;
+			for (Annotation annotation : pAnnotations.getAnnotations()) {
+				if (first) {
+					first = false;
+				} else {
+					writeObject(format.getAnnotationSeparator(), pTarget);
+				}
+				write(annotation, pTarget);
+			}
+			writeObject(format.getAnnotationSetSuffix(), pTarget);
+		}
+	}
+
+	protected void write(Annotation pAnnotation, Data pTarget) {
+		writeObject(format.getAnnotationPrefix(), pTarget);
+		writeObject(pAnnotation.getType(), pTarget);
+		final Map<String,Object> map = pAnnotation.getAttributes();
+		if (!map.isEmpty()) {
+			writeObject(format.getAnnotationValuesPrefix(), pTarget);
+			boolean first = true;
+			for (Map.Entry<String,Object> en : map.entrySet()) {
+				final String key = en.getKey();
+				final Object value = en.getValue();
+				if (first) {
+					first = false;
+				} else {
+					writeObject(format.getAnnotationValueSeparator(), pTarget);
+				}
+				writeObject(key, pTarget);
+				writeObject(format.getAnnotationValueAssignment(), pTarget);
+				writeObject(value, pTarget);
+			}
+			writeObject(format.getAnnotationValuesSuffix(), pTarget);
+		}
+	}
+
+	protected void writeMethod(JSGSubroutine<?> pBlock, Data pTarget) {
+		final JSGSubroutine<?> subroutine = (JSGSubroutine<?>) pBlock;
+		write(subroutine.getComment(), pTarget);
+		write(subroutine.getAnnotations(), pTarget);
+		if (!subroutine.getAnnotations().isEmpty()) {
+			pTarget.newLine();
+		}
+		writeObject(format.getMethodDeclarationPrefix(), pTarget);
+		write(subroutine.getProtection(), pTarget);
+		if (subroutine instanceof JSGMethod) {
+			final JSGMethod method = (JSGMethod) subroutine;
+			if (method.isAbstract()) {
+				writeObject("abstract ", pTarget);
+			}
+			if (method.isStatic()) {
+				writeObject("static ", pTarget);
+			}
+			if (method.isFinal()) {
+				writeObject("final ", pTarget);
+			}
+			if (method.isSynchronized()) {
+				writeObject("synchronized ", pTarget);
+			}
+			writeObject(method.getReturnType(), pTarget);
+			writeObject(" ", pTarget);
+		}
+		if (subroutine instanceof JSGMethod) {
+			final JSGMethod method = (JSGMethod) subroutine;
+			writeObject(method.getName(), pTarget);
+		} else if (subroutine instanceof JSGConstructor) {
+			writeObject(subroutine.getSourceClass().getType().getClassName(), pTarget);
+		} else {
+			throw new IllegalStateException("Invalid subroutine type: " + subroutine.getClass().getName());
+		}
+		writeObject(format.getMethodParameterPrefix(), pTarget);
+		final List<Parameter> parameters = subroutine.getParameters();
+		for (int i = 0;  i < parameters.size();  i++) {
+			final Parameter param = parameters.get(i);
+			if (i > 0) {
+				writeObject(format.getMethodParameterSeparator(), pTarget);
+			}
+			write(param.getAnnotations(), pTarget);
+			if (!param.getAnnotations().isEmpty()) {
+				writeObject(" ", pTarget);
+			}
+			writeObject(param.getType(), pTarget);
+			writeObject(" ", pTarget);
+			writeObject(param.getName(), pTarget);
+		}
+		writeObject(format.getMethodParameterSuffix(), pTarget);
+		final List<JSGQName> exceptions = subroutine.getExceptions();
+		if (!exceptions.isEmpty()) {
+			for (int i = 0;  i < exceptions.size();  i++) {
+				if (i == 0) {
+					writeObject("throws ", pTarget);
+				} else {
+					writeObject(", ", pTarget);
+				}
+				writeObject(exceptions.get(i), pTarget);
+			}
+			writeObject(" ", pTarget);
+		}
+		writeObject(format.getMethodDeclarationSuffix(), pTarget);
+		writeList(pBlock.body().getContents(), pTarget);
+		writeObject(format.getBlockTerminator(), pTarget);
+	}
+
+	protected void writeInitializer(JSGStaticInitializer pInitializer, Data pTarget) {
+		write(pInitializer.getComment(), pTarget);
+		writeObject(format.getInitializerHeader(), pTarget);
+		writeList(pInitializer.body().getContents(), pTarget);
+		writeObject(format.getInitializerFooter(), pTarget);
+	}
+
+	protected void writeIfBlock(JSGIfBlock pIfBlock, Data pTarget) {
+		writeObject(format.getIfConditionPrefix(), pTarget);
+		writeObject(pIfBlock.getCondition(), pTarget);
+		writeObject(format.getIfConditionSuffix(), pTarget);
+		writeList(pIfBlock.getContents(), pTarget);
+		writeObject(format.getBlockTerminator(), pTarget);
+	}
+
+	protected void writeWhileBlock(JSGWhileBlock pWhileBlock, Data pTarget) {
+		writeObject(format.getWhileConditionPrefix(), pTarget);
+		writeObject(pWhileBlock.getCondition(), pTarget);
+		writeObject(format.getWhileConditionSuffix(), pTarget);
+		writeList(pWhileBlock.getContents(), pTarget);
+		writeObject(format.getBlockTerminator(), pTarget);
+	}
+
+	protected void writeForBlock(JSGForBlock pForBlock, Data pTarget) {
+		writeObject(format.getForConditionPrefix(), pTarget);
+		writeObject(pForBlock.getCondition(), pTarget);
+		writeObject(format.getForConditionPrefix(), pTarget);
+		writeList(pForBlock.getContents(), pTarget);
+		writeObject(format.getBlockTerminator(), pTarget);
+	}
+
+	protected void writeDoWhileBlock(JSGDoWhileBlock pDoWhileBlock, Data pTarget) {
+		writeObject(format.getDoWhileBlockHeader(), pTarget);
+		writeList(pDoWhileBlock.getContents(), pTarget);
+		writeObject(format.getDoWhileBlockTerminator(), pTarget);
+		writeObject(pDoWhileBlock.getCondition(), pTarget);
+		writeObject(format.getDoWhileTerminator(), pTarget);
+	}
+
+	protected void writeList(List<Object> pList, Data pTarget) {
+		boolean previousObjectWasField = false;
+		boolean first = true;
+		for (Object o : pList) {
+			if (o == null) {
+				throw new NullPointerException("A list element must not be null.");
+			}
+			if (o instanceof JSGField) {
+				if (!first  &&  !previousObjectWasField) {
+					pTarget.newLine();
+				}
+				writeFieldDeclaration((JSGField) o, pTarget);
+				previousObjectWasField = true;
+			} else if (o instanceof LocalField) {
+				if (!first  &&  !previousObjectWasField) {
+					pTarget.newLine();
+				}
+				writeFieldDeclaration((LocalField) o, pTarget);
+				previousObjectWasField = true;
+			} else if (o instanceof JSGMethod) {
+				writeMethod((JSGMethod) o, pTarget);
+			} else if (o instanceof JSGConstructor) {
+				writeMethod((JSGConstructor) o, pTarget);
+			} else if (o instanceof JSGInnerClass) {
+				final JSGClass<?> clazz = (JSGClass<?>) o;
+				writeClass(clazz, pTarget);
+			} else if (o instanceof JSGStaticInitializer) {
+				writeInitializer((JSGStaticInitializer) o, pTarget);
+			} else if (o instanceof JSGIfBlock) {
+				writeIfBlock((JSGIfBlock) o, pTarget);
+			} else if (o instanceof JSGWhileBlock) {
+				writeWhileBlock((JSGWhileBlock) o, pTarget);
+			} else if (o instanceof JSGDoWhileBlock) {
+				writeDoWhileBlock((JSGDoWhileBlock) o, pTarget);
+			} else if (o instanceof Line) {
+				writeLine((Line) o, pTarget);
+			} else {
+				throw new IllegalStateException("Invalid object type: " + o.getClass().getName());
+			}
+		}
+	}
+
+	protected void writeLine(Line pLine, Data pTarget) {
+		writeObject(format.getLinePrefix(), pTarget);
+		writeObject(pLine.getElements(), pTarget);
+		if (pLine.isTerminated()) {
+			writeObject(format.getLineSuffixTerminated(), pTarget);
+		} else {
+			writeObject(format.getLineSuffix(), pTarget);
+		}
+	}
+
+	protected void writeThrows(JSGThrow pThrows, Data pTarget) {
+		writeObject(format.getThrowsPrefix(), pTarget);
+		writeObject(pThrows.getType(), pTarget);
+		writeObject(format.getThrowsConstructorArgsPrefix(), pTarget);
+		writeObject(pThrows.getConstructorArgs(), pTarget);
+		writeObject(format.getThrowsConstructorArgsSuffix(), pTarget);
+	}
+
+	protected void writeObject(Object pValue, Data pTarget) {
+		final Object v = Objects.requireNonNull(pValue, "Value");
+		if (v == format.INC_INDENT) {
+			pTarget.incIndent();
+		} else if (v == format.DEC_INDENT) {
+			pTarget.decIndent();
+		} else if (v == Format.INDENT) {
+			pTarget.indent();
+		} else if (v == Format.NEWLINE) {
+			pTarget.newLine();
+		} else if (v instanceof Object[]) {
+			final Object[] array = (Object[]) v;
+			for (Object o : array) {
+				writeObject(o, pTarget);
+			}
+		} else if (v instanceof Iterable) {
+			@SuppressWarnings("unchecked")
+			final Iterable<Object> iterable = (Iterable<Object>) v;
+			for (Object o : iterable) {
+				writeObject(o, pTarget);
+			}
+		} else if (v instanceof JSGQName) {
+			final JSGQName name = (JSGQName) v;
+			if (name.hasQualifiers()) {
+				pTarget.write(name);
+				pTarget.write("<");
+				for (int i = 0;  i < name.getQualifiers().size();  i++) {
+					if (i > 0) {
+						pTarget.write(",");
+					}
+					pTarget.write(name.getQualifiers().get(i));
+				}
+				pTarget.write(">");
+			} else {
+				pTarget.write(name);
+			}
+		} else if (v instanceof IField) {
+			writeObject(((IField)v).getName(), pTarget);
+		} else if (v instanceof JSGThrow) {
+			writeThrows(((JSGThrow) v), pTarget);
+		} else if (v instanceof Class) {
+			final Class<?> cl = (Class<?>) v;
+			writeObject(JSGQName.valueOf(cl), pTarget);
+		} else if (v instanceof String) {
+			pTarget.write(v);
+		} else if (v instanceof Number) {
+			pTarget.write(v.toString());
+		} else {
+			throw new IllegalStateException("Invalid object type: " + v.getClass().getName());
+		}
+	}
+
+	protected void write(JSGComment pComment, Data pTarget) {
+		if (pComment != null) {
+			final List<String> text = pComment.getText();
+			switch (text.size()) {
+			case 0:
+				return;
+			case 1:
+				if (pComment.isPublic()) {
+					// Intentionally no break, same handling than text.size() > 1
+				} else {
+					writeObject(format.getCommentSingleLinePrefix(), pTarget);
+					writeObject(text.get(0), pTarget);
+					writeObject(format.getCommentSingleLineSuffix(), pTarget);
+					break;
+				}
+			default:
+				final Object prefix, separator, suffix;
+				if (pComment.isPublic()) {
+					prefix = format.getCommentPublicPrefix();
+					separator = format.getCommentPublicSeparator();
+					suffix = format.getCommentPublicSuffix();
+				} else {
+					prefix = format.getCommentPrivatePrefix();
+					separator = format.getCommentPrivateSeparator();
+					suffix = format.getCommentPrivateSuffix();
+				}
+				for (int i = 0;  i < text.size();  i++) {
+					if (i == 0) {
+						writeObject(prefix, pTarget);
+					} else {
+						writeObject(separator, pTarget);
+					}
+					writeObject(text.get(i), pTarget);
+				}
+				writeObject(suffix, pTarget);
+			}
+		}
+	}
+}
