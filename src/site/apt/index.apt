@@ -28,7 +28,7 @@ JSGen (Java Source Generation Framework)
     [[3]] The builder pattern has been adopted. Almost all important classes are implemented as builders. This should make
           writing the actual source generators much more concise, and maintainable, than it used to be before.
 
-    [[4]] The code style is adaptable. Code styles allow you to concentrate on the actual work. The resulting Jave source will
+    [[4]] The code style is configurable. Code styles allow you to concentrate on the actual work. The resulting Jave source will
           look nicely formatted, anyways. As of this writing, you can select between two builtin code styles:
 
          * The default code style is basically the authors personal free style, roughly comparable to the default
@@ -43,4 +43,6 @@ JSGen (Java Source Generation Framework)
  Further reading:
  
     * {{{./gettingStarted.html}Getting Started}}
+    * {{{./status.html}Project Status}} (In short: Alpha quality, API not yet stable, immature.)
+
  

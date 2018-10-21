@@ -17,15 +17,13 @@ rewrite with several additional features, that the author considers to be import
 2. It supports Annotations.
 3. The builder pattern has been adopted. Almost all important classes are implemented as builders. This should make
 writing the actual source generators much more concise, and maintainable, than it used to be before.
-4. The code style is adaptable. Code styles allow you to concentrate on the actual work. The resulting Jave source will
+4. The code style is configurable. Code styles allow you to concentrate on the actual work. The resulting Jave source will
    look nicely formatted, anyways. As of this writing, you can select between two builtin code styles:
 
-  - The default code style is basically the authors personal free style, roughly comparable two the default
-    code style of the Eclipse Java IDE.
+  - The default code style is basically the authors personal free style, roughly comparable to the default
+    code style of the Eclipse Java IDE. 
 
   - As an alternative, there is also a Maven code style, which is widely used in the Open Source communities.
+    Compared to the default style, it is less concise, if not even a bit verbose. On the other hand, it is
+    widely adopted by projects in the vicinity of {{{https://maven.apache.org}Apache Maven}}.
 5. Import lists are created, and sorted, automatically.
-
-
-
-

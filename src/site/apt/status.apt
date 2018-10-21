@@ -1,0 +1,25 @@
+	--------------
+	Project Status
+	--------------
+
+The project has been started around 2016. Initially, it didn't get very far, because of being overambitious. In particular, the code
+styles have been difficult. Nevertheless, it has been restarted two, or three times, before being put to actual use in one of my
+employers projects. (Thanks to Holger Döppert for tasking me with that.)
+
+As of this writing, the project is usable, and most of the intended features are present: We've got an API for working with annotations,
+we can deal with generics, the two important code styles are available, and the problems in building a class hierarchy of builders, have
+been resolved.
+
+On the other hand, I am not satisfied with the class structure. (For example, the classes
+{{{./apidocs/com/github/jochenw/jsgen/api/Block.html}Block}}, and {{{./apidocs/com/github/jochenw/jsgen/api/CodeBlock.html}CodeBlock}}
+are definitely somewhat redundant, and I am still not completely happy with the builders. (For example, within a block, I'd like
+to see the ability to return to the outer block.)
+
+That said, the general ideas have been borrowed from a mature predecessor (JaxMeJS), and the well known, and proven concepts have been
+adopted. There is no reason to assume that these will need to be changed greatly.
+
+In general, the framework should be ready for inspection, for proof of concept work, smaller projects, and the like. It might be a
+risk to use it for large-scale applications.
+
+However, if you are ready to adjust to a few required changes over time, whenever a new version should be adopted, then Jsgen should
+be able to satisfy your
