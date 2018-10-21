@@ -11,7 +11,7 @@ was adopted by the Apache Webservices project. And it was buried as part of the 
 That was fine for quite some time, because the latest released version (JaxMeJS 0.5.2) did its job quite well.
 Over the years, however, the Java language has evolved, and the lack of support for features like Generics, or
 Annotations, became a burden. Hence the Successor: Jsgen picks up, where JaxMeJS ended. It is, however, a complete
-rewrite with several additionsl features, that the author considers to be important for modern Java applications:
+rewrite with several additional features, that the author considers to be important for modern Java applications:
 
 1. It supports Generics.
 2. It supports Annotations.
