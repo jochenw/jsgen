@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 
 import com.github.jochenw.jsgen.util.Objects;
 
-public class JSGDoWhileBlock extends Block<JSGDoWhileBlock> {
+public class DoWhileBlock extends Block<DoWhileBlock> {
 	private Object condition;
 
-	public JSGDoWhileBlock condition(@Nonnull Object... pValues) {
+	public DoWhileBlock condition(@Nonnull Object... pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (condition != null) {
@@ -17,7 +17,7 @@ public class JSGDoWhileBlock extends Block<JSGDoWhileBlock> {
 		return this;
 	}
 
-	public JSGDoWhileBlock condition(@Nonnull Iterable<Object> pValues) {
+	public DoWhileBlock condition(@Nonnull Iterable<Object> pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (condition != null) {

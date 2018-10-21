@@ -1,6 +1,6 @@
 package com.github.jochenw.jsgen.api;
 
-import static com.github.jochenw.jsgen.api.JSGSource.q;
+import static com.github.jochenw.jsgen.api.Source.q;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,12 +12,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.jochenw.jsgen.api.Block;
-import com.github.jochenw.jsgen.api.JSGConstructor;
+import com.github.jochenw.jsgen.api.Constructor;
 import com.github.jochenw.jsgen.api.JSGFactory;
-import com.github.jochenw.jsgen.api.JSGField;
-import com.github.jochenw.jsgen.api.JSGQName;
-import com.github.jochenw.jsgen.api.JSGSource;
-import com.github.jochenw.jsgen.api.JSGStaticInitializer;
+import com.github.jochenw.jsgen.api.Field;
+import com.github.jochenw.jsgen.api.JQName;
+import com.github.jochenw.jsgen.api.Source;
+import com.github.jochenw.jsgen.api.StaticInitializer;
 import com.github.jochenw.jsgen.api.LocalField;
 import com.github.jochenw.jsgen.api.IProtectable.Protection;
 import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
@@ -80,7 +80,7 @@ public class JSGStaticInitializerTest {
 	 */
 	@Test
 	public void testInitJavaDefault() throws Exception {
-		final JSGFactory factory = new JSGFactory();
+		final JSGFactory factory = JSGFactory.build();
 		generateInitJava(factory);
 		final String gotDefault = asString(factory, AbstractSourceWriter.DEFAULT_FORMATTER);
 		Assert.assertEquals(INIT_JAVA_DEFAULT, gotDefault);
@@ -88,7 +88,7 @@ public class JSGStaticInitializerTest {
 
 	@Test
 	public void testInitJavaMaven() throws Exception {
-		final JSGFactory factory = new JSGFactory();
+		final JSGFactory factory = JSGFactory.build();
 		generateInitJava(factory);
 		final String gotDefault = asString(factory, AbstractSourceWriter.MAVEN_FORMATTER);
 		Assert.assertEquals(INIT_JAVA_MAVEN, gotDefault);
@@ -108,20 +108,20 @@ public class JSGStaticInitializerTest {
 	}
 	
 	private void generateInitJava(JSGFactory pFactory) {
-		final JSGSource js = pFactory.newSource("com.foo.myapp.Foo").makePublic();
-		final JSGField jf = js.newField(String.class, "PACKAGE").makePrivate().makeStatic().makeFinal();
-		final JSGStaticInitializer jsi = js.newInitializer();
+		final Source js = pFactory.newSource("com.foo.myapp.Foo").makePublic();
+		final Field jf = js.newField(String.class, "PACKAGE").makePrivate().makeStatic().makeFinal();
+		final StaticInitializer jsi = js.newInitializer();
 		final Block<?> jsiBody = jsi.body();
 		final LocalField classNameField = jsiBody.newJavaField(String.class, "className").makeFinal()
 				.assign(js.getType(), ".class.getName()");
-		final LocalField indexField = jsiBody.newJavaField(JSGQName.INT_TYPE, "index").makeFinal()
+		final LocalField indexField = jsiBody.newJavaField(JQName.INT_TYPE, "index").makeFinal()
 				.assign(classNameField, ".lastIndexOf('.')");
 		jsiBody.newIf(indexField, " == -1")
 				.addThrowNew(IllegalStateException.class, q("Unable to parse class name: "), " + ", classNameField);
 		jsiBody.line(jf, " = ", classNameField, ".substring(0, ", indexField, ");");
-		final JSGField packageNameField = js.newField(JSGQName.STRING, "packageName", Protection.PRIVATE)
+		final Field packageNameField = js.newField(JQName.STRING, "packageName", Protection.PRIVATE)
 					.assign(jf);
-		final JSGConstructor constructor = js.newConstructor();
+		final Constructor constructor = js.newConstructor();
 		constructor.body().line(System.class, ".out.println(", q(js.getType().getClassName() + ", package = "),
 				                " + ", packageNameField, ");");
 	}

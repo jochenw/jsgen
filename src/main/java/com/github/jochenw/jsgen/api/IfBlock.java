@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 
 import com.github.jochenw.jsgen.util.Objects;
 
-public class JSGWhileBlock extends Block<JSGWhileBlock> {
+public class IfBlock extends Block<IfBlock> {
 	private Object condition;
 
-	public JSGWhileBlock condition(@Nonnull Object... pValues) {
+	public IfBlock condition(@Nonnull Object... pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (condition != null) {
@@ -17,7 +17,7 @@ public class JSGWhileBlock extends Block<JSGWhileBlock> {
 		return this;
 	}
 
-	public JSGWhileBlock condition(@Nonnull Iterable<Object> pValues) {
+	public IfBlock condition(@Nonnull Iterable<Object> pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (condition != null) {

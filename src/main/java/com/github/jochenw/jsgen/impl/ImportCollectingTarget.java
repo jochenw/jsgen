@@ -11,30 +11,30 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
-import com.github.jochenw.jsgen.api.JSGQName;
+import com.github.jochenw.jsgen.api.JQName;
 
 public class ImportCollectingTarget implements JSGSourceTarget {
 	public static class CountedName {
 		private int count;
-		private final JSGQName name;
+		private final JQName name;
 		private final CountedName next;
 
-		public CountedName(JSGQName pName, CountedName pNext) {
+		public CountedName(JQName pName, CountedName pNext) {
 			name = pName;
 			next = pNext;
 		}
 	}
 
 	private final Map<String,CountedName> countedNames = new HashMap<>();
-	private Set<JSGQName> importedNames;
+	private Set<JQName> importedNames;
 	private Function<Object,Object> filter;
-	private JSGQName importingClass;
+	private JQName importingClass;
 
-	public JSGQName getImportingClass() {
+	public JQName getImportingClass() {
 		return importingClass;
 	}
 
-	public void setImportingClass(JSGQName importingClass) {
+	public void setImportingClass(JQName importingClass) {
 		this.importingClass = importingClass;
 	}
 
@@ -54,11 +54,11 @@ public class ImportCollectingTarget implements JSGSourceTarget {
 		} else {
 			o = filter.apply(pObject);
 		}
-		if (o instanceof JSGQName) {
+		if (o instanceof JQName) {
 			if (importedNames != null) {
 				throw new IllegalStateException("Object is already closed.");
 			}
-			@Nonnull final JSGQName name = (JSGQName) o;
+			@Nonnull final JQName name = (JQName) o;
 			if (isImportable(name)) {
 				CountedName counter = findCountedName(name);
 				counter.count++;
@@ -68,7 +68,7 @@ public class ImportCollectingTarget implements JSGSourceTarget {
 		}
 	}
 
-	protected boolean isImportable(JSGQName pName) {
+	protected boolean isImportable(JQName pName) {
 		if (pName.isPseudoClass()) {
 			return false;
 		}
@@ -87,7 +87,7 @@ public class ImportCollectingTarget implements JSGSourceTarget {
 		return true;
 	}
 	
-	@Nonnull protected CountedName findCountedName(@Nonnull JSGQName pName) {
+	@Nonnull protected CountedName findCountedName(@Nonnull JQName pName) {
 		final CountedName firstCn = countedNames.get(pName.getSimpleClassName());
 		if (firstCn != null) {
 			for (CountedName cn = firstCn;  cn != null; cn = cn.next) {
@@ -111,14 +111,14 @@ public class ImportCollectingTarget implements JSGSourceTarget {
 		if (importedNames == null) {
 			importedNames = new HashSet<>();
 			for(CountedName cn : countedNames.values()) {
-				final JSGQName name = findMaxCount(cn);
+				final JQName name = findMaxCount(cn);
 				importedNames.add(name);
 			}
 		}
 	}
 
-	protected JSGQName findMaxCount(@Nonnull CountedName pCn) {
-		JSGQName name = null;
+	protected JQName findMaxCount(@Nonnull CountedName pCn) {
+		JQName name = null;
 		int max = 0;
 		for (CountedName cn = pCn;  cn != null;  cn = cn.next) {
 			if (name == null  ||  cn.count > max) {
@@ -129,7 +129,7 @@ public class ImportCollectingTarget implements JSGSourceTarget {
 		return name;
 	}
 
-	public List<JSGQName> getImportedNames() {
+	public List<JQName> getImportedNames() {
 		close();
 		return new ArrayList<>(importedNames);
 	}

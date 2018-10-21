@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 
 import com.github.jochenw.jsgen.util.Objects;
 
-public class JSGIfBlock extends Block<JSGIfBlock> {
+public class ForBlock extends Block<ForBlock> {
 	private Object condition;
 
-	public JSGIfBlock condition(@Nonnull Object... pValues) {
+	public ForBlock condition(@Nonnull Object... pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (condition != null) {
@@ -17,7 +17,7 @@ public class JSGIfBlock extends Block<JSGIfBlock> {
 		return this;
 	}
 
-	public JSGIfBlock condition(@Nonnull Iterable<Object> pValues) {
+	public ForBlock condition(@Nonnull Iterable<Object> pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (condition != null) {

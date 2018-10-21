@@ -13,12 +13,12 @@ import javax.annotation.Nonnull;
 
 import org.junit.Test;
 
-import com.github.jochenw.jsgen.api.JSGQName;
+import com.github.jochenw.jsgen.api.JQName;
 
 public class JSGQNameTest {
 	@Test
 	public void testInstanceFromClass() {
-		final JSGQName name = JSGQName.valueOf(JSGQNameTest.class);
+		final JQName name = JQName.valueOf(JSGQNameTest.class);
 		assertNotNull(name);
 		assertEquals("com.github.jochenw.jsgen.api", name.getPackageName());
 		assertEquals("JSGQNameTest", name.getClassName());
@@ -27,7 +27,7 @@ public class JSGQNameTest {
 
 	@Test
 	public void testInstanceFromString() {
-		final JSGQName name = JSGQName.valueOf(JSGQNameTest.class.getName());
+		final JQName name = JQName.valueOf(JSGQNameTest.class.getName());
 		assertNotNull(name);
 		assertEquals("com.github.jochenw.jsgen.api", name.getPackageName());
 		assertEquals("JSGQNameTest", name.getClassName());
@@ -36,34 +36,34 @@ public class JSGQNameTest {
 
 	@Test
 	public void testPrimitiveClasses() {
-		assertPrimitiveType(JSGQName.BOOLEAN_TYPE, Boolean.TYPE);
-		assertPrimitiveType(JSGQName.BYTE_TYPE, Byte.TYPE);
-		assertPrimitiveType(JSGQName.CHAR_TYPE, Character.TYPE);
-		assertPrimitiveType(JSGQName.DOUBLE_TYPE, Double.TYPE);
-		assertPrimitiveType(JSGQName.FLOAT_TYPE, Float.TYPE);
-		assertPrimitiveType(JSGQName.INT_TYPE, Integer.TYPE);
-		assertPrimitiveType(JSGQName.LONG_TYPE, Long.TYPE);
-		assertPrimitiveType(JSGQName.SHORT_TYPE, Short.TYPE);
+		assertPrimitiveType(JQName.BOOLEAN_TYPE, Boolean.TYPE);
+		assertPrimitiveType(JQName.BYTE_TYPE, Byte.TYPE);
+		assertPrimitiveType(JQName.CHAR_TYPE, Character.TYPE);
+		assertPrimitiveType(JQName.DOUBLE_TYPE, Double.TYPE);
+		assertPrimitiveType(JQName.FLOAT_TYPE, Float.TYPE);
+		assertPrimitiveType(JQName.INT_TYPE, Integer.TYPE);
+		assertPrimitiveType(JQName.LONG_TYPE, Long.TYPE);
+		assertPrimitiveType(JQName.SHORT_TYPE, Short.TYPE);
 	}
 
 	@Test
 	public void testObjectClasses() {
-		assertObjectType(JSGQName.BOOLEAN_OBJ, Boolean.class);
-		assertObjectType(JSGQName.BYTE_OBJ, Byte.class);
-		assertObjectType(JSGQName.CHAR_OBJ, Character.class);
-		assertObjectType(JSGQName.DOUBLE_OBJ, Double.class);
-		assertObjectType(JSGQName.FLOAT_OBJ, Float.class);
-		assertObjectType(JSGQName.INT_OBJ, Integer.class);
-		assertObjectType(JSGQName.LONG_OBJ, Long.class);
-		assertObjectType(JSGQName.SHORT_OBJ, Short.class);
-		assertObjectType(JSGQName.OBJECT, Object.class);
-		assertObjectType(JSGQName.STRING, String.class);
-		assertObjectType(JSGQName.COLLECTION, Collection.class);
-		assertObjectType(JSGQName.SET, Set.class);
-		assertObjectType(JSGQName.LIST, List.class);
-		assertObjectType(JSGQName.MAP, Map.class);
-		assertObjectType(JSGQName.ARRAYLIST, ArrayList.class);
-		assertObjectType(JSGQName.HASHMAP, HashMap.class);
+		assertObjectType(JQName.BOOLEAN_OBJ, Boolean.class);
+		assertObjectType(JQName.BYTE_OBJ, Byte.class);
+		assertObjectType(JQName.CHAR_OBJ, Character.class);
+		assertObjectType(JQName.DOUBLE_OBJ, Double.class);
+		assertObjectType(JQName.FLOAT_OBJ, Float.class);
+		assertObjectType(JQName.INT_OBJ, Integer.class);
+		assertObjectType(JQName.LONG_OBJ, Long.class);
+		assertObjectType(JQName.SHORT_OBJ, Short.class);
+		assertObjectType(JQName.OBJECT, Object.class);
+		assertObjectType(JQName.STRING, String.class);
+		assertObjectType(JQName.COLLECTION, Collection.class);
+		assertObjectType(JQName.SET, Set.class);
+		assertObjectType(JQName.LIST, List.class);
+		assertObjectType(JQName.MAP, Map.class);
+		assertObjectType(JQName.ARRAYLIST, ArrayList.class);
+		assertObjectType(JQName.HASHMAP, HashMap.class);
 	}
 
 	public static class InnerClass {
@@ -71,27 +71,27 @@ public class JSGQNameTest {
 
 	@Test
 	public void testInnerClass() {
-		final JSGQName n0 = JSGQName.valueOf("com.foo.myapp.Main");
-		final JSGQName n1 = JSGQName.valueOf(n0, "Data");
+		final JQName n0 = JQName.valueOf("com.foo.myapp.Main");
+		final JQName n1 = JQName.valueOf(n0, "Data");
 		assertEquals("com.foo.myapp", n1.getPackageName());
 		assertEquals("com.foo.myapp.Main.Data", n1.getQName());
 		assertEquals("Main.Data", n1.getClassName());
 		assertTrue(n1.isInnerClass());
 		assertEquals(n0, n1.getOuterClass());
-		final JSGQName n2 = JSGQName.valueOf(InnerClass.class);
+		final JQName n2 = JQName.valueOf(InnerClass.class);
 		assertEquals("com.github.jochenw.jsgen.api", n2.getPackageName());
 		assertEquals("JSGQNameTest.InnerClass", n2.getClassName());
 		assertEquals("com.github.jochenw.jsgen.api.JSGQNameTest.InnerClass", n2.getQName());
 		assertFalse(n2.isArray());
 		assertFalse(n2.isPrimitive());
 		assertTrue(n2.isInnerClass());
-		assertEquals(JSGQName.valueOf(getClass()), n2.getOuterClass());
+		assertEquals(JQName.valueOf(getClass()), n2.getOuterClass());
 	}
 
 	@Test
 	public void testPseudoClass() {
-		final JSGQName listClass = JSGQName.valueOf(List.class);
-		final JSGQName genericListClass = JSGQName.genericValueOf(JSGQName.valueOf(List.class), "?");
+		final JQName listClass = JQName.valueOf(List.class);
+		final JQName genericListClass = JQName.genericValueOf(JQName.valueOf(List.class), "?");
 		assertEquals("java.util", listClass.getPackageName());
 		assertEquals("java.util", genericListClass.getPackageName());
 		assertEquals("List", listClass.getClassName());
@@ -113,7 +113,7 @@ public class JSGQNameTest {
 		assertTrue(listClass.getQualifiers().isEmpty());
 		assertFalse(genericListClass.getQualifiers().isEmpty());
 		assertEquals(1, genericListClass.getQualifiers().size());
-		final JSGQName name = genericListClass.getQualifiers().get(0);
+		final JQName name = genericListClass.getQualifiers().get(0);
 		assertNotNull(name);
 		assertEquals("", name.getPackageName());
 		assertEquals("?", name.getClassName());
@@ -126,7 +126,7 @@ public class JSGQNameTest {
 		assertNull(name.getOuterClass());
 	}
 
-	private void assertObjectType(@Nonnull JSGQName pType, @Nonnull Class<?> pClass) {
+	private void assertObjectType(@Nonnull JQName pType, @Nonnull Class<?> pClass) {
 		assertFalse(pClass.isPrimitive());
 		assertFalse(pType.isPrimitive());
 		assertFalse(pClass.isMemberClass());
@@ -140,10 +140,10 @@ public class JSGQNameTest {
 		assertEquals(pClass.getName(), pType.toString());
 		assertFalse(pType.hasQualifiers());
 		assertEquals(0, pType.getQualifiers().size());
-		assertEquals(pType, JSGQName.valueOf(pClass));
+		assertEquals(pType, JQName.valueOf(pClass));
 	}
 
-	private void assertPrimitiveType(@Nonnull JSGQName pType, @Nonnull Class<?> pClass) {
+	private void assertPrimitiveType(@Nonnull JQName pType, @Nonnull Class<?> pClass) {
 		assertTrue(pClass.isPrimitive());
 		assertTrue(pType.isPrimitive());
 		assertFalse(pClass.isMemberClass());
@@ -157,28 +157,28 @@ public class JSGQNameTest {
 		assertEquals(pClass.getName(), pType.toString());
 		assertFalse(pType.hasQualifiers());
 		assertEquals(0, pType.getQualifiers().size());
-		assertSame(JSGQName.valueOf(pClass), pType);
+		assertSame(JQName.valueOf(pClass), pType);
 	}
 
 	
 	@Test
 	public void testErrors() {
 		try {
-			JSGQName.valueOf((String) null);
+			JQName.valueOf((String) null);
 			fail("Expected Exception");
 		} catch (NullPointerException e) {
 			assertEquals("Qualified Name", e.getMessage());
 		}
 
 		try {
-			JSGQName.valueOf((Class<?>) null);
+			JQName.valueOf((Class<?>) null);
 			fail("Expected Exception");
 		} catch (NullPointerException e) {
 			assertEquals("Type", e.getMessage());
 		}
 
 		try {
-			JSGQName.valueOf("MyType");
+			JQName.valueOf("MyType");
 			fail("Expected Exception");
 		} catch (IllegalArgumentException e) {
 			assertEquals("Invalid class name (Missing package): MyType", e.getMessage());

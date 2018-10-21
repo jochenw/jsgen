@@ -9,11 +9,11 @@ import javax.annotation.Nonnull;
 import com.github.jochenw.jsgen.util.AbstractBuilder;
 import com.github.jochenw.jsgen.util.Objects;
 
-public class JSGComment extends AbstractBuilder<JSGComment> {
+public class Comment extends AbstractBuilder<Comment> {
 	private final List<String> text = new ArrayList<String>();
 	private boolean isPublic;
 
-	@Nonnull public JSGComment text(@Nonnull String... pText) {
+	@Nonnull public Comment text(@Nonnull String... pText) {
 		Objects.requireAllNonNull(pText, "Text Line");
 		assertMutable();
 		text.clear();
@@ -21,7 +21,7 @@ public class JSGComment extends AbstractBuilder<JSGComment> {
 		return self();
 	}
 
-	@Nonnull public JSGComment text(Iterable<String> pText) {
+	@Nonnull public Comment text(Iterable<String> pText) {
 		Objects.requireAllNonNull(pText, "Text Line");
 		assertMutable();
 		text.clear();
@@ -36,7 +36,7 @@ public class JSGComment extends AbstractBuilder<JSGComment> {
 	}
 	
 	@Override
-	protected JSGComment self() {
+	protected Comment self() {
 		return this;
 	}
 
@@ -44,11 +44,11 @@ public class JSGComment extends AbstractBuilder<JSGComment> {
 		return isPublic;
 	}
 
-	@Nonnull public JSGComment makePublic() {
+	@Nonnull public Comment makePublic() {
 		return makePublic(true);
 	}
 
-	@Nonnull public JSGComment makePublic(boolean pPublic) {
+	@Nonnull public Comment makePublic(boolean pPublic) {
 		assertMutable();
 		isPublic = pPublic;
 		return this;

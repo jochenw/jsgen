@@ -10,20 +10,20 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 
 
 public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T> implements IAnnotatable, IProtectable, ICommentOwner {
-	private final JSGQName type;
+	private final JQName type;
 	private final List<Object> content = new ArrayList<>();
 	private final AnnotationSet annotations = new AnnotationSet();
 	private Protection protection;
-	private final List<JSGQName> extendedClasses = new ArrayList<>();
-	private final List<JSGQName> implementedInterfaces = new ArrayList<>();
+	private final List<JQName> extendedClasses = new ArrayList<>();
+	private final List<JQName> implementedInterfaces = new ArrayList<>();
 	private boolean isInterface;
-	private JSGComment comment;
+	private Comment comment;
 
-	protected JSGClass(JSGQName pType) {
+	protected JSGClass(JQName pType) {
 		type = pType;
 	}
 
-	public JSGQName getType() {
+	public JQName getType() {
 		return type;
 	}
 
@@ -59,75 +59,75 @@ public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T>
 		return protection;
 	}
 
-	@Nonnull public JSGField newField(@Nonnull JSGQName pType, @Nonnull String pName) {
+	@Nonnull public Field newField(@Nonnull JQName pType, @Nonnull String pName) {
 		return newField(pType, pName, Protection.PACKAGE);
 	}
 
-	@Nonnull public JSGField newField(@Nonnull Class<?> pType, @Nonnull String pName) {
-		return newField(JSGQName.valueOf(pType), pName, Protection.PACKAGE);
+	@Nonnull public Field newField(@Nonnull Class<?> pType, @Nonnull String pName) {
+		return newField(JQName.valueOf(pType), pName, Protection.PACKAGE);
 	}
 
-	@Nonnull public JSGField newField(@Nonnull String pType, @Nonnull String pName) {
-		return newField(JSGQName.valueOf(pType), pName, Protection.PACKAGE);
+	@Nonnull public Field newField(@Nonnull String pType, @Nonnull String pName) {
+		return newField(JQName.valueOf(pType), pName, Protection.PACKAGE);
 	}
 
-	@Nonnull public JSGField newField(@Nonnull String pType, @Nonnull String pName, @Nonnull Protection pProtection) {
-		return newField(JSGQName.valueOf(pType), pName, pProtection);
+	@Nonnull public Field newField(@Nonnull String pType, @Nonnull String pName, @Nonnull Protection pProtection) {
+		return newField(JQName.valueOf(pType), pName, pProtection);
 	}
 
-	@Nonnull public JSGField newField(@Nonnull Class<?> pType, @Nonnull String pName, @Nonnull Protection pProtection) {
-		return newField(JSGQName.valueOf(pType), pName, pProtection);
+	@Nonnull public Field newField(@Nonnull Class<?> pType, @Nonnull String pName, @Nonnull Protection pProtection) {
+		return newField(JQName.valueOf(pType), pName, pProtection);
 	}
 
-	@Nonnull public JSGField newField(@Nonnull JSGQName pType, @Nonnull String pName, @Nonnull Protection pProtection) {
-		final JSGField f = new JSGField().type(pType).name(pName).protection(pProtection);
+	@Nonnull public Field newField(@Nonnull JQName pType, @Nonnull String pName, @Nonnull Protection pProtection) {
+		final Field f = new Field().type(pType).name(pName).protection(pProtection);
 		content.add(f);
 		return f;
 	}
 
-	@Nonnull public JSGMethod newVoidMethod(@Nonnull String pName) {
+	@Nonnull public Method newVoidMethod(@Nonnull String pName) {
 		return newVoidMethod(pName, IProtectable.Protection.PACKAGE);
 	}
 
-	@Nonnull public JSGMethod newVoidMethod(@Nonnull String pName, Protection pProtection) {
-		return newMethod(pProtection, JSGQName.VOID_TYPE, pName);
+	@Nonnull public Method newVoidMethod(@Nonnull String pName, Protection pProtection) {
+		return newMethod(pProtection, JQName.VOID_TYPE, pName);
 	}
 
-	@Nonnull public JSGMethod newMethod(@Nonnull JSGQName pType, @Nonnull String pName) {
+	@Nonnull public Method newMethod(@Nonnull JQName pType, @Nonnull String pName) {
 		return newMethod(IProtectable.Protection.PACKAGE, pType, pName);
 	}
 
-	@Nonnull public JSGMethod newMethod(@Nonnull String pName) {
-		return newMethod(IProtectable.Protection.PACKAGE, JSGQName.VOID_TYPE, pName);
+	@Nonnull public Method newMethod(@Nonnull String pName) {
+		return newMethod(IProtectable.Protection.PACKAGE, JQName.VOID_TYPE, pName);
 	}
 
-	@Nonnull JSGMethod newMethod(@Nonnull Class<?> pType, @Nonnull String pName) {
+	@Nonnull Method newMethod(@Nonnull Class<?> pType, @Nonnull String pName) {
 		return newMethod(IProtectable.Protection.PACKAGE, pType, pName);
 	}
 
-	@Nonnull JSGConstructor newConstructor() {
+	@Nonnull Constructor newConstructor() {
 		return newConstructor(IProtectable.Protection.PUBLIC);
 	}
 
-	@Nonnull JSGConstructor newConstructor(IProtectable.Protection pProtection) {
+	@Nonnull Constructor newConstructor(IProtectable.Protection pProtection) {
 		assertMutable();
-		final JSGConstructor jmc = new JSGConstructor().protection(pProtection).sourceClass(this);
+		final Constructor jmc = new Constructor().protection(pProtection).sourceClass(this);
 		content.add(jmc);
 		return jmc;
 	}
 	
-	@Nonnull JSGMethod newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull JSGQName pType, @Nonnull String pName) {
-		final JSGMethod jmb = new JSGMethod().protection(pProtection).returnType(pType).name(pName).sourceClass(this);
+	@Nonnull Method newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull JQName pType, @Nonnull String pName) {
+		final Method jmb = new Method().protection(pProtection).returnType(pType).name(pName).sourceClass(this);
 		content.add(jmb);
 		return jmb;
 	}
 
-	@Nonnull JSGMethod newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull Class<?> pType, @Nonnull String pName) {
-		return newMethod(pProtection, JSGQName.valueOf(pType), pName);
+	@Nonnull Method newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull Class<?> pType, @Nonnull String pName) {
+		return newMethod(pProtection, JQName.valueOf(pType), pName);
 	}
 
-	@Nonnull JSGStaticInitializer newInitializer() {
-		final JSGStaticInitializer jsbib = new JSGStaticInitializer().sourceClass(this);
+	@Nonnull StaticInitializer newInitializer() {
+		final StaticInitializer jsbib = new StaticInitializer().sourceClass(this);
 		content.add(jsbib);
 		return jsbib;
 	}
@@ -136,45 +136,45 @@ public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T>
 
 	@Nonnull
 	public T extending(String pType) {
-		return extending(JSGQName.valueOf(pType));
+		return extending(JQName.valueOf(pType));
 	}
 
 	@Nonnull
 	public T extending(Class<?> pType) {
-		return extending(JSGQName.valueOf(pType));
+		return extending(JQName.valueOf(pType));
 	}
 
 	@Nonnull
-	public T extending(JSGQName pType) {
+	public T extending(JQName pType) {
 		assertMutable();
 		extendedClasses.add(pType);
 		return self();
 	}
 
 	@Nonnull
-	public List<JSGQName> getExtendedClasses() {
+	public List<JQName> getExtendedClasses() {
 		return extendedClasses;
 	}
 
 	@Nonnull
 	public T implementing(String pType) {
-		return implementing(JSGQName.valueOf(pType));
+		return implementing(JQName.valueOf(pType));
 	}
 
 	@Nonnull
 	public T implementing(Class<?> pType) {
-		return implementing(JSGQName.valueOf(pType));
+		return implementing(JQName.valueOf(pType));
 	}
 
 	@Nonnull
-	public T implementing(JSGQName pType) {
+	public T implementing(JQName pType) {
 		assertMutable();
 		implementedInterfaces.add(pType);
 		return self();
 	}
 
 	@Nonnull
-	public List<JSGQName> getImplementedInterfaces() {
+	public List<JQName> getImplementedInterfaces() {
 		return implementedInterfaces;
 	}
 
@@ -197,30 +197,30 @@ public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T>
 
 	@Nonnull public T comment(@Nonnull String... pText) {
 		assertMutable();
-		comment = new JSGComment().text(pText);
+		comment = new Comment().text(pText);
 		return self();
 	}
 
 	@Nonnull public T comment(@Nonnull Iterable<String> pText) {
 		assertMutable();
-		comment = new JSGComment().text(pText);
+		comment = new Comment().text(pText);
 		return self();
 	}
 
 	@Override
 	@Nullable
-	public JSGComment getComment() {
+	public Comment getComment() {
 		return comment;
 	}
 
-	@Nonnull public JSGInnerClass newInnerClass(String pClassName) {
+	@Nonnull public InnerClass newInnerClass(String pClassName) {
 		return newInnerClass(pClassName, Protection.PACKAGE);
 	}
 
-	@Nonnull public JSGInnerClass newInnerClass(String pClassName, Protection pProtection) {
+	@Nonnull public InnerClass newInnerClass(String pClassName, Protection pProtection) {
 		assertMutable();
-		final JSGQName type = JSGQName.valueOf(getType(), pClassName);
-		final JSGInnerClass clazz = new JSGInnerClass(type).protection(pProtection);
+		final JQName type = JQName.valueOf(getType(), pClassName);
+		final InnerClass clazz = new InnerClass(type).protection(pProtection);
 		content.add(clazz);
 		return clazz;
 	}

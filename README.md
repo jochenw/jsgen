@@ -24,10 +24,7 @@ writing the actual source generators much more concise, and maintainable, than i
     code style of the Eclipse Java IDE.
 
   - As an alternative, there is also a Maven code style, which is widely used in the Open Source communities.
-
-
-
-  
+5. Import lists are created, and sorted, automatically.
 
 
 

@@ -5,38 +5,38 @@ import javax.annotation.Nullable;
 
 import com.github.jochenw.jsgen.impl.Quoter;
 
-public class JSGSource extends JSGClass<JSGSource> {
-	private JSGComment packageComment;
+public class Source extends JSGClass<Source> {
+	private Comment packageComment;
 
-	public JSGSource(JSGQName pType) {
+	public Source(JQName pType) {
 		super(pType);
 	}
 
 	@Override
-	protected JSGSource self() {
+	protected Source self() {
 		return this;
 	}
 
-	@Nonnull public JSGSource packageComment(@Nonnull String... pText) {
+	@Nonnull public Source packageComment(@Nonnull String... pText) {
 		assertMutable();
 		if (packageComment == null) {
-			packageComment = new JSGComment().makePublic();
+			packageComment = new Comment().makePublic();
 		}
 		packageComment.text(pText);
 		return this;
 	}
 
-	@Nonnull public JSGSource comment(@Nonnull Iterable<String> pText) {
+	@Nonnull public Source comment(@Nonnull Iterable<String> pText) {
 		assertMutable();
 		if (packageComment == null) {
-			packageComment = new JSGComment().makePublic();
+			packageComment = new Comment().makePublic();
 		}
 		packageComment.text(pText);
 		return self();
 	}
 
 	@Nullable
-	public JSGComment getPackageComment() {
+	public Comment getPackageComment() {
 		return packageComment;
 	}
 

@@ -1,0 +1,45 @@
+	---------------
+	Getting Started
+	---------------
+
+Getting Started
+
+* An example
+
+    Let's go straight into an example. We'll create a small "Hello, World!" program. The end result shall look as follows:
+ 
+--------------------
+package com.foo.myapp;
+
+import java.lang.String;
+import java.lang.System;
+
+public class Main {
+	public static void main(String pArgs) {
+		System.out.println("Hello, world!");
+	}
+}
+--------------------
+
+    Okay, no surprises here. Now, here 's the generator
+
+--------------------
+    public void generateHelloWorldJava(File pTargetDir) {
+		final JSGFactory factory = JSGFactory.build();
+		final Source jsb = factory.newSource("com.foo.myapp.Main").makePublic();
+		final Method mainMethod = jsb.newMethod("main").makePublic().makeStatic();
+		mainMethod.parameter(JSGQName.STRING_ARRAY, "pArgs");
+		mainMethod.body().line(System.class, ".out.println(", q("Hello, world!"), ");");
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final AbstractSourceWriter jsgw = new AbstractSourceWriter() {
+			@Override
+			protected OutputStream open(NamedResource pResource) throws IOException {
+				return baos;
+			}
+		};
+		jsgw.setFormatter(pFormatter);
+		jsgw.write(factory);
+		final String got = baos.toString(StandardCharsets.UTF_8.name());
+		return got;
+    }
+--------------------

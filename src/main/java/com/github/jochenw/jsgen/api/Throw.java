@@ -1,15 +1,15 @@
 package com.github.jochenw.jsgen.api;
 
-public class JSGThrow {
-	private final JSGQName type;
+public class Throw {
+	private final JQName type;
 	private final Object constructorArgs;
 
-	public JSGThrow(JSGQName type, Object constructorArgs) {
+	public Throw(JQName type, Object constructorArgs) {
 		this.type = type;
 		this.constructorArgs = constructorArgs;
 	}
 
-	public JSGQName getType() {
+	public JQName getType() {
 		return type;
 	}
 

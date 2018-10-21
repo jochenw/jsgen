@@ -1,6 +1,6 @@
 package com.github.jochenw.jsgen.api;
 
-import static com.github.jochenw.jsgen.api.JSGSource.q;
+import static com.github.jochenw.jsgen.api.Source.q;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,9 +12,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.jochenw.jsgen.api.JSGFactory;
-import com.github.jochenw.jsgen.api.JSGMethod;
-import com.github.jochenw.jsgen.api.JSGQName;
-import com.github.jochenw.jsgen.api.JSGSource;
+import com.github.jochenw.jsgen.api.Method;
+import com.github.jochenw.jsgen.api.JQName;
+import com.github.jochenw.jsgen.api.Source;
 import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
 import com.github.jochenw.jsgen.impl.AbstractSourceWriter;
 import com.github.jochenw.jsgen.impl.JSGSourceFormatter;
@@ -82,10 +82,10 @@ public class HelloWorldTest {
 	}
 
 	private String generateHelloWorld(JSGSourceFormatter pFormatter) throws UnsupportedEncodingException {
-		final JSGFactory factory = new JSGFactory();
-		final JSGSource jsb = factory.newSource("com.foo.myapp.Main").makePublic();
-		final JSGMethod mainMethod = jsb.newMethod("main").makePublic().makeStatic();
-		mainMethod.parameter(JSGQName.STRING_ARRAY, "pArgs");
+		final JSGFactory factory = JSGFactory.build();
+		final Source jsb = factory.newSource("com.foo.myapp.Main").makePublic();
+		final Method mainMethod = jsb.newMethod("main").makePublic().makeStatic();
+		mainMethod.parameter(JQName.STRING_ARRAY, "pArgs");
 		mainMethod.body().line(System.class, ".out.println(", q("Hello, world!"), ");");
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		final AbstractSourceWriter jsgw = new AbstractSourceWriter() {

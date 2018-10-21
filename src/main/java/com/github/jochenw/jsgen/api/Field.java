@@ -7,39 +7,39 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 import com.github.jochenw.jsgen.util.Objects;
 
 
-public class JSGField extends AbstractBuilder<JSGField> implements IProtectable, ICommentOwner, IField, IStaticable, IVolatilable {
+public class Field extends AbstractBuilder<Field> implements IProtectable, ICommentOwner, IField, IStaticable, IVolatilable {
 	private AnnotationSet annotations = new AnnotationSet();
 	private @Nonnull Protection protection;
-	private @Nonnull JSGQName type;
+	private @Nonnull JQName type;
 	private @Nonnull String name;
 	private @Nullable Object value;
 	private boolean isStatic, isVolatile, isFinal;
-	private JSGComment comment;
+	private Comment comment;
 
 	@Override
 	@Nonnull public AnnotationSet getAnnotations() {
 		return annotations;
 	}
 
-	@Nonnull JSGField protection(@Nonnull Protection pProtection) {
+	@Nonnull Field protection(@Nonnull Protection pProtection) {
 		assertMutable();
 		protection = pProtection;
 		return this;
 	}
 
-	@Nonnull public JSGField makePublic() {
+	@Nonnull public Field makePublic() {
 		return protection(Protection.PUBLIC);
 	}
 	
-	@Nonnull public JSGField makeProtected() {
+	@Nonnull public Field makeProtected() {
 		return protection(Protection.PROTECTED);
 	}
 
-	@Nonnull public JSGField makePackageProtected() {
+	@Nonnull public Field makePackageProtected() {
 		return protection(Protection.PACKAGE);
 	}
 
-	@Nonnull public JSGField makePrivate() {
+	@Nonnull public Field makePrivate() {
 		return protection(Protection.PRIVATE);
 	}
 	
@@ -48,23 +48,23 @@ public class JSGField extends AbstractBuilder<JSGField> implements IProtectable,
 		return protection;
 	}
 
-	@Nonnull JSGField type(@Nonnull JSGQName pType) {
+	@Nonnull Field type(@Nonnull JQName pType) {
 		assertMutable();
 		type = pType;
 		return this;
 	}
 
-	@Nonnull public JSGQName getType() {
+	@Nonnull public JQName getType() {
 		return type;
 	}
 
-	@Nonnull JSGField name(@Nonnull String pName) {
+	@Nonnull Field name(@Nonnull String pName) {
 		assertMutable();
 		name = pName;
 		return this;
 	}
 
-	@Nonnull public JSGField assign(@Nonnull Object... pValues) {
+	@Nonnull public Field assign(@Nonnull Object... pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (value != null) {
@@ -74,7 +74,7 @@ public class JSGField extends AbstractBuilder<JSGField> implements IProtectable,
 		return this;
 	}
 
-	@Nonnull public JSGField assign(@Nonnull Iterable<Object> pValues) {
+	@Nonnull public Field assign(@Nonnull Iterable<Object> pValues) {
 		assertMutable();
 		Objects.requireAllNonNull(pValues, "Values");
 		if (value != null) {
@@ -93,11 +93,11 @@ public class JSGField extends AbstractBuilder<JSGField> implements IProtectable,
 	}
 
 	@Nonnull
-	public JSGField makeStatic() {
+	public Field makeStatic() {
 		return makeStatic(true);
 	}
 
-	@Nonnull public JSGField makeStatic(boolean pStatic) {
+	@Nonnull public Field makeStatic(boolean pStatic) {
 		assertMutable();
 		isStatic = pStatic;
 		return this;
@@ -107,11 +107,11 @@ public class JSGField extends AbstractBuilder<JSGField> implements IProtectable,
 		return isStatic;
 	}
 
-	@Nonnull public JSGField makeVolatile() {
+	@Nonnull public Field makeVolatile() {
 		return makeVolatile(true);
 	}
 
-	@Nonnull public JSGField makeVolatile(boolean pVolatile) {
+	@Nonnull public Field makeVolatile(boolean pVolatile) {
 		assertMutable();
 		isVolatile = pVolatile;
 		return this;
@@ -121,11 +121,11 @@ public class JSGField extends AbstractBuilder<JSGField> implements IProtectable,
 		return isVolatile;
 	}
 
-	@Nonnull public JSGField makeFinal() {
+	@Nonnull public Field makeFinal() {
 		return makeFinal(true);
 	}
 
-	@Nonnull public JSGField makeFinal(boolean pFinal) {
+	@Nonnull public Field makeFinal(boolean pFinal) {
 		assertMutable();
 		isFinal = pFinal;
 		return this;
@@ -136,21 +136,21 @@ public class JSGField extends AbstractBuilder<JSGField> implements IProtectable,
 	}
 
 	@Override
-	protected JSGField self() { return this; }
+	protected Field self() { return this; }
 
-	public JSGField comment(String... pText) {
+	public Field comment(String... pText) {
 		assertMutable();
-		comment = new JSGComment().makePublic().text(pText);
+		comment = new Comment().makePublic().text(pText);
 		return this;
 	}
 
-	public JSGField comment(Iterable<String> pText) {
+	public Field comment(Iterable<String> pText) {
 		assertMutable();
-		comment = new JSGComment().makePublic().text(pText);
+		comment = new Comment().makePublic().text(pText);
 		return this;
 	}
 
-	@Nullable public JSGComment getComment() {
+	@Nullable public Comment getComment() {
 		return comment;
 	}
 }

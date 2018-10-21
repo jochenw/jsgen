@@ -14,12 +14,12 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 public interface IAnnotatable {
 	public static class Annotation {
 		private final Map<String,Object> attributes = new HashMap<>();
-		private final JSGQName type;
-		public Annotation(JSGQName pType) {
+		private final JQName type;
+		public Annotation(JQName pType) {
 			type = pType;
 		}
 		@Nonnull
-		public JSGQName getType() { return type; }
+		public JQName getType() { return type; }
 		@Nonnull public Map<String,Object> getAttributes() { return attributes; }
 		@Nullable public Object getAttributeValue(@Nonnull String pAttributeName) {
 			return getAttributes().get(pAttributeName);
@@ -37,8 +37,8 @@ public interface IAnnotatable {
 		}
 	}
 	public static class AnnotationSet {
-		private final Map<JSGQName,Annotation> annotations = new HashMap<>();
-		@Nullable Annotation get(@Nonnull JSGQName pName) { return annotations.get(pName); }
+		private final Map<JQName,Annotation> annotations = new HashMap<>();
+		@Nullable Annotation get(@Nonnull JQName pName) { return annotations.get(pName); }
 		public void add(@Nonnull Annotation pAnnotation) {
 			annotations.put(pAnnotation.getType(), pAnnotation);
 		}
@@ -53,16 +53,16 @@ public interface IAnnotatable {
 		}
 	}
 
-	@Nullable public default Annotation getAnnotation(JSGQName pType) {
+	@Nullable public default Annotation getAnnotation(JQName pType) {
 		return getAnnotations().get(pType);
 	}
 	@Nullable public default Annotation getAnnotation(Class<?> pType) {
-		return getAnnotation(JSGQName.valueOf(pType));
+		return getAnnotation(JQName.valueOf(pType));
 	}
 	@Nullable public default Annotation getAnnotation(String pType) {
-		return getAnnotation(JSGQName.valueOf(pType));
+		return getAnnotation(JQName.valueOf(pType));
 	}
-	@Nonnull public default Annotation requireAnnotation(JSGQName pType) throws NoSuchElementException {
+	@Nonnull public default Annotation requireAnnotation(JQName pType) throws NoSuchElementException {
 		final Annotation annotation = getAnnotation(pType);
 		if (annotation == null) {
 			throw new NoSuchElementException("No such Annotation: " + pType.getQName());
@@ -70,12 +70,12 @@ public interface IAnnotatable {
 		return annotation;
 	}
 	@Nonnull public default Annotation requireAnnotation(Class<?> pType) throws NoSuchElementException {
-		return requireAnnotation(JSGQName.valueOf(pType));
+		return requireAnnotation(JQName.valueOf(pType));
 	}
 	@Nonnull public default Annotation requireAnnotation(String pType) throws NoSuchElementException {
-		return requireAnnotation(JSGQName.valueOf(pType));
+		return requireAnnotation(JQName.valueOf(pType));
 	}
-	public default boolean isAnnotatedWith(JSGQName pType) {
+	public default boolean isAnnotatedWith(JQName pType) {
 		return getAnnotation(pType) != null;
 	}
 	public default boolean isAnnotatedWith(Class<?> pType) {
@@ -91,15 +91,15 @@ public interface IAnnotatable {
 		}
 		getAnnotations().add(pAnnotation);
 	}
-	@Nonnull public default Annotation annotation(JSGQName pType) {
+	@Nonnull public default Annotation annotation(JQName pType) {
 		final Annotation annotation = new Annotation(pType);
 		addAnnotation(annotation);
 		return annotation;
 	}
 	@Nonnull public default Annotation annotation(Class<?> pType) {
-		return annotation(JSGQName.valueOf(pType));
+		return annotation(JQName.valueOf(pType));
 	}
 	@Nonnull public default Annotation annotation(String pType) {
-		return annotation(JSGQName.valueOf(pType));
+		return annotation(JQName.valueOf(pType));
 	}
 }

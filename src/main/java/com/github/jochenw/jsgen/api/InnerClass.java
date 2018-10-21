@@ -2,18 +2,18 @@ package com.github.jochenw.jsgen.api;
 
 import javax.annotation.Nonnull;
 
-public class JSGInnerClass extends JSGClass<JSGInnerClass> {
+public class InnerClass extends JSGClass<InnerClass> {
 	private boolean isStatic;
 
-	public JSGInnerClass(JSGQName pType) {
+	public InnerClass(JQName pType) {
 		super(pType);
 	}
 
-	@Nonnull public JSGInnerClass makeStatic() {
+	@Nonnull public InnerClass makeStatic() {
 		return makeStatic(true);
 	}
 
-	@Nonnull public JSGInnerClass makeStatic(boolean pStatic) {
+	@Nonnull public InnerClass makeStatic(boolean pStatic) {
 		assertMutable();
 		isStatic = pStatic;
 		return this;
@@ -24,7 +24,7 @@ public class JSGInnerClass extends JSGClass<JSGInnerClass> {
 	}
 
 	@Override
-	protected JSGInnerClass self() {
+	protected InnerClass self() {
 		return this;
 	}
 }

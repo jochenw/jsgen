@@ -8,24 +8,24 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.github.jochenw.jsgen.api.JSGImportSorter;
-import com.github.jochenw.jsgen.api.JSGLocation;
-import com.github.jochenw.jsgen.api.JSGQName;
-import com.github.jochenw.jsgen.api.JSGSource;
-import com.github.jochenw.jsgen.api.JSGSourceWriter;
+import com.github.jochenw.jsgen.api.IImportSorter;
+import com.github.jochenw.jsgen.api.ILocation;
+import com.github.jochenw.jsgen.api.JQName;
+import com.github.jochenw.jsgen.api.Source;
+import com.github.jochenw.jsgen.api.ISourceWriter;
 import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
 import com.github.jochenw.jsgen.util.Objects;
 
 
-public abstract class AbstractSourceWriter implements JSGSourceWriter {
-	public static final JSGImportSorter DEFAULT_IMPORT_SORTER = new DefaultImportSorter();
+public abstract class AbstractSourceWriter implements ISourceWriter {
+	public static final IImportSorter DEFAULT_IMPORT_SORTER = new DefaultImportSorter();
 	public static final JSGSourceFormatter DEFAULT_FORMATTER = new DefaultJavaSourceFormatter(new DefaultFormat("    ", "\n"));
 	public static final JSGSourceFormatter MAVEN_FORMATTER = new DefaultJavaSourceFormatter(new MavenFormat("    ", "\n"));
-	private JSGImportSorter importSorter = DEFAULT_IMPORT_SORTER;
+	private IImportSorter importSorter = DEFAULT_IMPORT_SORTER;
 	private @Nonnull JSGSourceFormatter formatter = DEFAULT_FORMATTER;
 
 	@Override
-	public void write(JSGSource pSource) throws IOException {
+	public void write(Source pSource) throws IOException {
 		write(asNamedResource(pSource));
 	}
 
@@ -38,18 +38,18 @@ public abstract class AbstractSourceWriter implements JSGSourceWriter {
 
 	protected abstract OutputStream open(NamedResource pResource) throws IOException;
 
-	protected NamedResource asNamedResource(JSGSource pSource) throws IOException {
+	protected NamedResource asNamedResource(Source pSource) throws IOException {
 		final ImportCollectingTarget ict = new ImportCollectingTarget();
 		ict.setImportingClass(pSource.getType());
 		formatter.write(pSource, ict);
-		final List<JSGQName> importedNames = ict.getImportedNames();
+		final List<JQName> importedNames = ict.getImportedNames();
 		final StringWriter sw = new StringWriter();
 		DefaultJSGSourceTarget target = new DefaultJSGSourceTarget(sw);
 		final JSGSourceTarget trgt = new JSGSourceTarget() {
 			@Override
 			public void write(Object pObject) {
-				if (pObject instanceof JSGQName) {
-					final JSGQName name = (JSGQName) pObject;
+				if (pObject instanceof JQName) {
+					final JQName name = (JQName) pObject;
 					if (name.isPseudoClass()) {
 						target.write(name.getSimpleClassName());
 					} else {
@@ -77,7 +77,7 @@ public abstract class AbstractSourceWriter implements JSGSourceWriter {
 		}
 		formatter.write(pSource, trgt);
 		final String fileName = pSource.getType().getPackageName().replace('.', '/') + '/' + pSource.getType().getClassName() + ".java";
-		final JSGLocation location = new JSGLocation() {
+		final ILocation location = new ILocation() {
 			@Override
 			public String getQName() {
 				return fileName;
@@ -90,7 +90,7 @@ public abstract class AbstractSourceWriter implements JSGSourceWriter {
 			}
 
 			@Override
-			public JSGLocation getName() {
+			public ILocation getName() {
 				return location;
 			}
 
@@ -107,10 +107,10 @@ public abstract class AbstractSourceWriter implements JSGSourceWriter {
 		return namedResource;
 	}
 
-	protected String toString(JSGQName pSourceName, List<JSGQName> pImportedNames, JSGQName pName) {
-		JSGQName name = pName;
+	protected String toString(JQName pSourceName, List<JQName> pImportedNames, JQName pName) {
+		JQName name = pName;
 		while (name.isInnerClass()) {
-			JSGQName outerName = Objects.requireNonNull(name.getOuterClass(), "Outer Class");
+			JQName outerName = Objects.requireNonNull(name.getOuterClass(), "Outer Class");
 			if (outerName.equals(pSourceName)  ||  pImportedNames.contains(outerName)) {
 				return outerName.getSimpleClassName() + "." + pName.getQName().substring(outerName.getQName().length()+1);
 			}
@@ -123,11 +123,11 @@ public abstract class AbstractSourceWriter implements JSGSourceWriter {
 		}
 	}
 	
-	public JSGImportSorter getImportSorter() {
+	public IImportSorter getImportSorter() {
 		return importSorter;
 	}
 
-	public void setImportSorter(JSGImportSorter pImportSorter) {
+	public void setImportSorter(IImportSorter pImportSorter) {
 		this.importSorter = pImportSorter;
 	}
 

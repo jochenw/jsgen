@@ -1,6 +1,6 @@
 package com.github.jochenw.jsgen.impl;
 
-import com.github.jochenw.jsgen.api.JSGSource;
+import com.github.jochenw.jsgen.api.Source;
 
 public abstract class Format {
 	public static final Object NEWLINE= new Object();

@@ -3,8 +3,8 @@ package com.github.jochenw.jsgen.api;
 import javax.annotation.Nonnull;
 
 
-public class JSGMethod extends JSGSubroutine<JSGMethod> implements IAnnotatable, IProtectable {
-	@Nonnull private JSGQName type;
+public class Method extends Subroutine<Method> implements IAnnotatable, IProtectable {
+	@Nonnull private JQName type;
 	@Nonnull private IProtectable.Protection protection;
 	@Nonnull private String name;
 	private boolean isStatic;
@@ -13,27 +13,27 @@ public class JSGMethod extends JSGSubroutine<JSGMethod> implements IAnnotatable,
 	private boolean isSynchronized;
 
 	@Override
-	protected JSGMethod self() { return this; }
+	protected Method self() { return this; }
 
-	@Nonnull public JSGMethod returnType(@Nonnull JSGQName pType) {
+	@Nonnull public Method returnType(@Nonnull JQName pType) {
 		assertMutable();
 		type = pType;
 		return this;
 	}
 
-	@Nonnull public JSGMethod returnType(@Nonnull Class<?> pType) {
-		return returnType(JSGQName.valueOf(pType));
+	@Nonnull public Method returnType(@Nonnull Class<?> pType) {
+		return returnType(JQName.valueOf(pType));
 	}
 
-	@Nonnull public JSGMethod returnType(@Nonnull String pType) {
-		return returnType(JSGQName.valueOf(pType));
+	@Nonnull public Method returnType(@Nonnull String pType) {
+		return returnType(JQName.valueOf(pType));
 	}
 
-	@Nonnull public JSGQName getReturnType() {
+	@Nonnull public JQName getReturnType() {
 		return type;
 	}
 
-	@Nonnull JSGMethod name(@Nonnull String pName) {
+	@Nonnull Method name(@Nonnull String pName) {
 		assertMutable();
 		name = pName;
 		return this;
@@ -43,11 +43,11 @@ public class JSGMethod extends JSGSubroutine<JSGMethod> implements IAnnotatable,
 		return name;
 	}
 
-	@Nonnull JSGMethod makeAbstract() {
+	@Nonnull Method makeAbstract() {
 		return makeAbstract(true);
 	}
 	
-	@Nonnull JSGMethod makeAbstract(boolean pAbstract) {
+	@Nonnull Method makeAbstract(boolean pAbstract) {
 		assertMutable();
 		isAbstract = pAbstract;
 		return this;
@@ -57,11 +57,11 @@ public class JSGMethod extends JSGSubroutine<JSGMethod> implements IAnnotatable,
 		return isAbstract;
 	}
 
-	@Nonnull JSGMethod makeStatic() {
+	@Nonnull Method makeStatic() {
 		return makeStatic(true);
 	}
 	
-	@Nonnull JSGMethod makeStatic(boolean pStatic) {
+	@Nonnull Method makeStatic(boolean pStatic) {
 		assertMutable();
 		isStatic = pStatic;
 		return this;
@@ -71,11 +71,11 @@ public class JSGMethod extends JSGSubroutine<JSGMethod> implements IAnnotatable,
 		return isStatic;
 	}
 
-	@Nonnull JSGMethod makeFinal() {
+	@Nonnull Method makeFinal() {
 		return makeFinal(true);
 	}
 
-	@Nonnull JSGMethod makeFinal(boolean pFinal) {
+	@Nonnull Method makeFinal(boolean pFinal) {
 		assertMutable();
 		isFinal = pFinal;
 		return this;
@@ -85,11 +85,11 @@ public class JSGMethod extends JSGSubroutine<JSGMethod> implements IAnnotatable,
 		return isFinal;
 	}
 
-	@Nonnull JSGMethod makeSynchronized() {
+	@Nonnull Method makeSynchronized() {
 		return makeSynchronized(true);
 	}
 
-	@Nonnull JSGMethod makeSynchronized(boolean pSynchronized) {
+	@Nonnull Method makeSynchronized(boolean pSynchronized) {
 		assertMutable();
 		isSynchronized = pSynchronized;
 		return this;
@@ -99,13 +99,13 @@ public class JSGMethod extends JSGSubroutine<JSGMethod> implements IAnnotatable,
 		return isSynchronized;
 	}
 
-	private static final JSGQName OVERRIDE = JSGQName.valueOf(Override.class);
+	private static final JQName OVERRIDE = JQName.valueOf(Override.class);
 
-	@Nonnull JSGMethod overriding() {
+	@Nonnull Method overriding() {
 		return overriding(true);
 	}
 
-	@Nonnull JSGMethod overriding(boolean pOverriding) {
+	@Nonnull Method overriding(boolean pOverriding) {
 		assertMutable();
 		if (pOverriding) {
 			annotation(OVERRIDE);

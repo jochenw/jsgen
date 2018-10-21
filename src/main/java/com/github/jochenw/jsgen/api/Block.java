@@ -58,32 +58,32 @@ public class Block<T extends AbstractBuilder<T>> extends AbstractBuilder<T> {
 	}
 
 	public LocalField newJavaField(String pType, String pName) {
-		return newJavaField(JSGQName.valueOf(pType), pName);
+		return newJavaField(JQName.valueOf(pType), pName);
 	}
 
 	public LocalField newJavaField(Class<?> pType, String pName) {
-		return newJavaField(JSGQName.valueOf(pType), pName);
+		return newJavaField(JQName.valueOf(pType), pName);
 	}
 
-	public LocalField newJavaField(JSGQName pType, String pName) {
+	public LocalField newJavaField(JQName pType, String pName) {
 		final LocalField ljf = new LocalField().type(pType).name(pName);
 		contents.add(ljf);
 		return ljf;
 	}
 
-	@Nonnull public JSGIfBlock newIf(@Nonnull Object... pCondition) {
-		final JSGIfBlock ifBlock = new JSGIfBlock().condition(pCondition);
+	@Nonnull public IfBlock newIf(@Nonnull Object... pCondition) {
+		final IfBlock ifBlock = new IfBlock().condition(pCondition);
 		contents.add(ifBlock);
 		return ifBlock;
 	}
 
-	@Nonnull T addThrowNew(@Nonnull JSGQName pType, @Nonnull Object... pValues) {
+	@Nonnull T addThrowNew(@Nonnull JQName pType, @Nonnull Object... pValues) {
 		assertMutable();
-	    return tline(new JSGThrow(pType, pValues));
+	    return tline(new Throw(pType, pValues));
 	}
 
 	@Nonnull T addThrowNew(@Nonnull Class<? extends Throwable> pType, @Nonnull Object... pValues) {
-		return addThrowNew(JSGQName.valueOf(pType), pValues);
+		return addThrowNew(JQName.valueOf(pType), pValues);
 	}
 
 	public T self() {

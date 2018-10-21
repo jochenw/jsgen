@@ -11,10 +11,10 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 import com.github.jochenw.jsgen.util.Objects;
 
 
-public abstract class JSGSubroutine<T extends JSGSubroutine<T>> extends CodeBlock<T> implements IAnnotatable, IProtectable, ICommentOwner {
+public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> implements IAnnotatable, IProtectable, ICommentOwner {
 	public static class Parameter extends AbstractBuilder<Parameter> implements IField {
 		private final AnnotationSet annotations = new AnnotationSet();
-		private JSGQName type;
+		private JQName type;
 		private String name;
 		private boolean isFinal;
 	
@@ -33,13 +33,13 @@ public abstract class JSGSubroutine<T extends JSGSubroutine<T>> extends CodeBloc
 			return name;
 		}
 	
-		public Parameter type(JSGQName pType) {
+		public Parameter type(JQName pType) {
 			assertMutable();
 			type = pType;
 			return this;
 		}
 	
-		public JSGQName getType() {
+		public JQName getType() {
 			return type;
 		}
 
@@ -71,9 +71,9 @@ public abstract class JSGSubroutine<T extends JSGSubroutine<T>> extends CodeBloc
 	}
 	private final AnnotationSet annotations = new AnnotationSet();
 	private final List<Parameter> parameters = new ArrayList<>();
-	private final List<JSGQName> exceptions = new ArrayList<>();
+	private final List<JQName> exceptions = new ArrayList<>();
 	private Protection protection;
-	private JSGComment comment;
+	private Comment comment;
 
 	@Override
 	public AnnotationSet getAnnotations() {
@@ -112,32 +112,32 @@ public abstract class JSGSubroutine<T extends JSGSubroutine<T>> extends CodeBloc
 	}
 
 	@Nonnull T exception(@Nonnull String pType) {
-		return exception(JSGQName.valueOf(pType));
+		return exception(JQName.valueOf(pType));
 	}
 
 	@Nonnull T exception(@Nonnull Class<?> pType) {
-		return exception(JSGQName.valueOf(pType));
+		return exception(JQName.valueOf(pType));
 	}
 
-	@Nonnull T exception(@Nonnull JSGQName pType) {
+	@Nonnull T exception(@Nonnull JQName pType) {
 		assertMutable();
 		exceptions.add(Objects.requireNonNull(pType, "Exception"));
 		return self();
 	}
 
-	public List<JSGQName> getExceptions() {
+	public List<JQName> getExceptions() {
 		return exceptions;
 	}
 
 	public Parameter parameter(@Nonnull Class<?> pType, @Nonnull String pName) {
-		return parameter(JSGQName.valueOf(pType), pName);
+		return parameter(JQName.valueOf(pType), pName);
 	}
 
 	public Parameter parameter(@Nonnull String pType, @Nonnull String pName) {
-		return parameter(JSGQName.valueOf(pType), pName);
+		return parameter(JQName.valueOf(pType), pName);
 	}
 
-	public Parameter parameter(@Nonnull JSGQName pType, @Nonnull String pName) {
+	public Parameter parameter(@Nonnull JQName pType, @Nonnull String pName) {
 		assertMutable();
 		final Parameter pb = new Parameter().type(pType).name(pName);
 		parameters.add(pb);
@@ -148,7 +148,7 @@ public abstract class JSGSubroutine<T extends JSGSubroutine<T>> extends CodeBloc
 		return suppressWarning(pValue, true);
 	}
 
-	private static final JSGQName SUPPRESSWARNINGS = JSGQName.valueOf(SuppressWarnings.class);
+	private static final JQName SUPPRESSWARNINGS = JQName.valueOf(SuppressWarnings.class);
 	
 	@Nonnull T suppressWarning(String pValue, boolean pSuppressing) {
 		final Annotation annotation = getAnnotation(SUPPRESSWARNINGS);
@@ -214,17 +214,17 @@ public abstract class JSGSubroutine<T extends JSGSubroutine<T>> extends CodeBloc
 
 	@Nonnull public T comment(String... pText) {
 		assertMutable();
-		comment = new JSGComment().makePublic().text(pText);
+		comment = new Comment().makePublic().text(pText);
 		return self();
 	}
 
 	@Nonnull public T comment(Iterable<String> pText) {
 		assertMutable();
-		comment = new JSGComment().makePublic().text(pText);
+		comment = new Comment().makePublic().text(pText);
 		return self();
 	}
 
-	@Nullable public JSGComment getComment() {
+	@Nullable public Comment getComment() {
 		return comment;
 	}
 }

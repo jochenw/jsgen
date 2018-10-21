@@ -24,7 +24,7 @@ public abstract class CodeBlock<T1 extends AbstractBuilder<T1>> extends Abstract
 		return self();
 	}
 
-	@Nonnull public LocalField newField(@Nonnull JSGQName pType, @Nonnull String pName) {
+	@Nonnull public LocalField newField(@Nonnull JQName pType, @Nonnull String pName) {
 		assertMutable();
 		return body.newJavaField(pType, pName);
 	}

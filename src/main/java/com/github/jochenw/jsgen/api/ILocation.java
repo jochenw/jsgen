@@ -1,5 +1,5 @@
 package com.github.jochenw.jsgen.api;
 
-public interface JSGLocation {
+public interface ILocation {
 	public String getQName();
 }

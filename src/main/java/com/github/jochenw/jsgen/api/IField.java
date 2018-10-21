@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 
 public interface IField extends IAnnotatable {
 	@Nonnull String getName();
-	@Nonnull JSGQName getType();
+	@Nonnull JQName getType();
 	boolean isFinal();
 	@Nullable Object getValue();
 }

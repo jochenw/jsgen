@@ -9,10 +9,10 @@ import com.github.jochenw.jsgen.util.Objects;
 public class LocalField extends AbstractBuilder<LocalField> implements ICommentOwner, IField {
 	private final AnnotationSet annotations = new AnnotationSet();
 	private boolean isFinal;
-	private JSGQName type;
+	private JQName type;
 	private String name;
 	private Object value;
-	@Nullable private JSGComment comment;
+	@Nullable private Comment comment;
 
 	@Override
 	@Nonnull protected LocalField self() {
@@ -23,7 +23,7 @@ public class LocalField extends AbstractBuilder<LocalField> implements ICommentO
 		return isFinal;
 	}
 
-	@Nonnull public JSGQName getType() {
+	@Nonnull public JQName getType() {
 		return type;
 	}
 
@@ -38,14 +38,14 @@ public class LocalField extends AbstractBuilder<LocalField> implements ICommentO
 	}
 
 	@Nonnull public LocalField type(@Nonnull String pType) {
-		return type(JSGQName.valueOf(pType));
+		return type(JQName.valueOf(pType));
 	}
 
 	@Nonnull public LocalField type(@Nonnull Class<?> pType) {
-		return type(JSGQName.valueOf(pType));
+		return type(JQName.valueOf(pType));
 	}
 
-	@Nonnull public LocalField type(@Nonnull JSGQName pType) {
+	@Nonnull public LocalField type(@Nonnull JQName pType) {
 		assertMutable();
 		type = pType;
 		return self();
@@ -92,17 +92,17 @@ public class LocalField extends AbstractBuilder<LocalField> implements ICommentO
 
 	@Nonnull LocalField comment(String... pText) {
 		assertMutable();
-		comment = new JSGComment().text(pText);
+		comment = new Comment().text(pText);
 		return this;
 	}
 
 	@Nonnull LocalField comment(Iterable<String> pText) {
 		assertMutable();
-		comment = new JSGComment().text(pText);
+		comment = new Comment().text(pText);
 		return this;
 	}
 
-	@Nullable public JSGComment getComment() {
+	@Nullable public Comment getComment() {
 		return comment;
 	}
 }

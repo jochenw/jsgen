@@ -12,26 +12,26 @@ import com.github.jochenw.jsgen.api.IProtectable;
 import com.github.jochenw.jsgen.api.IStaticable;
 import com.github.jochenw.jsgen.api.IVolatilable;
 import com.github.jochenw.jsgen.api.JSGClass;
-import com.github.jochenw.jsgen.api.JSGComment;
-import com.github.jochenw.jsgen.api.JSGConstructor;
-import com.github.jochenw.jsgen.api.JSGDoWhileBlock;
-import com.github.jochenw.jsgen.api.JSGField;
-import com.github.jochenw.jsgen.api.JSGForBlock;
-import com.github.jochenw.jsgen.api.JSGIfBlock;
-import com.github.jochenw.jsgen.api.JSGImportSorter;
-import com.github.jochenw.jsgen.api.JSGInnerClass;
-import com.github.jochenw.jsgen.api.JSGMethod;
-import com.github.jochenw.jsgen.api.JSGQName;
-import com.github.jochenw.jsgen.api.JSGSource;
-import com.github.jochenw.jsgen.api.JSGStaticInitializer;
-import com.github.jochenw.jsgen.api.JSGSubroutine;
-import com.github.jochenw.jsgen.api.JSGThrow;
-import com.github.jochenw.jsgen.api.JSGWhileBlock;
+import com.github.jochenw.jsgen.api.Comment;
+import com.github.jochenw.jsgen.api.Constructor;
+import com.github.jochenw.jsgen.api.DoWhileBlock;
+import com.github.jochenw.jsgen.api.Field;
+import com.github.jochenw.jsgen.api.ForBlock;
+import com.github.jochenw.jsgen.api.IfBlock;
+import com.github.jochenw.jsgen.api.IImportSorter;
+import com.github.jochenw.jsgen.api.InnerClass;
+import com.github.jochenw.jsgen.api.Method;
+import com.github.jochenw.jsgen.api.JQName;
+import com.github.jochenw.jsgen.api.Source;
+import com.github.jochenw.jsgen.api.StaticInitializer;
+import com.github.jochenw.jsgen.api.Subroutine;
+import com.github.jochenw.jsgen.api.Throw;
+import com.github.jochenw.jsgen.api.WhileBlock;
 import com.github.jochenw.jsgen.api.LocalField;
 import com.github.jochenw.jsgen.api.Block.Line;
 import com.github.jochenw.jsgen.api.IAnnotatable.Annotation;
 import com.github.jochenw.jsgen.api.IAnnotatable.AnnotationSet;
-import com.github.jochenw.jsgen.api.JSGSubroutine.Parameter;
+import com.github.jochenw.jsgen.api.Subroutine.Parameter;
 import com.github.jochenw.jsgen.util.Objects;
 
 
@@ -80,42 +80,42 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 	}
 
 	private final Format format;
-	private List<JSGQName> importedNames;
-	private JSGImportSorter importSorter;
+	private List<JQName> importedNames;
+	private IImportSorter importSorter;
 
 	public DefaultJavaSourceFormatter(Format pFormat) {
 		format = pFormat;
 	}
 
-	public List<JSGQName> getImportedNames() {
+	public List<JQName> getImportedNames() {
 		return importedNames;
 	}
 
-	public void setImportedNames(List<JSGQName> importedNames) {
+	public void setImportedNames(List<JQName> importedNames) {
 		this.importedNames = importedNames;
 	}
 
 	
-	public JSGImportSorter getImportSorter() {
+	public IImportSorter getImportSorter() {
 		return importSorter;
 	}
 
-	public void setImportSorter(JSGImportSorter importSorter) {
+	public void setImportSorter(IImportSorter importSorter) {
 		this.importSorter = importSorter;
 	}
 
-	protected List<List<JSGQName>> getSortedImports() {
-		final List<List<JSGQName>> lists = new ArrayList<>();
+	protected List<List<JQName>> getSortedImports() {
+		final List<List<JQName>> lists = new ArrayList<>();
 		if (importedNames != null) {
 			if (importSorter == null) {
 				lists.add(importedNames);
 			} else {
-				for (JSGQName name : importedNames) {
+				for (JQName name : importedNames) {
 					final int category = importSorter.getCategory(name);
 					while(lists.size() < category+1) {
 						lists.add(null);
 					}
-					List<JSGQName> names = lists.get(category);
+					List<JQName> names = lists.get(category);
 					if (names == null) {
 						names = new ArrayList<>();
 						lists.set(category, names);
@@ -124,9 +124,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				}
 			}
 		}
-		for (List<JSGQName> list : lists) {
+		for (List<JQName> list : lists) {
 			if (list != null) {
-				final Comparator<JSGQName> comparator;
+				final Comparator<JQName> comparator;
 				if (importSorter == null) {
 					comparator = (n1, n2) -> n1.getQName().compareToIgnoreCase(n2.getQName());
 				} else {
@@ -139,9 +139,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 	}
 
 	@Override
-	public void write(JSGSource pSource, JSGSourceTarget pTarget) {
+	public void write(Source pSource, JSGSourceTarget pTarget) {
 		final Data data = new Data(pTarget, format);
-		final JSGQName type = pSource.getType();
+		final JQName type = pSource.getType();
 		write(pSource.getPackageComment(), data);
 		final String packageName = type.getPackageName();
 		if (packageName != null) {
@@ -151,12 +151,12 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			data.newLine();
 			data.newLine();
 		}
-		final List<List<JSGQName>> importLists = getSortedImports();
+		final List<List<JQName>> importLists = getSortedImports();
 		if (importLists != null  &&  !importLists.isEmpty()) {
 			for (int i = 0;  i < importLists.size();  i++) {
-				final List<JSGQName> importList = importLists.get(i);
+				final List<JQName> importList = importLists.get(i);
 				if (importList != null) {
-					for (JSGQName n : importList) {
+					for (JQName n : importList) {
 						writeObject("import ", data);
 						writeObject(n.getQName(), data);
 						writeObject(";", data);
@@ -175,7 +175,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeObject(format.getClassCommentSuffix(), pTarget);
 		write(pClass.getAnnotations(), pTarget);
 		write(pClass.getProtection(), pTarget);
-		if (pClass instanceof JSGInnerClass  &&  ((JSGInnerClass) pClass).isStatic()) {
+		if (pClass instanceof InnerClass  &&  ((InnerClass) pClass).isStatic()) {
 			writeObject("static ", pTarget);
 		}
 		if (pClass.isInterface()) {
@@ -184,7 +184,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			writeObject("class ", pTarget);
 		}
 		writeObject(pClass.getType().getSimpleClassName(), pTarget);
-		final List<JSGQName> extendedClasses = pClass.getExtendedClasses();
+		final List<JQName> extendedClasses = pClass.getExtendedClasses();
 		if (!extendedClasses.isEmpty()) {
 			for (int i = 0;  i < extendedClasses.size();  i++) {
 				if (i == 0) {
@@ -195,7 +195,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				writeObject(extendedClasses.get(i), pTarget);
 			}
 		}
-		final List<JSGQName> implementedInterfaces = pClass.getImplementedInterfaces();
+		final List<JQName> implementedInterfaces = pClass.getImplementedInterfaces();
 		if (!implementedInterfaces.isEmpty()) {
 			for (int i = 0;  i < implementedInterfaces.size();  i++) {
 				if (i == 0) {
@@ -213,7 +213,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 
 	protected void writeFieldDeclaration(IField pField, Data pTarget) {
 		if (pField instanceof ICommentOwner) {
-			final JSGComment comment = ((ICommentOwner) pField).getComment();
+			final Comment comment = ((ICommentOwner) pField).getComment();
 			write(comment, pTarget);
 		}
 		write(pField.getAnnotations(), pTarget);
@@ -300,8 +300,8 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		}
 	}
 
-	protected void writeMethod(JSGSubroutine<?> pBlock, Data pTarget) {
-		final JSGSubroutine<?> subroutine = (JSGSubroutine<?>) pBlock;
+	protected void writeMethod(Subroutine<?> pBlock, Data pTarget) {
+		final Subroutine<?> subroutine = (Subroutine<?>) pBlock;
 		write(subroutine.getComment(), pTarget);
 		write(subroutine.getAnnotations(), pTarget);
 		if (!subroutine.getAnnotations().isEmpty()) {
@@ -309,8 +309,8 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		}
 		writeObject(format.getMethodDeclarationPrefix(), pTarget);
 		write(subroutine.getProtection(), pTarget);
-		if (subroutine instanceof JSGMethod) {
-			final JSGMethod method = (JSGMethod) subroutine;
+		if (subroutine instanceof Method) {
+			final Method method = (Method) subroutine;
 			if (method.isAbstract()) {
 				writeObject("abstract ", pTarget);
 			}
@@ -326,10 +326,10 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			writeObject(method.getReturnType(), pTarget);
 			writeObject(" ", pTarget);
 		}
-		if (subroutine instanceof JSGMethod) {
-			final JSGMethod method = (JSGMethod) subroutine;
+		if (subroutine instanceof Method) {
+			final Method method = (Method) subroutine;
 			writeObject(method.getName(), pTarget);
-		} else if (subroutine instanceof JSGConstructor) {
+		} else if (subroutine instanceof Constructor) {
 			writeObject(subroutine.getSourceClass().getType().getClassName(), pTarget);
 		} else {
 			throw new IllegalStateException("Invalid subroutine type: " + subroutine.getClass().getName());
@@ -350,7 +350,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			writeObject(param.getName(), pTarget);
 		}
 		writeObject(format.getMethodParameterSuffix(), pTarget);
-		final List<JSGQName> exceptions = subroutine.getExceptions();
+		final List<JQName> exceptions = subroutine.getExceptions();
 		if (!exceptions.isEmpty()) {
 			for (int i = 0;  i < exceptions.size();  i++) {
 				if (i == 0) {
@@ -367,14 +367,14 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeObject(format.getBlockTerminator(), pTarget);
 	}
 
-	protected void writeInitializer(JSGStaticInitializer pInitializer, Data pTarget) {
+	protected void writeInitializer(StaticInitializer pInitializer, Data pTarget) {
 		write(pInitializer.getComment(), pTarget);
 		writeObject(format.getInitializerHeader(), pTarget);
 		writeList(pInitializer.body().getContents(), pTarget);
 		writeObject(format.getInitializerFooter(), pTarget);
 	}
 
-	protected void writeIfBlock(JSGIfBlock pIfBlock, Data pTarget) {
+	protected void writeIfBlock(IfBlock pIfBlock, Data pTarget) {
 		writeObject(format.getIfConditionPrefix(), pTarget);
 		writeObject(pIfBlock.getCondition(), pTarget);
 		writeObject(format.getIfConditionSuffix(), pTarget);
@@ -382,7 +382,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeObject(format.getBlockTerminator(), pTarget);
 	}
 
-	protected void writeWhileBlock(JSGWhileBlock pWhileBlock, Data pTarget) {
+	protected void writeWhileBlock(WhileBlock pWhileBlock, Data pTarget) {
 		writeObject(format.getWhileConditionPrefix(), pTarget);
 		writeObject(pWhileBlock.getCondition(), pTarget);
 		writeObject(format.getWhileConditionSuffix(), pTarget);
@@ -390,7 +390,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeObject(format.getBlockTerminator(), pTarget);
 	}
 
-	protected void writeForBlock(JSGForBlock pForBlock, Data pTarget) {
+	protected void writeForBlock(ForBlock pForBlock, Data pTarget) {
 		writeObject(format.getForConditionPrefix(), pTarget);
 		writeObject(pForBlock.getCondition(), pTarget);
 		writeObject(format.getForConditionPrefix(), pTarget);
@@ -398,7 +398,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeObject(format.getBlockTerminator(), pTarget);
 	}
 
-	protected void writeDoWhileBlock(JSGDoWhileBlock pDoWhileBlock, Data pTarget) {
+	protected void writeDoWhileBlock(DoWhileBlock pDoWhileBlock, Data pTarget) {
 		writeObject(format.getDoWhileBlockHeader(), pTarget);
 		writeList(pDoWhileBlock.getContents(), pTarget);
 		writeObject(format.getDoWhileBlockTerminator(), pTarget);
@@ -413,11 +413,11 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			if (o == null) {
 				throw new NullPointerException("A list element must not be null.");
 			}
-			if (o instanceof JSGField) {
+			if (o instanceof Field) {
 				if (!first  &&  !previousObjectWasField) {
 					pTarget.newLine();
 				}
-				writeFieldDeclaration((JSGField) o, pTarget);
+				writeFieldDeclaration((Field) o, pTarget);
 				previousObjectWasField = true;
 			} else if (o instanceof LocalField) {
 				if (!first  &&  !previousObjectWasField) {
@@ -425,21 +425,21 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				}
 				writeFieldDeclaration((LocalField) o, pTarget);
 				previousObjectWasField = true;
-			} else if (o instanceof JSGMethod) {
-				writeMethod((JSGMethod) o, pTarget);
-			} else if (o instanceof JSGConstructor) {
-				writeMethod((JSGConstructor) o, pTarget);
-			} else if (o instanceof JSGInnerClass) {
+			} else if (o instanceof Method) {
+				writeMethod((Method) o, pTarget);
+			} else if (o instanceof Constructor) {
+				writeMethod((Constructor) o, pTarget);
+			} else if (o instanceof InnerClass) {
 				final JSGClass<?> clazz = (JSGClass<?>) o;
 				writeClass(clazz, pTarget);
-			} else if (o instanceof JSGStaticInitializer) {
-				writeInitializer((JSGStaticInitializer) o, pTarget);
-			} else if (o instanceof JSGIfBlock) {
-				writeIfBlock((JSGIfBlock) o, pTarget);
-			} else if (o instanceof JSGWhileBlock) {
-				writeWhileBlock((JSGWhileBlock) o, pTarget);
-			} else if (o instanceof JSGDoWhileBlock) {
-				writeDoWhileBlock((JSGDoWhileBlock) o, pTarget);
+			} else if (o instanceof StaticInitializer) {
+				writeInitializer((StaticInitializer) o, pTarget);
+			} else if (o instanceof IfBlock) {
+				writeIfBlock((IfBlock) o, pTarget);
+			} else if (o instanceof WhileBlock) {
+				writeWhileBlock((WhileBlock) o, pTarget);
+			} else if (o instanceof DoWhileBlock) {
+				writeDoWhileBlock((DoWhileBlock) o, pTarget);
 			} else if (o instanceof Line) {
 				writeLine((Line) o, pTarget);
 			} else {
@@ -458,7 +458,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		}
 	}
 
-	protected void writeThrows(JSGThrow pThrows, Data pTarget) {
+	protected void writeThrows(Throw pThrows, Data pTarget) {
 		writeObject(format.getThrowsPrefix(), pTarget);
 		writeObject(pThrows.getType(), pTarget);
 		writeObject(format.getThrowsConstructorArgsPrefix(), pTarget);
@@ -487,8 +487,8 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			for (Object o : iterable) {
 				writeObject(o, pTarget);
 			}
-		} else if (v instanceof JSGQName) {
-			final JSGQName name = (JSGQName) v;
+		} else if (v instanceof JQName) {
+			final JQName name = (JQName) v;
 			if (name.hasQualifiers()) {
 				pTarget.write(name);
 				pTarget.write("<");
@@ -504,11 +504,11 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			}
 		} else if (v instanceof IField) {
 			writeObject(((IField)v).getName(), pTarget);
-		} else if (v instanceof JSGThrow) {
-			writeThrows(((JSGThrow) v), pTarget);
+		} else if (v instanceof Throw) {
+			writeThrows(((Throw) v), pTarget);
 		} else if (v instanceof Class) {
 			final Class<?> cl = (Class<?>) v;
-			writeObject(JSGQName.valueOf(cl), pTarget);
+			writeObject(JQName.valueOf(cl), pTarget);
 		} else if (v instanceof String) {
 			pTarget.write(v);
 		} else if (v instanceof Number) {
@@ -518,7 +518,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		}
 	}
 
-	protected void write(JSGComment pComment, Data pTarget) {
+	protected void write(Comment pComment, Data pTarget) {
 		if (pComment != null) {
 			final List<String> text = pComment.getText();
 			switch (text.size()) {

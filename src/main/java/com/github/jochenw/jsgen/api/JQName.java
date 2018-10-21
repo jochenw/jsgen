@@ -14,18 +14,18 @@ import javax.annotation.Nullable;
 import com.github.jochenw.jsgen.util.Objects;
 
 
-public class JSGQName implements JSGLocation {
+public class JQName implements ILocation {
 	@Nonnull private final String packageName;
 	@Nonnull private final String qName;
 	@Nonnull private final String className;
-	@Nonnull private final List<JSGQName> qualifiers;
+	@Nonnull private final List<JQName> qualifiers;
 	private final boolean primitive, array, pseudo;
-	@Nullable private final JSGQName outerClassName;
+	@Nullable private final JQName outerClassName;
 	@Nonnull private final String simpleClassName;
 
 
-	JSGQName(@Nonnull String pPackageName, @Nonnull String pClassName, @Nonnull String pQName, @Nonnull List<JSGQName> pQualifiers,
-			 boolean pPrimitive, boolean pArray, @Nullable JSGQName pOuterClassName, boolean pPseudo) {
+	JQName(@Nonnull String pPackageName, @Nonnull String pClassName, @Nonnull String pQName, @Nonnull List<JQName> pQualifiers,
+			 boolean pPrimitive, boolean pArray, @Nullable JQName pOuterClassName, boolean pPseudo) {
 		packageName = Objects.requireNonNull(pPackageName, "Package Name");
 		className = Objects.requireNonNull(pClassName, "Class Name");
 		qName = Objects.requireNonNull(pQName, "Qualified Name");
@@ -42,8 +42,8 @@ public class JSGQName implements JSGLocation {
 		pseudo = pPseudo;
 	}
 
-	JSGQName(@Nonnull String pPackageName, @Nonnull String pClassName, @Nonnull String pQName, @Nonnull List<JSGQName> pQualifiers,
-			 boolean pPrimitive, boolean pArray, @Nullable JSGQName pOuterClassName) {
+	JQName(@Nonnull String pPackageName, @Nonnull String pClassName, @Nonnull String pQName, @Nonnull List<JQName> pQualifiers,
+			 boolean pPrimitive, boolean pArray, @Nullable JQName pOuterClassName) {
 		this(pPackageName, pClassName, pQName, pQualifiers, pPrimitive, pArray, pOuterClassName, false);
 	}
 
@@ -61,7 +61,7 @@ public class JSGQName implements JSGLocation {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		JSGQName other = (JSGQName) obj;
+		JQName other = (JQName) obj;
 		if (!className.equals(other.className)  ||  !packageName.equals(other.packageName)  ||  !qName.equals(other.qName)) {
 			return false;
 		}
@@ -73,7 +73,7 @@ public class JSGQName implements JSGLocation {
 				return false;
 			}
 		} else {
-			@Nonnull final JSGQName ocn = Objects.requireNonNull(outerClassName, "Outer Class Name"); 
+			@Nonnull final JQName ocn = Objects.requireNonNull(outerClassName, "Outer Class Name"); 
 			if (!ocn.equals(other.outerClassName)) {
 				return false;
 			}
@@ -148,51 +148,51 @@ public class JSGQName implements JSGLocation {
 		return !qualifiers.isEmpty();
 	}
 
-	@Nullable public JSGQName getOuterClass() {
+	@Nullable public JQName getOuterClass() {
 		return outerClassName;
 	}
 	
-	public List<JSGQName> getQualifiers() {
+	public List<JQName> getQualifiers() {
 		return qualifiers;
 	}
-	public static JSGQName valueOf(@Nonnull Class<?> pType) {
+	public static JQName valueOf(@Nonnull Class<?> pType) {
 		return valueOf(Objects.requireNonNull(pType, "Type").getName());
 	}
 
-	public static JSGQName valueOf(@Nonnull Class<?> pType, Object... pQualifiers) {
+	public static JQName valueOf(@Nonnull Class<?> pType, Object... pQualifiers) {
 		return genericValueOf(Objects.requireNonNull(pType, "Type").getName(), pQualifiers);
 	}
 
-	public static JSGQName valueOf(@Nonnull String pQName) {
+	public static JQName valueOf(@Nonnull String pQName) {
 		return valueOf(pQName, Collections.emptyList());
 	}
 
-	@Nonnull public static JSGQName genericValueOf(@Nonnull JSGQName pQName, @Nonnull String... pPseudoQualifiers) {
+	@Nonnull public static JQName genericValueOf(@Nonnull JQName pQName, @Nonnull String... pPseudoQualifiers) {
 		Objects.requireAllNonNull(pPseudoQualifiers, "Pseudo Qualifier");
 		if (pPseudoQualifiers == null  ||  pPseudoQualifiers.length == 0) {
 			return pQName;
 		}
-		final List<JSGQName> qualifiers = new ArrayList<>(pPseudoQualifiers.length);
+		final List<JQName> qualifiers = new ArrayList<>(pPseudoQualifiers.length);
 		for (int i = 0;  i < pPseudoQualifiers.length;  i++) {
 			final String s = pPseudoQualifiers[i];
-			final JSGQName qName = new JSGQName("", s, s, Collections.emptyList(), false, false, null, true);
+			final JQName qName = new JQName("", s, s, Collections.emptyList(), false, false, null, true);
 			qualifiers.add(qName);
 		}
-		return new JSGQName(pQName.getPackageName(), pQName.getClassName(), pQName.getQName(), qualifiers, false, pQName.isArray(), null, false);
+		return new JQName(pQName.getPackageName(), pQName.getClassName(), pQName.getQName(), qualifiers, false, pQName.isArray(), null, false);
 	}
 	
-	@Nonnull public static JSGQName genericValueOf(@Nonnull String pQName, @Nonnull Object... pQualifiers) {
+	@Nonnull public static JQName genericValueOf(@Nonnull String pQName, @Nonnull Object... pQualifiers) {
 		if (pQualifiers == null  ||  pQualifiers.length == 0) {
 			return valueOf(pQName);
 		}
-		final List<JSGQName> qualifiers = new ArrayList<>(pQualifiers.length);
+		final List<JQName> qualifiers = new ArrayList<>(pQualifiers.length);
 		for (int i = 0;  i < pQualifiers.length;  i++) {
 			final Object o = pQualifiers[i];
 			if (o == null) {
 				throw new NullPointerException("Qualifier[" + i+ "] must not be null.");
 			}
-			if (o instanceof JSGQName) {
-				qualifiers.add((JSGQName) o);
+			if (o instanceof JQName) {
+				qualifiers.add((JQName) o);
 			} else if (o instanceof Class<?>) {
 				qualifiers.add(valueOf((Class<?>) o));
 			} else if (o instanceof String) {
@@ -204,7 +204,7 @@ public class JSGQName implements JSGLocation {
 		return valueOf(pQName, qualifiers);
 	}
 
-	private static final JSGQName valueOf(@Nonnull String pQName, List<JSGQName> pQualifiers) {
+	private static final JQName valueOf(@Nonnull String pQName, List<JQName> pQualifiers) {
 		if ("boolean".equals(pQName)) {
 			return BOOLEAN_TYPE;
 		} else if ("int".equals(pQName)) {
@@ -233,7 +233,7 @@ public class JSGQName implements JSGLocation {
 				final String className = qName.substring(offset+1);
 				final int offset2 = qName.lastIndexOf('$');
 				if (offset2 == -1) {
-					return new JSGQName(packageName, className, qName, pQualifiers, false, false, null);
+					return new JQName(packageName, className, qName, pQualifiers, false, false, null);
 				} else {
 					final String innerClassName = qName.substring(offset2+1);
 					final String outerClassName = qName.substring(0, offset2);
@@ -243,45 +243,45 @@ public class JSGQName implements JSGLocation {
 		}
 	}
 
-	@Nonnull public static JSGQName valueOf(@Nonnull JSGQName pParentClassName, @Nonnull String pInnerName) {
-		return new JSGQName(pParentClassName.getPackageName(), pParentClassName.getClassName() + "." + pInnerName,
+	@Nonnull public static JQName valueOf(@Nonnull JQName pParentClassName, @Nonnull String pInnerName) {
+		return new JQName(pParentClassName.getPackageName(), pParentClassName.getClassName() + "." + pInnerName,
 				            pParentClassName.getQName() + "." + pInnerName,
 				            Collections.emptyList(), false, false, pParentClassName);
 				            
 	}
 
-	@Nonnull public JSGQName arrayOf() {
-		return new JSGQName(packageName, className, qName, Collections.emptyList(), primitive, true, null);
+	@Nonnull public JQName arrayOf() {
+		return new JQName(packageName, className, qName, Collections.emptyList(), primitive, true, null);
 	}
 	
-	private JSGQName(String pName) {
+	private JQName(String pName) {
 		this("", pName, pName, Collections.emptyList(), true, false, null);
 	}
 
-	public static final JSGQName ARRAYLIST = valueOf(ArrayList.class);
-	public static final JSGQName BOOLEAN_OBJ = valueOf(Boolean.class);
-	public static final JSGQName BOOLEAN_TYPE = new JSGQName("boolean");
-	public static final JSGQName BYTE_OBJ = valueOf(Byte.class);
-	public static final JSGQName BYTE_TYPE = new JSGQName("byte");
-	public static final JSGQName CHAR_OBJ = valueOf(Character.class);
-	public static final JSGQName CHAR_TYPE = new JSGQName("char");
-	public static final JSGQName COLLECTION = valueOf(Collection.class);
-	public static final JSGQName DOUBLE_OBJ = valueOf(Double.class);
-	public static final JSGQName DOUBLE_TYPE = new JSGQName("double");
-	public static final JSGQName FLOAT_OBJ = valueOf(Float.class);
-	public static final JSGQName FLOAT_TYPE = new JSGQName("float");
-	public static final JSGQName HASHMAP = valueOf(HashMap.class);
-	public static final JSGQName INT_OBJ = valueOf(Integer.class);
-	public static final JSGQName INT_TYPE = new JSGQName("int");
-	public static final JSGQName MAP = valueOf(Map.class);
-	public static final JSGQName LIST = valueOf(List.class);
-	public static final JSGQName LONG_OBJ = valueOf(Long.class);
-	public static final JSGQName LONG_TYPE = new JSGQName("long");
-	public static final JSGQName OBJECT = valueOf(Object.class);
-	public static final JSGQName SET = valueOf(Set.class);
-	public static final JSGQName SHORT_OBJ = valueOf(Short.class);
-	public static final JSGQName SHORT_TYPE = new JSGQName("short");
-	public static final JSGQName STRING = valueOf(String.class);
-	public static final JSGQName STRING_ARRAY = STRING.arrayOf();
-	public static final JSGQName VOID_TYPE = new JSGQName("void");
+	public static final JQName ARRAYLIST = valueOf(ArrayList.class);
+	public static final JQName BOOLEAN_OBJ = valueOf(Boolean.class);
+	public static final JQName BOOLEAN_TYPE = new JQName("boolean");
+	public static final JQName BYTE_OBJ = valueOf(Byte.class);
+	public static final JQName BYTE_TYPE = new JQName("byte");
+	public static final JQName CHAR_OBJ = valueOf(Character.class);
+	public static final JQName CHAR_TYPE = new JQName("char");
+	public static final JQName COLLECTION = valueOf(Collection.class);
+	public static final JQName DOUBLE_OBJ = valueOf(Double.class);
+	public static final JQName DOUBLE_TYPE = new JQName("double");
+	public static final JQName FLOAT_OBJ = valueOf(Float.class);
+	public static final JQName FLOAT_TYPE = new JQName("float");
+	public static final JQName HASHMAP = valueOf(HashMap.class);
+	public static final JQName INT_OBJ = valueOf(Integer.class);
+	public static final JQName INT_TYPE = new JQName("int");
+	public static final JQName MAP = valueOf(Map.class);
+	public static final JQName LIST = valueOf(List.class);
+	public static final JQName LONG_OBJ = valueOf(Long.class);
+	public static final JQName LONG_TYPE = new JQName("long");
+	public static final JQName OBJECT = valueOf(Object.class);
+	public static final JQName SET = valueOf(Set.class);
+	public static final JQName SHORT_OBJ = valueOf(Short.class);
+	public static final JQName SHORT_TYPE = new JQName("short");
+	public static final JQName STRING = valueOf(String.class);
+	public static final JQName STRING_ARRAY = STRING.arrayOf();
+	public static final JQName VOID_TYPE = new JQName("void");
 }

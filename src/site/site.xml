@@ -1,0 +1,20 @@
+<project       xmlns="http://maven.apache.org/DECORATION/1.8.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+                name="Jsgen (Java Source Generation Framework)">
+  <bannerLeft>
+    <name>Jsgen (Java Source Generation Framework)</name>
+    <href>https://github.com/jochenw/jsgen</href>
+  </bannerLeft>
+  <publishDate position="right"/>
+  <poweredBy>
+    <logo name="Maven" href="https://maven.apache.org/"
+          img="https://maven.apache.org/images/logos/maven-feather.png"/>
+  </poweredBy>
+  <body>
+    <menu name="Overview">
+      <item name="About" href="index.html"/>
+    </menu>
+    <menu ref="reports"/>
+  </body>
+</project>
