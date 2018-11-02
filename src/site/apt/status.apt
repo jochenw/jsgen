@@ -21,5 +21,5 @@ adopted. There is no reason to assume that these will need to be changed greatly
 In general, the framework should be ready for inspection, for proof of concept work, smaller projects, and the like. It might be a
 risk to use it for large-scale applications.
 
-However, if you are ready to adjust to a few required changes over time, whenever a new version should be adopted, then Jsgen should
-be able to satisfy your
+However, if you are ready to adjust to a few required changes over time upon adopting a new version should be adopted, then Jsgen should
+be able to satisfy your expectations quite decently.

@@ -21,6 +21,7 @@ import com.github.jochenw.jsgen.api.IfBlock;
 import com.github.jochenw.jsgen.api.IImportSorter;
 import com.github.jochenw.jsgen.api.InnerClass;
 import com.github.jochenw.jsgen.api.Method;
+import com.github.jochenw.jsgen.api.NestedBlock;
 import com.github.jochenw.jsgen.api.JQName;
 import com.github.jochenw.jsgen.api.Source;
 import com.github.jochenw.jsgen.api.StaticInitializer;
@@ -81,10 +82,15 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 
 	private final Format format;
 	private List<JQName> importedNames;
+	private final List<JQName> scope = new ArrayList<JQName>();
 	private IImportSorter importSorter;
 
 	public DefaultJavaSourceFormatter(Format pFormat) {
 		format = pFormat;
+	}
+
+	public DefaultJavaSourceFormatter() {
+		this(new DefaultFormat("    ", "\n"));
 	}
 
 	public List<JQName> getImportedNames() {
@@ -95,6 +101,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		this.importedNames = importedNames;
 	}
 
+	public List<JQName> getScope() {
+		return scope;
+	}
 	
 	public IImportSorter getImportSorter() {
 		return importSorter;
@@ -140,6 +149,8 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 
 	@Override
 	public void write(Source pSource, JSGSourceTarget pTarget) {
+		scope.clear();
+		scope.add(pSource.getType());
 		final Data data = new Data(pTarget, format);
 		final JQName type = pSource.getType();
 		write(pSource.getPackageComment(), data);
@@ -374,6 +385,11 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeObject(format.getInitializerFooter(), pTarget);
 	}
 
+	protected void writeNestedBlock(NestedBlock pBlock, Data pTarget) {
+		writeObject(format.getNestedBlockHeader(), pTarget);
+		writeList(pBlock.getContents(), pTarget);
+		writeObject(format.getNestedBlockFooter(), pTarget);
+	}
 	protected void writeIfBlock(IfBlock pIfBlock, Data pTarget) {
 		writeObject(format.getIfConditionPrefix(), pTarget);
 		writeObject(pIfBlock.getCondition(), pTarget);
@@ -431,7 +447,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				writeMethod((Constructor) o, pTarget);
 			} else if (o instanceof InnerClass) {
 				final JSGClass<?> clazz = (JSGClass<?>) o;
+				scope.add(clazz.getType());
 				writeClass(clazz, pTarget);
+				scope.remove(scope.size()-1);
 			} else if (o instanceof StaticInitializer) {
 				writeInitializer((StaticInitializer) o, pTarget);
 			} else if (o instanceof IfBlock) {
@@ -442,6 +460,10 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				writeDoWhileBlock((DoWhileBlock) o, pTarget);
 			} else if (o instanceof Line) {
 				writeLine((Line) o, pTarget);
+			} else if (o instanceof Comment) {
+				write((Comment) o, pTarget);
+			} else if (o instanceof NestedBlock) {
+				writeNestedBlock((NestedBlock) o, pTarget);
 			} else {
 				throw new IllegalStateException("Invalid object type: " + o.getClass().getName());
 			}
@@ -468,9 +490,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 
 	protected void writeObject(Object pValue, Data pTarget) {
 		final Object v = Objects.requireNonNull(pValue, "Value");
-		if (v == format.INC_INDENT) {
+		if (v == Format.INC_INDENT) {
 			pTarget.incIndent();
-		} else if (v == format.DEC_INDENT) {
+		} else if (v == Format.DEC_INDENT) {
 			pTarget.decIndent();
 		} else if (v == Format.INDENT) {
 			pTarget.indent();

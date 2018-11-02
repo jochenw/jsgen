@@ -21,25 +21,52 @@ public class Main {
 }
 --------------------
 
-    Okay, no surprises here. Now, here 's the generator
+    Okay, no surprises. Now, here 's the generator
 
 --------------------
     public void generateHelloWorldJava(File pTargetDir) {
 		final JSGFactory factory = JSGFactory.build();
-		final Source jsb = factory.newSource("com.foo.myapp.Main").makePublic();
-		final Method mainMethod = jsb.newMethod("main").makePublic().makeStatic();
+		final Source s = factory.newSource("com.foo.myapp.Main").makePublic();
+		final Method mainMethod = s.newMethod("main").makePublic().makeStatic();
 		mainMethod.parameter(JSGQName.STRING_ARRAY, "pArgs");
 		mainMethod.body().line(System.class, ".out.println(", q("Hello, world!"), ");");
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final AbstractSourceWriter jsgw = new AbstractSourceWriter() {
-			@Override
-			protected OutputStream open(NamedResource pResource) throws IOException {
-				return baos;
-			}
-		};
-		jsgw.setFormatter(pFormatter);
+		final FileJavaSourceWriter jsgw = new FileJavaSourceWriter(pTargetDir);
+		jsgw.setFormatter(new DefaultJavaSourceFormatter());
 		jsgw.write(factory);
 		final String got = baos.toString(StandardCharsets.UTF_8.name());
 		return got;
     }
 --------------------
+
+* Example breakdown
+
+    Having seen the example, let's break it down into the relevant parts:
+
+** Creating the factory
+
+    The first line is about creating a factory.
+
+--------------------
+		final JSGFactory factory = JSGFactory.build();
+--------------------
+    The factory is an instance of {{{./apidocs/com/github/jochenw/jsgen/api/JSGFactory.html}JSGFactory}}.
+    It is an object, that you will rarely notice, unless you are generating a real lot of Java source files. The purpose of the factory is
+    basically to collect all the generated sources, so that you may persist them at a later point in one go.
+ 
+ ** Creating a Source object
+ 
+    The factory is being used to create {{{./apidocs/com/github/jochenw/jsgen/api/Source.html}Source}} objects. These objects are basically
+    representations of a Java source file, which is being generated. For every Java source file, that you want to generate, you must create
+    a Source object. Creating a Source object works like this:
+ 
+--------------------
+		final Source s = factory.newSource("com.foo.myapp.Main").makePublic();
+--------------------
+
+   The <<newSource>> method accepts a single argument, which is the fully qualified class name of the generated Java class. (Fully qualified
+   = Package name, plus class name. In our example, we'll generate a class named <<<Main>>> in the package <<<com.foo.myapp>>>.
+   The Source object is a builder: In other words, it is configured by invoking other methods on it, which return the Source object. In the
+   example, we want the generated class to be public. So, we invoke the method <<makePublic>> on it.
+  
+ 

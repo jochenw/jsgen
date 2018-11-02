@@ -91,4 +91,32 @@ public class Block<T extends AbstractBuilder<T>> extends AbstractBuilder<T> {
 		final T t = (T) this;
 		return (T) t;
 	}
+
+	public T comment(String pText) {
+		assertMutable();
+		final Comment comment = new Comment().text(pText).makePublic(false);
+		contents.add(comment);
+		return self();
+	}
+
+	public T comment(String... pText) {
+		assertMutable();
+		final Comment comment = new Comment().text(pText).makePublic(false);
+		contents.add(comment);
+		return self();
+	}
+
+	public T comment(Iterable<String> pText) {
+		assertMutable();
+		final Comment comment = new Comment().text(pText).makePublic(false);
+		contents.add(comment);
+		return self();
+	}
+
+	public NestedBlock newBlock() {
+		assertMutable();
+		final NestedBlock block = new NestedBlock();
+		contents.add(block);
+		return block;
+	}
 }

@@ -101,7 +101,8 @@ public class Method extends Subroutine<Method> implements IAnnotatable, IProtect
 
 	private static final JQName OVERRIDE = JQName.valueOf(Override.class);
 
-	@Nonnull Method overriding() {
+	@Nonnull
+	public Method overriding() {
 		return overriding(true);
 	}
 

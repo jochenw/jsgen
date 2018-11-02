@@ -90,13 +90,13 @@ public class LocalField extends AbstractBuilder<LocalField> implements ICommentO
 		return value;
 	}
 
-	@Nonnull LocalField comment(String... pText) {
+	@Nonnull public LocalField comment(String... pText) {
 		assertMutable();
 		comment = new Comment().text(pText);
 		return this;
 	}
 
-	@Nonnull LocalField comment(Iterable<String> pText) {
+	@Nonnull public LocalField comment(Iterable<String> pText) {
 		assertMutable();
 		comment = new Comment().text(pText);
 		return this;

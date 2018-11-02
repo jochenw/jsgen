@@ -204,6 +204,15 @@ public class JQName implements ILocation {
 		return valueOf(pQName, qualifiers);
 	}
 
+	public String getClassLoaderName() {
+		if (isInnerClass()) {
+			return getPackageName() + "." + getClassName().replace('.', '$');
+		} else {
+			return getQName();
+		}
+	}
+
+	
 	private static final JQName valueOf(@Nonnull String pQName, List<JQName> pQualifiers) {
 		if ("boolean".equals(pQName)) {
 			return BOOLEAN_TYPE;

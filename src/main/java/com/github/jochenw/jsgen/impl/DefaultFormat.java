@@ -47,6 +47,8 @@ public class DefaultFormat extends Format {
 	private static final Object METHOD_PARAMETER_PREFIX = "(";
 	private static final Object METHOD_PARAMETER_SEPARATOR = ", ";
 	private static final Object METHOD_PARAMETER_SUFFIX = ") ";
+	private static final Object NESTED_BLOCK_FOOTER = new Object[] { INDENT, BLOCK_TERMINATOR };
+	private static final Object NESTED_BLOCK_HEADER = BLOCK_HEADER;
 	private static final Object PACKAGE_COMMENT_PREFIX = NOTHING;
 	private static final Object PACKAGE_COMMENT_SUFFIX = new Object[] { INDENT };
 	private static final Object THROWS_PREFIX = new Object[] { "throw new " };
@@ -257,6 +259,16 @@ public class DefaultFormat extends Format {
 	@Override
 	public Object getMethodDeclarationSuffix() {
 		return METHOD_DECLARATION_SUFFIX;
+	}
+
+	@Override
+	public Object getNestedBlockFooter() {
+		return NESTED_BLOCK_FOOTER;
+	}
+
+	@Override
+	public Object getNestedBlockHeader() {
+		return NESTED_BLOCK_HEADER;
 	}
 
 	@Override

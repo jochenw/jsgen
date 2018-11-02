@@ -101,32 +101,32 @@ public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T>
 		return newMethod(IProtectable.Protection.PACKAGE, JQName.VOID_TYPE, pName);
 	}
 
-	@Nonnull Method newMethod(@Nonnull Class<?> pType, @Nonnull String pName) {
+	@Nonnull public Method newMethod(@Nonnull Class<?> pType, @Nonnull String pName) {
 		return newMethod(IProtectable.Protection.PACKAGE, pType, pName);
 	}
 
-	@Nonnull Constructor newConstructor() {
+	@Nonnull public Constructor newConstructor() {
 		return newConstructor(IProtectable.Protection.PUBLIC);
 	}
 
-	@Nonnull Constructor newConstructor(IProtectable.Protection pProtection) {
+	@Nonnull public Constructor newConstructor(IProtectable.Protection pProtection) {
 		assertMutable();
 		final Constructor jmc = new Constructor().protection(pProtection).sourceClass(this);
 		content.add(jmc);
 		return jmc;
 	}
 	
-	@Nonnull Method newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull JQName pType, @Nonnull String pName) {
+	@Nonnull public Method newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull JQName pType, @Nonnull String pName) {
 		final Method jmb = new Method().protection(pProtection).returnType(pType).name(pName).sourceClass(this);
 		content.add(jmb);
 		return jmb;
 	}
 
-	@Nonnull Method newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull Class<?> pType, @Nonnull String pName) {
+	@Nonnull public Method newMethod(@Nonnull IProtectable.Protection pProtection, @Nonnull Class<?> pType, @Nonnull String pName) {
 		return newMethod(pProtection, JQName.valueOf(pType), pName);
 	}
 
-	@Nonnull StaticInitializer newInitializer() {
+	@Nonnull public StaticInitializer newInitializer() {
 		final StaticInitializer jsbib = new StaticInitializer().sourceClass(this);
 		content.add(jsbib);
 		return jsbib;

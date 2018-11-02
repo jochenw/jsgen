@@ -1,6 +1,5 @@
 package com.github.jochenw.jsgen.impl;
 
-import com.github.jochenw.jsgen.api.Source;
 
 public abstract class Format {
 	public static final Object NEWLINE= new Object();
@@ -65,6 +64,8 @@ public abstract class Format {
 	public abstract Object getMethodParameterPrefix();
 	public abstract Object getMethodParameterSeparator();
 	public abstract Object getMethodParameterSuffix();
+	public abstract Object getNestedBlockFooter();
+	public abstract Object getNestedBlockHeader();
 	public abstract Object getPackageCommentPrefix();
 	public abstract Object getPackageCommentSuffix();
 	public abstract Object getThrowsPrefix();
@@ -72,10 +73,4 @@ public abstract class Format {
 	public abstract Object getThrowsConstructorArgsSuffix();
 	public abstract Object getWhileConditionPrefix();
 	public abstract Object getWhileConditionSuffix();
-
-
-
-
-
-
 }

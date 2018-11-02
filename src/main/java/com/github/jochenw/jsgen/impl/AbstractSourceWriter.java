@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
@@ -23,6 +24,15 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 	public static final JSGSourceFormatter MAVEN_FORMATTER = new DefaultJavaSourceFormatter(new MavenFormat("    ", "\n"));
 	private IImportSorter importSorter = DEFAULT_IMPORT_SORTER;
 	private @Nonnull JSGSourceFormatter formatter = DEFAULT_FORMATTER;
+	private Supplier<List<JQName>> scopeProvider;
+
+	public Supplier<List<JQName>> getScopeProvider() {
+		return scopeProvider;
+	}
+
+	public void setScopeProvider(Supplier<List<JQName>> scopeProvider) {
+		this.scopeProvider = scopeProvider;
+	}
 
 	@Override
 	public void write(Source pSource) throws IOException {
@@ -74,6 +84,7 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 			final DefaultJavaSourceFormatter djsf = (DefaultJavaSourceFormatter) formatter;
 			djsf.setImportedNames(importedNames);
 			djsf.setImportSorter(importSorter);
+			scopeProvider = () -> djsf.getScope();
 		}
 		formatter.write(pSource, trgt);
 		final String fileName = pSource.getType().getPackageName().replace('.', '/') + '/' + pSource.getType().getClassName() + ".java";
@@ -111,7 +122,7 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 		JQName name = pName;
 		while (name.isInnerClass()) {
 			JQName outerName = Objects.requireNonNull(name.getOuterClass(), "Outer Class");
-			if (outerName.equals(pSourceName)  ||  pImportedNames.contains(outerName)) {
+			if (isScopeRestricted(outerName)  ||  pImportedNames.contains(outerName)) {
 				return outerName.getSimpleClassName() + "." + pName.getQName().substring(outerName.getQName().length()+1);
 			}
 			name = outerName;
@@ -121,6 +132,20 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 		} else {
 			return pName.getQName();
 		}
+	}
+
+	protected boolean isScopeRestricted(JQName pName) {
+		if (scopeProvider != null) {
+			final List<JQName> scope = scopeProvider.get();
+			if (scope != null) {
+				for (JQName name : scope) {
+					if (name.getSimpleClassName().equals(pName.getClassName())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	public IImportSorter getImportSorter() {
