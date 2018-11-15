@@ -167,6 +167,19 @@ public class JQName implements ILocation {
 		return valueOf(pQName, Collections.emptyList());
 	}
 
+	@Nonnull public static JQName genericValueOf(@Nonnull JQName pQName, @Nonnull JQName... pQualifiers) {
+		Objects.requireAllNonNull(pQualifiers, "Qualifier");
+		if (pQualifiers == null  ||  pQualifiers.length == 0) {
+			return pQName;
+		}
+		final List<JQName> qualifiers = new ArrayList<>(pQualifiers.length);
+		for (int i = 0;  i < pQualifiers.length;  i++) {
+			final JQName q = pQualifiers[i];
+			qualifiers.add(q);
+		}
+		return new JQName(pQName.getPackageName(), pQName.getClassName(), pQName.getQName(), qualifiers, false, pQName.isArray(), null, false);
+	}
+
 	@Nonnull public static JQName genericValueOf(@Nonnull JQName pQName, @Nonnull String... pPseudoQualifiers) {
 		Objects.requireAllNonNull(pPseudoQualifiers, "Pseudo Qualifier");
 		if (pPseudoQualifiers == null  ||  pPseudoQualifiers.length == 0) {
@@ -180,7 +193,7 @@ public class JQName implements ILocation {
 		}
 		return new JQName(pQName.getPackageName(), pQName.getClassName(), pQName.getQName(), qualifiers, false, pQName.isArray(), null, false);
 	}
-	
+
 	@Nonnull public static JQName genericValueOf(@Nonnull String pQName, @Nonnull Object... pQualifiers) {
 		if (pQualifiers == null  ||  pQualifiers.length == 0) {
 			return valueOf(pQName);

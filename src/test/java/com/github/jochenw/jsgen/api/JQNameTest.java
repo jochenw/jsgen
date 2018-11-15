@@ -15,23 +15,23 @@ import org.junit.Test;
 
 import com.github.jochenw.jsgen.api.JQName;
 
-public class JSGQNameTest {
+public class JQNameTest {
 	@Test
 	public void testInstanceFromClass() {
-		final JQName name = JQName.valueOf(JSGQNameTest.class);
+		final JQName name = JQName.valueOf(JQNameTest.class);
 		assertNotNull(name);
 		assertEquals("com.github.jochenw.jsgen.api", name.getPackageName());
-		assertEquals("JSGQNameTest", name.getClassName());
-		assertEquals(JSGQNameTest.class.getName(), name.getQName());
+		assertEquals("JQNameTest", name.getClassName());
+		assertEquals(JQNameTest.class.getName(), name.getQName());
 	}
 
 	@Test
 	public void testInstanceFromString() {
-		final JQName name = JQName.valueOf(JSGQNameTest.class.getName());
+		final JQName name = JQName.valueOf(JQNameTest.class.getName());
 		assertNotNull(name);
 		assertEquals("com.github.jochenw.jsgen.api", name.getPackageName());
-		assertEquals("JSGQNameTest", name.getClassName());
-		assertEquals(JSGQNameTest.class.getName(), name.getQName());
+		assertEquals("JQNameTest", name.getClassName());
+		assertEquals(JQNameTest.class.getName(), name.getQName());
 	}
 
 	@Test
@@ -80,8 +80,8 @@ public class JSGQNameTest {
 		assertEquals(n0, n1.getOuterClass());
 		final JQName n2 = JQName.valueOf(InnerClass.class);
 		assertEquals("com.github.jochenw.jsgen.api", n2.getPackageName());
-		assertEquals("JSGQNameTest.InnerClass", n2.getClassName());
-		assertEquals("com.github.jochenw.jsgen.api.JSGQNameTest.InnerClass", n2.getQName());
+		assertEquals("JQNameTest.InnerClass", n2.getClassName());
+		assertEquals("com.github.jochenw.jsgen.api.JQNameTest.InnerClass", n2.getQName());
 		assertFalse(n2.isArray());
 		assertFalse(n2.isPrimitive());
 		assertTrue(n2.isInnerClass());
@@ -183,5 +183,23 @@ public class JSGQNameTest {
 		} catch (IllegalArgumentException e) {
 			assertEquals("Invalid class name (Missing package): MyType", e.getMessage());
 		}
+	}
+
+	@Test
+	public void testGenericTypes() {
+		final JQName listOfStrings = JQName.genericValueOf(JQName.LIST, JQName.STRING);
+		assertNotNull(listOfStrings);
+		assertFalse(listOfStrings.isPrimitive());
+		assertFalse(listOfStrings.isInnerClass());
+		assertFalse(listOfStrings.isArray());
+		assertFalse(listOfStrings.isPseudoClass());
+		assertEquals("java.util", listOfStrings.getPackageName());
+		assertEquals("java.util.List", listOfStrings.getQName());
+		assertEquals("java.util.List", listOfStrings.getClassLoaderName());
+		assertEquals("List", listOfStrings.getClassName());
+		assertEquals("List", listOfStrings.getSimpleClassName());
+		assertTrue(listOfStrings.hasQualifiers());
+		assertEquals(1, listOfStrings.getQualifiers().size());
+		assertSame(JQName.STRING, listOfStrings.getQualifiers().get(0));
 	}
 }
