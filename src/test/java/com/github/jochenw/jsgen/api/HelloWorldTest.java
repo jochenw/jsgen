@@ -27,7 +27,7 @@ public class HelloWorldTest {
 			"import java.lang.System;\n" + 
 			"\n" + 
 			"public class Main {\n" + 
-			"    public static void main(String pArgs) {\n" + 
+			"    public static void main(String[] pArgs) {\n" + 
 			"        System.out.println(\"Hello, world!\");\n" + 
 			"    }\n" + 
 			"}\n";
@@ -39,7 +39,7 @@ public class HelloWorldTest {
 			"\n" + 
 			"public class Main\n" +
 			"{\n" +
-			"    public static void main( String pArgs ) \n" +
+			"    public static void main( String[] pArgs ) \n" +
 			"    {\n" +
 			"        System.out.println(\"Hello, world!\");\n" + 
 			"    }\n" + 

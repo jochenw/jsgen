@@ -24,7 +24,7 @@ import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
 import com.github.jochenw.jsgen.impl.AbstractSourceWriter;
 import com.github.jochenw.jsgen.impl.JSGSourceFormatter;
 
-public class JSGStaticInitializerTest {
+public class JQStaticInitializerTest {
 	private static final String INIT_JAVA_DEFAULT =
 			"package com.foo.myapp;\n"
 			+ "\n"

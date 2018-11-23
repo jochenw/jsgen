@@ -187,7 +187,7 @@ public class JQNameTest {
 
 	@Test
 	public void testGenericTypes() {
-		final JQName listOfStrings = JQName.genericValueOf(JQName.LIST, JQName.STRING);
+		final JQName listOfStrings = JQName.LIST.qualifiedBy(JQName.STRING);
 		assertNotNull(listOfStrings);
 		assertFalse(listOfStrings.isPrimitive());
 		assertFalse(listOfStrings.isInnerClass());
@@ -201,5 +201,7 @@ public class JQNameTest {
 		assertTrue(listOfStrings.hasQualifiers());
 		assertEquals(1, listOfStrings.getQualifiers().size());
 		assertSame(JQName.STRING, listOfStrings.getQualifiers().get(0));
+
+	
 	}
 }

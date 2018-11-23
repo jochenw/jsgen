@@ -167,19 +167,6 @@ public class JQName implements ILocation {
 		return valueOf(pQName, Collections.emptyList());
 	}
 
-	@Nonnull public static JQName genericValueOf(@Nonnull JQName pQName, @Nonnull JQName... pQualifiers) {
-		Objects.requireAllNonNull(pQualifiers, "Qualifier");
-		if (pQualifiers == null  ||  pQualifiers.length == 0) {
-			return pQName;
-		}
-		final List<JQName> qualifiers = new ArrayList<>(pQualifiers.length);
-		for (int i = 0;  i < pQualifiers.length;  i++) {
-			final JQName q = pQualifiers[i];
-			qualifiers.add(q);
-		}
-		return new JQName(pQName.getPackageName(), pQName.getClassName(), pQName.getQName(), qualifiers, false, pQName.isArray(), null, false);
-	}
-
 	@Nonnull public static JQName genericValueOf(@Nonnull JQName pQName, @Nonnull String... pPseudoQualifiers) {
 		Objects.requireAllNonNull(pPseudoQualifiers, "Pseudo Qualifier");
 		if (pPseudoQualifiers == null  ||  pPseudoQualifiers.length == 0) {
@@ -275,7 +262,29 @@ public class JQName implements ILocation {
 	@Nonnull public JQName arrayOf() {
 		return new JQName(packageName, className, qName, Collections.emptyList(), primitive, true, null);
 	}
-	
+
+	@Nonnull public JQName qualifiedBy(Object... pQualifiers) {
+		final List<JQName> qualifiers = new ArrayList<>();
+		if (pQualifiers != null) {
+			Objects.requireAllNonNull(pQualifiers, "Qualifier");
+			for (int i = 0;  i < pQualifiers.length;  i++) {
+				final Object o = pQualifiers[i];
+				if (o instanceof JQName) {
+					qualifiers.add((JQName) o);
+				} else if (o instanceof Class) {
+					final Class<?> cl = (Class<?>) o;
+					qualifiers.add(JQName.valueOf(cl));
+				} else if (o instanceof String) {
+					final String s = (String) o;
+					qualifiers.add(new JQName("", s, s, Collections.emptyList(), false, false, null, true));
+				} else {
+					throw new IllegalArgumentException("Invalid qualifier type: " + o.getClass().getName());
+				}
+			}
+		}
+		return new JQName(packageName, className, qName, qualifiers, false, isArray(), null);
+	}
+
 	private JQName(String pName) {
 		this("", pName, pName, Collections.emptyList(), true, false, null);
 	}
@@ -300,6 +309,7 @@ public class JQName implements ILocation {
 	public static final JQName LONG_OBJ = valueOf(Long.class);
 	public static final JQName LONG_TYPE = new JQName("long");
 	public static final JQName OBJECT = valueOf(Object.class);
+	public static final JQName OBJECT_ARRAY = OBJECT.arrayOf();
 	public static final JQName SET = valueOf(Set.class);
 	public static final JQName SHORT_OBJ = valueOf(Short.class);
 	public static final JQName SHORT_TYPE = new JQName("short");

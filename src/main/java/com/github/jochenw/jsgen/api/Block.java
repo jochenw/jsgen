@@ -77,6 +77,12 @@ public class Block<T extends AbstractBuilder<T>> extends AbstractBuilder<T> {
 		return ifBlock;
 	}
 
+	@Nonnull public ForBlock newFor(@Nonnull Object... pCondition) {
+		final ForBlock forBlock = new ForBlock().condition(pCondition);
+		contents.add(forBlock);
+		return forBlock;
+	}
+	
 	@Nonnull T addThrowNew(@Nonnull JQName pType, @Nonnull Object... pValues) {
 		assertMutable();
 	    return tline(new Throw(pType, pValues));

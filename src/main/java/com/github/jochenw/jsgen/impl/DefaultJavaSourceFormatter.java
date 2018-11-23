@@ -409,7 +409,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 	protected void writeForBlock(ForBlock pForBlock, Data pTarget) {
 		writeObject(format.getForConditionPrefix(), pTarget);
 		writeObject(pForBlock.getCondition(), pTarget);
-		writeObject(format.getForConditionPrefix(), pTarget);
+		writeObject(format.getForConditionSuffix(), pTarget);
 		writeList(pForBlock.getContents(), pTarget);
 		writeObject(format.getBlockTerminator(), pTarget);
 	}
@@ -454,6 +454,8 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				writeInitializer((StaticInitializer) o, pTarget);
 			} else if (o instanceof IfBlock) {
 				writeIfBlock((IfBlock) o, pTarget);
+			} else if (o instanceof ForBlock) {
+				writeForBlock((ForBlock) o, pTarget);
 			} else if (o instanceof WhileBlock) {
 				writeWhileBlock((WhileBlock) o, pTarget);
 			} else if (o instanceof DoWhileBlock) {
@@ -523,6 +525,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				pTarget.write(">");
 			} else {
 				pTarget.write(name);
+			}
+			if (name.isArray()) {
+				pTarget.write("[]");
 			}
 		} else if (v instanceof IField) {
 			writeObject(((IField)v).getName(), pTarget);
