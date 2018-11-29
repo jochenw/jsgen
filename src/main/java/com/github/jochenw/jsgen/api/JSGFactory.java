@@ -111,7 +111,7 @@ public class JSGFactory {
 
 	/**
 	 * Creates a new {@link Source source builder} with the given name, and package protection.
-	 * @param pName Name of the {@link Source source builder}, which is being
+	 * @param pType Name of the {@link Source source builder}, which is being
 	 *   created.
 	 * @return The new {@link Source source builder}.
 	 * @throws NullPointerException The name is null.
@@ -123,7 +123,7 @@ public class JSGFactory {
 
 	/**
 	 * Creates a new {@link Source source builder} with the given name.
-	 * @param pName Name of the {@link Source source builder}, which is being
+	 * @param pType Name of the {@link Source source builder}, which is being
 	 *   created.
 	 * @return The new {@link Source source builder}.
 	 * @throws NullPointerException The name is null.

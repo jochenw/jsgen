@@ -112,9 +112,9 @@ public class JQStaticInitializerTest {
 		final Field jf = js.newField(String.class, "PACKAGE").makePrivate().makeStatic().makeFinal();
 		final StaticInitializer jsi = js.newInitializer();
 		final Block<?> jsiBody = jsi.body();
-		final LocalField classNameField = jsiBody.newJavaField(String.class, "className").makeFinal()
+		final LocalField classNameField = jsiBody.newField(String.class, "className").makeFinal()
 				.assign(js.getType(), ".class.getName()");
-		final LocalField indexField = jsiBody.newJavaField(JQName.INT_TYPE, "index").makeFinal()
+		final LocalField indexField = jsiBody.newField(JQName.INT_TYPE, "index").makeFinal()
 				.assign(classNameField, ".lastIndexOf('.')");
 		jsiBody.newIf(indexField, " == -1")
 				.addThrowNew(IllegalStateException.class, q("Unable to parse class name: "), " + ", classNameField);
