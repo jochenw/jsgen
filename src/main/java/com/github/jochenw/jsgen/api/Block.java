@@ -140,7 +140,35 @@ public class Block<T extends Block<T>> extends AbstractBuilder<T> implements IBl
 	}
 
 	@Override
+	@Nonnull public IfBlock newIf(@Nonnull Iterable<?> pCondition) {
+		final IfBlock ifBlock = new IfBlock().condition(pCondition);
+		contents.add(ifBlock);
+		return ifBlock;
+	}
+
+	@Override
+	@Nonnull public DoWhileBlock newDoWhile(@Nonnull Object... pCondition) {
+		final DoWhileBlock block = new DoWhileBlock().condition(pCondition);
+		contents.add(block);
+		return block;
+	}
+
+	@Override
+	@Nonnull public DoWhileBlock newDoWhile(@Nonnull Iterable<?> pCondition) {
+		final DoWhileBlock block = new DoWhileBlock().condition(pCondition);
+		contents.add(block);
+		return block;
+	}
+
+	@Override
 	@Nonnull public ForBlock newFor(@Nonnull Object... pCondition) {
+		final ForBlock forBlock = new ForBlock().condition(pCondition);
+		contents.add(forBlock);
+		return forBlock;
+	}
+	
+	@Override
+	@Nonnull public ForBlock newFor(@Nonnull Iterable<?> pCondition) {
 		final ForBlock forBlock = new ForBlock().condition(pCondition);
 		contents.add(forBlock);
 		return forBlock;

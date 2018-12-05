@@ -89,12 +89,44 @@ public interface IBlock<T extends IBlock<T>> {
 	@Nonnull public IfBlock newIf(@Nonnull Object... pCondition);
 
 	/**
+	 * Creates a new, nested, "if" block, with the given condition, and adds it to the current block.
+	 * @param pCondition The condition elements. The actual line will be created by concatenating
+	 *   the condition elements.
+	 * @return The created block, which has been added to the current code block.
+	 */
+	@Nonnull public IfBlock newIf(@Nonnull Iterable<?> pCondition);
+
+	/** Creates a new, nested "do... while" block, with the given condition, and adds it to the
+	 * current block.
+	 * @param pCondition The condition elements. The actual line will be created by concatenating
+	 *   the condition elements.
+	 * @return The created block, which has been added to the current code block.
+	 */
+	@Nonnull public DoWhileBlock newDoWhile(@Nonnull Object... pCondition);
+
+	/** Creates a new, nested "do... while" block, with the given condition, and adds it to the
+	 * current block.
+	 * @param pCondition The condition elements. The actual line will be created by concatenating
+	 *   the condition elements.
+	 * @return The created block, which has been added to the current code block.
+	 */
+	@Nonnull public DoWhileBlock newDoWhile(@Nonnull Iterable<?> pCondition);
+
+	/**
 	 * Creates a new, nested, "for" block, with the given condition, and adds it to the current block.
 	 * @param pCondition The condition elements. The actual line will be created by concatenating
 	 *   the condition elements.
 	 * @return The created block, which has been added to the current code block.
 	 */
 	@Nonnull public ForBlock newFor(@Nonnull Object... pCondition);
+
+	/**
+	 * Creates a new, nested, "for" block, with the given condition, and adds it to the current block.
+	 * @param pCondition The condition elements. The actual line will be created by concatenating
+	 *   the condition elements.
+	 * @return The created block, which has been added to the current code block.
+	 */
+	@Nonnull public ForBlock newFor(@Nonnull Iterable<?> pCondition);
 
 	/** Creates a non-public, comment, and adds it to the current code block.
 	 * The created comments type (single-line, or

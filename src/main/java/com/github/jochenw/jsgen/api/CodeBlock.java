@@ -160,4 +160,24 @@ public abstract class CodeBlock<T extends CodeBlock<T>> extends AbstractBuilder<
 		comment = new Comment().makePublic().text(pText);
 		return self();
 	}
+
+	@Override
+	public IfBlock newIf(Iterable<?> pCondition) {
+		return body().newIf(pCondition);
+	}
+
+	@Override
+	public DoWhileBlock newDoWhile(Object... pCondition) {
+		return body().newDoWhile(pCondition);
+	}
+
+	@Override
+	public DoWhileBlock newDoWhile(Iterable<?> pCondition) {
+		return body().newDoWhile(pCondition);
+	}
+
+	@Override
+	public ForBlock newFor(Iterable<?> pCondition) {
+		return body().newFor(pCondition);
+	}
 }
