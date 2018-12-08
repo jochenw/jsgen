@@ -20,7 +20,11 @@ public abstract class AbstractBuilder<T extends AbstractBuilder<T>> {
 		return self();
 	}
 
-	protected abstract T self();
+	protected T self() {
+		@SuppressWarnings("unchecked")
+		final T t = (T) this;
+		return t;
+	}
 	
 	public static void assertMutable(AbstractBuilder<?> pBuilder) {
 		if (pBuilder.immutable) {

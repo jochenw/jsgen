@@ -12,11 +12,33 @@ import javax.annotation.Nullable;
 import com.github.jochenw.jsgen.api.IProtectable.Protection;
 
 
+/** A factory for creating {@link Source} objects. The factory will
+ * collect the created objects, allowing to persist them easily in
+ * one go.
+ */
 public class JSGFactory {
+	/**
+	 * Interface of an arbitrary source file, which is being generated.
+	 * These include Java source files, but may as well be resource
+	 * files, for example a property file, or an XML file.
+	 */
 	public interface NamedResource {
+		/** Returns, whether this source file is a Java source file, or not.
+		 * @return True, if this is a Java source file, otherwise false.
+		 */
 		boolean isJavaSource();
-		boolean isResourceFile();
+		/** Returns the source files location in the filesystem, relative
+		 * to the base directory of the generated sources.
+		 * @return The source files location in the filesystem, relative
+		 * to the base directory of the generated sources.
+		 */
 		ILocation getName();
+		/** Called to persist the source file by writing it to the given
+		 * output stream.
+		 * @param pOut An output stream, which has been opened to receive
+		 * the source files contents.
+		 * @throws IOException Writing to the external storage failed with an I/O error.
+		 */
 		void writeTo(OutputStream pOut) throws IOException;
 	}
 	private Map<ILocation,Object> resources = new HashMap<>();
@@ -118,7 +140,7 @@ public class JSGFactory {
 	 * @throws IllegalStateException An object has already been registered with the given name.
 	 */
 	@Nonnull public Source newSource(@Nonnull Class<?> pType) {
-		return newSource(JQName.valueOf(pType)).makePackageProtected();
+		return newSource(JQName.valueOf(pType)).makePackagePrivate();
 	}
 
 	/**
@@ -130,14 +152,20 @@ public class JSGFactory {
 	 * @throws IllegalStateException An object has already been registered with the given name.
 	 */
 	@Nonnull public Source newSource(@Nonnull String pType) {
-		return newSource(JQName.valueOf(pType)).makePackageProtected();
+		return newSource(JQName.valueOf(pType)).makePackagePrivate();
 	}
 
+	/** Performs the given action for each resource object, that the factory has created.
+	 * @param pConsumer The action to perform for each resource object.
+	 */
 	public void forEach(BiConsumer<ILocation,Object> pConsumer) {
 		resources.forEach(pConsumer);
 	}
 
-	public static JSGFactory build() {
+	/** Creates a new instance.
+	 * @return A new factory instance
+	 */
+	public static JSGFactory create() {
 		return new JSGFactory();
 	}
 }

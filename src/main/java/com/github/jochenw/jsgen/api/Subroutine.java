@@ -11,7 +11,7 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 import com.github.jochenw.jsgen.util.Objects;
 
 
-public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> implements IAnnotatable, IProtectable, ICommentOwner {
+public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> implements IAnnotatable, IProtectable<T>, ICommentOwner {
 	public static class Parameter extends AbstractBuilder<Parameter> implements IField {
 		private final AnnotationSet annotations = new AnnotationSet();
 		private JQName type;
@@ -94,7 +94,7 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 		return protection(Protection.PROTECTED);
 	}
 
-	@Nonnull public T makePackageProtected() {
+	@Nonnull public T makePackagePrivate() {
 		return protection(Protection.PACKAGE);
 	}
 

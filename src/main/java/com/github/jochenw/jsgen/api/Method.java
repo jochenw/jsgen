@@ -3,7 +3,7 @@ package com.github.jochenw.jsgen.api;
 import javax.annotation.Nonnull;
 
 
-public class Method extends Subroutine<Method> implements IAnnotatable, IProtectable {
+public class Method extends Subroutine<Method> implements IAnnotatable, IProtectable<Method>, IStaticable<Method> {
 	@Nonnull private JQName type;
 	@Nonnull private IProtectable.Protection protection;
 	@Nonnull private String name;
@@ -81,6 +81,31 @@ public class Method extends Subroutine<Method> implements IAnnotatable, IProtect
 		return this;
 	}
 
+	@Nonnull public Method makePublic() {
+		return protection(Protection.PUBLIC);
+	}
+	
+	@Nonnull public Method makeProtected() {
+		return protection(Protection.PROTECTED);
+	}
+
+	@Nonnull public Method makePackagePrivate() {
+		return protection(Protection.PACKAGE);
+	}
+
+	@Nonnull public Method makePrivate() {
+		return protection(Protection.PUBLIC);
+	}
+
+	@Nonnull public Method protection(Protection pProtection) {
+		protection = pProtection;
+		return this;
+	}
+
+	@Nonnull public Protection getProtection() {
+		return protection;
+	}
+	
 	public boolean isFinal() {
 		return isFinal;
 	}

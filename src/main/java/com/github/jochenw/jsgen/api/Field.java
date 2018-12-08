@@ -11,7 +11,7 @@ import com.github.jochenw.jsgen.util.Objects;
  * This class represents a field in a Java class, as opposed to a field, which is local to a
  * method, or a code block.
  */
-public class Field extends AbstractBuilder<Field> implements IProtectable, ICommentOwner, IField, IStaticable, IVolatilable {
+public class Field extends AbstractBuilder<Field> implements IProtectable<Field>, ICommentOwner, IField, IStaticable<Field>, IVolatilable<Field> {
 	private AnnotationSet annotations = new AnnotationSet();
 	private @Nonnull Protection protection;
 	private @Nonnull JQName type;
@@ -25,7 +25,7 @@ public class Field extends AbstractBuilder<Field> implements IProtectable, IComm
 		return annotations;
 	}
 
-	@Nonnull Field protection(@Nonnull Protection pProtection) {
+	@Nonnull public Field protection(@Nonnull Protection pProtection) {
 		assertMutable();
 		protection = pProtection;
 		return this;

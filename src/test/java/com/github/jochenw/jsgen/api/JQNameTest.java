@@ -160,7 +160,16 @@ public class JQNameTest {
 		assertSame(JQName.valueOf(pClass), pType);
 	}
 
-	
+	@Test
+	public void testMapEntry() {
+		final JQName entryType = JQName.valueOf(Map.Entry.class);
+		assertEquals("java.util.Map.Entry", entryType.getQName());
+		assertEquals("java.util.Map$Entry", entryType.getClassLoaderName());
+		assertEquals("java.util", entryType.getPackageName());
+		assertEquals("Map.Entry", entryType.getClassName());
+		assertEquals("Entry", entryType.getSimpleClassName());
+	}
+
 	@Test
 	public void testErrors() {
 		try {
