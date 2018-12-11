@@ -13,8 +13,9 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 
 
 /** Common base interface for all objects, that may be annotated using Java annotations.
+ * @param <T> The actual object type. Used to specify the return type for builder methods.
  */
-public interface IAnnotatable {
+public interface IAnnotatable<T extends IAnnotatable<T>> {
 	/**
 	 * Representation of an annotation.
 	 */

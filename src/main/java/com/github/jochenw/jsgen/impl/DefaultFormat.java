@@ -1,6 +1,18 @@
 package com.github.jochenw.jsgen.impl;
 
+
+/** Default implementation of {@link Format}. It's roughly like the
+ * Eclipse default format.
+ */
 public class DefaultFormat extends Format {
+	/** Creates a new instance with the given inden string, and the given
+	 * line terminator.
+	 * @param pIndentString The string, which is used to indent one block
+	 *   level, typically four blanks ("    ").
+	 * @param pLineTerminator The string, which is used to terminate a
+	 *   single line, typically "\r\n" (Windows), or "\n" (Linux, and
+	 *   Unix).
+	 */
 	public DefaultFormat(String pIndentString, String pLineTerminator) {
 		super(pIndentString, pLineTerminator);
 	}

@@ -12,14 +12,15 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 /** This object represents an arbitrary class, which is being generated.
  * @param <T> The actual object type. Used to specify the return type for builder methods.
  */
-public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T> implements IAnnotatable, IProtectable<T>, ICommentOwner {
+public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T>
+        implements IAnnotatable<T>, IAbstractable<T>, IProtectable<T>, ICommentOwner {
 	private final JQName type;
 	private final List<Object> content = new ArrayList<>();
 	private final AnnotationSet annotations = new AnnotationSet();
 	private Protection protection;
 	private final List<JQName> extendedClasses = new ArrayList<>();
 	private final List<JQName> implementedInterfaces = new ArrayList<>();
-	private boolean isInterface;
+	private boolean isInterface, isAbstract;
 	private Comment comment;
 
 	protected JSGClass(JQName pType) {
@@ -475,5 +476,21 @@ public abstract class JSGClass<T extends JSGClass<T>> extends AbstractBuilder<T>
 		final InnerClass clazz = new InnerClass(type).protection(pProtection);
 		content.add(clazz);
 		return clazz;
+	}
+
+	@Override
+	public boolean isAbstract() {
+		return isAbstract;
+	}
+
+	@Override
+	public T makeAbstract() {
+		return makeAbstract(true);
+	}
+
+	@Override
+	public T makeAbstract(boolean pAbstract) {
+		isAbstract = pAbstract;
+		return self();
 	}
 }

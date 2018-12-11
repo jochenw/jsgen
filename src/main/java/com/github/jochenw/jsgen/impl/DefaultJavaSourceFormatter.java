@@ -36,25 +36,50 @@ import com.github.jochenw.jsgen.api.Subroutine.Parameter;
 import com.github.jochenw.jsgen.util.Objects;
 
 
+/** Default implementation of {@link DefaultJavaSourceFormatter}. This
+ * implementation uses a so-called {@link Format} object to determine the
+ * layout.
+ */
 public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
+	/** Internal data object, which is passed between method calls.
+	 */
 	public static class Data implements JSGSourceTarget {
 		private final JSGSourceTarget target;
 		private final Format format;
 		private int numIndents;
 
+		/** Creates a new instance with the given target object, and
+		 * format.
+		 * @param pTarget The target object
+		 * @param pFormat The format object.
+		 */
 		public Data(JSGSourceTarget pTarget, Format pFormat) {
 			target = pTarget;
 			format = pFormat;
 		}
 
+		/**
+		 * Increments the number of indented block levels. Basically,
+		 * this method is being invoked when a new code block is
+		 * opened.
+		 */
 		public void incIndent() {
 			++numIndents;
 		}
 
+		/**
+		 * Decrements the number of indented block levels. Basically,
+		 * this method is being invoked when a code block ends.
+		 */
 		public void decIndent() {
 			--numIndents;
 		}
 
+		/** Called to indent a single line. Basically, this uses the
+		 * number of indented block levels, and the formatters
+		 * {@link Format#getIndentString}, and writes the latter repeatedly
+		 * to the target object, once for every indented block level.
+		 */
 		public void indent() {
 			final String indentString = format.getIndentString();
 			if (indentString != null) {
@@ -64,11 +89,16 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			}
 		}
 
+		/** Called to write the given object to the target.
+		 */
 		@Override
 		public void write(Object pObject) {
 			target.write(pObject);
 		}
 
+		/** Called to terminate a single line by writing the
+		 * line terminator to the target.
+		 */
 		@Override
 		public void newLine() {
 			write(format.getLineTerminator());
@@ -85,34 +115,63 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 	private final List<JQName> scope = new ArrayList<JQName>();
 	private IImportSorter importSorter;
 
+	/** Creates a new instance with the given format.
+	 * @param pFormat The source code layout being applied.
+	 */
 	public DefaultJavaSourceFormatter(Format pFormat) {
 		format = pFormat;
 	}
 
+	/** Creates a new instance with the default format, the indent string
+	 * "    " (four blanks), and the Linux/Unix line terminator ("\n").
+	 */
 	public DefaultJavaSourceFormatter() {
 		this(new DefaultFormat("    ", "\n"));
 	}
 
+	/** Returns the list of types, which are being imported.
+	 * @return The list of types, which are being imported.
+	 */
 	public List<JQName> getImportedNames() {
 		return importedNames;
 	}
 
-	public void setImportedNames(List<JQName> importedNames) {
-		this.importedNames = importedNames;
+	/** Sets the list of types, which are being imported.
+	 * @param pImportedNames The list of types, which are being imported.
+	 */
+	public void setImportedNames(List<JQName> pImportedNames) {
+		importedNames = pImportedNames;
 	}
 
+	/** Returns the current scope (a list of classes, which are
+	 * currently being generated).
+	 * @return The current scope.
+	 */
 	public List<JQName> getScope() {
 		return scope;
 	}
-	
+
+	/** Returns the import sorter.
+	 * @return The import sorter.
+	 */
 	public IImportSorter getImportSorter() {
 		return importSorter;
 	}
 
-	public void setImportSorter(IImportSorter importSorter) {
-		this.importSorter = importSorter;
+	/** Sets the import sorter.
+	 * @param pImportSorter The import sorter.
+	 */
+	public void setImportSorter(IImportSorter pImportSorter) {
+		importSorter = pImportSorter;
 	}
 
+	/** Returns the sorted list of imports: A list of lists, one outer
+	 * list for every category, and the inner list sorted by a comparator.
+	 * The {@link IImportSorter import sorter} is used to build the
+	 * category lists, and sort them.
+	 * @return List of categories: Each category is a sorted list of imported
+	 * names. (Empty categories are omitted.)
+	 */
 	protected List<List<JQName>> getSortedImports() {
 		final List<List<JQName>> lists = new ArrayList<>();
 		if (importedNames != null) {
@@ -147,6 +206,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		return lists;
 	}
 
+	/** Called to write the given Java source object to the given
+	 * target.
+	 */
 	@Override
 	public void write(Source pSource, JSGSourceTarget pTarget) {
 		scope.clear();
@@ -180,6 +242,9 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeClass((JSGClass<?>) pSource, data);
 	}
 
+	/** Called to write the given Java class object to the given
+	 * target.
+	 */
 	protected void writeClass(JSGClass<?> pClass, Data pTarget) {
 		writeObject(format.getClassCommentPrefix(), pTarget);
 		write(pClass.getComment(), pTarget);
@@ -222,7 +287,10 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		writeObject(format.getClassBlockFooter(), pTarget);
 	}
 
-	protected void writeFieldDeclaration(IField pField, Data pTarget) {
+	/** Called to write the given field objects declaration to the given
+	 * target.
+	 */
+	protected void writeFieldDeclaration(IField<?> pField, Data pTarget) {
 		if (pField instanceof ICommentOwner) {
 			final Comment comment = ((ICommentOwner) pField).getComment();
 			write(comment, pTarget);
@@ -230,11 +298,12 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		write(pField.getAnnotations(), pTarget);
 		writeObject(format.getFieldPrefix(), pTarget);
 		if (pField instanceof IProtectable) {
-			final IProtectable.Protection protection = ((IProtectable) pField).getProtection();
+			final IProtectable<?> protectable = (IProtectable<?>) pField;
+			final IProtectable.Protection protection = protectable.getProtection();
 			write(protection, pTarget);
 		}
 		if (pField instanceof IStaticable) {
-			final IStaticable staticable = (IStaticable) pField;
+			final IStaticable<?> staticable = (IStaticable<?>) pField;
 			if (staticable.isStatic()) {
 				writeObject("static ", pTarget);
 			}
@@ -243,7 +312,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			writeObject("final ", pTarget);
 		}
 		if (pField instanceof IVolatilable) {
-			final IVolatilable volatilable = (IVolatilable) pField;
+			final IVolatilable<?> volatilable = (IVolatilable<?>) pField;
 			if (volatilable.isVolatile()) {
 				writeObject("volatile ", pTarget);
 			}
@@ -530,7 +599,8 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				pTarget.write("[]");
 			}
 		} else if (v instanceof IField) {
-			writeObject(((IField)v).getName(), pTarget);
+			final IField<?> field = (IField<?>) v;
+			writeObject(field.getName(), pTarget);
 		} else if (v instanceof Throw) {
 			writeThrows(((Throw) v), pTarget);
 		} else if (v instanceof Class) {

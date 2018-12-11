@@ -18,20 +18,43 @@ import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
 import com.github.jochenw.jsgen.util.Objects;
 
 
+/** Abstract base class for implementations of {@link ISourceWriter}.
+ */
 public abstract class AbstractSourceWriter implements ISourceWriter {
+	/** The default value for {@link #getImportSorter}: An instance of
+	 * {@link DefaultImportSorter}.
+	 */
 	public static final IImportSorter DEFAULT_IMPORT_SORTER = new DefaultImportSorter();
+	/** The default value for {@link #getFormatter()}: An instance of
+	 * {@link DefaultFormat}.
+	 */
 	public static final JSGSourceFormatter DEFAULT_FORMATTER = new DefaultJavaSourceFormatter(new DefaultFormat("    ", "\n"));
+	/** An alternative value for {@link #setFormatter(JSGSourceFormatter)}: An instance of
+	 * {@link MavenFormat}.
+	 */
 	public static final JSGSourceFormatter MAVEN_FORMATTER = new DefaultJavaSourceFormatter(new MavenFormat("    ", "\n"));
 	private IImportSorter importSorter = DEFAULT_IMPORT_SORTER;
 	private @Nonnull JSGSourceFormatter formatter = DEFAULT_FORMATTER;
 	private Supplier<List<JQName>> scopeProvider;
 
+	/** Returns the scope provider: It supplies a list of names, which are in the current scope.
+	 * For example, if we would be currently generating the inner class {@link java.util.Map.Entry},
+	 * then there's no point in importing "com.foo.app.Map", because {@link java.util.Map} is in
+	 * the current scope.
+	 * @return The scope provider.
+	 */
 	public Supplier<List<JQName>> getScopeProvider() {
 		return scopeProvider;
 	}
 
-	public void setScopeProvider(Supplier<List<JQName>> scopeProvider) {
-		this.scopeProvider = scopeProvider;
+	/** Sets the scope provider: It supplies a list of names, which are in the current scope.
+	 * For example, if we would be currently generating the inner class {@link java.util.Map.Entry},
+	 * then there's no point in importing "com.foo.app.Map", because {@link java.util.Map} is in
+	 * the current scope.
+	 * @param pScopeProvider The scope provider.
+	 */
+	public void setScopeProvider(Supplier<List<JQName>> pScopeProvider) {
+		scopeProvider = pScopeProvider;
 	}
 
 	@Override
@@ -109,11 +132,6 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 			public boolean isJavaSource() {
 				return true;
 			}
-
-			@Override
-			public boolean isResourceFile() {
-				return false;
-			}
 		};
 		return namedResource;
 	}
@@ -147,19 +165,35 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Returns the import sorter.
+	 * @return The import sorter.
+	 */
 	public IImportSorter getImportSorter() {
 		return importSorter;
 	}
 
+	/**
+	 * Sets the import sorter.
+	 * @param pImportSorter The import sorter.
+	 */
 	public void setImportSorter(IImportSorter pImportSorter) {
 		this.importSorter = pImportSorter;
 	}
 
+	/**
+	 * Returns the formatter.
+	 * @return The formatter.
+	 */
 	public JSGSourceFormatter getFormatter() {
 		return formatter;
 	}
 
+	/**
+	 * Sets the formatter.
+	 * @param pFormatter The formatter.
+	 */
 	public void setFormatter(@Nonnull JSGSourceFormatter pFormatter) {
 		formatter = pFormatter;
 	}

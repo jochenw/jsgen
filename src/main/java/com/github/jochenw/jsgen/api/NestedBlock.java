@@ -1,5 +1,8 @@
 package com.github.jochenw.jsgen.api;
 
-public class NestedBlock extends Block<NestedBlock> {
 
+/** A nested block is an anonymous block, which is nested inside another
+ * block.
+ */
+public class NestedBlock extends Block<NestedBlock> {
 }

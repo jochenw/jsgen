@@ -3,6 +3,10 @@ package com.github.jochenw.jsgen.api;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+
+/** Representation of a static initializer: An anonymous code block, which is being
+ * executed, when the class is loaded. 
+ */
 public class StaticInitializer extends CodeBlock<StaticInitializer> implements ICommentOwner  {
 	private Comment comment;
 

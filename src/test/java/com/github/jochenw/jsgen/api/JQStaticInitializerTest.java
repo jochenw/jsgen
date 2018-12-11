@@ -80,7 +80,7 @@ public class JQStaticInitializerTest {
 	 */
 	@Test
 	public void testInitJavaDefault() throws Exception {
-		final JSGFactory factory = JSGFactory.build();
+		final JSGFactory factory = JSGFactory.create();
 		generateInitJava(factory);
 		final String gotDefault = asString(factory, AbstractSourceWriter.DEFAULT_FORMATTER);
 		Assert.assertEquals(INIT_JAVA_DEFAULT, gotDefault);
@@ -88,7 +88,7 @@ public class JQStaticInitializerTest {
 
 	@Test
 	public void testInitJavaMaven() throws Exception {
-		final JSGFactory factory = JSGFactory.build();
+		final JSGFactory factory = JSGFactory.create();
 		generateInitJava(factory);
 		final String gotDefault = asString(factory, AbstractSourceWriter.MAVEN_FORMATTER);
 		Assert.assertEquals(INIT_JAVA_MAVEN, gotDefault);

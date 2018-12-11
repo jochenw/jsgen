@@ -82,7 +82,7 @@ public class HelloWorldTest {
 	}
 
 	private String generateHelloWorld(JSGSourceFormatter pFormatter) throws UnsupportedEncodingException {
-		final JSGFactory factory = JSGFactory.build();
+		final JSGFactory factory = JSGFactory.create();
 		final Source jsb = factory.newSource("com.foo.myapp.Main").makePublic();
 		final Method mainMethod = jsb.newMethod("main").makePublic().makeStatic();
 		mainMethod.parameter(JQName.STRING_ARRAY, "pArgs");

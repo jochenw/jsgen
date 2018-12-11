@@ -3,7 +3,10 @@ package com.github.jochenw.jsgen.api;
 import javax.annotation.Nonnull;
 
 
-public class Method extends Subroutine<Method> implements IAnnotatable, IProtectable<Method>, IStaticable<Method> {
+/** Representation of a method, that is a member of a class.
+ */
+public class Method extends Subroutine<Method>
+        implements IAbstractable<Method>, IProtectable<Method>, IStaticable<Method> {
 	@Nonnull private JQName type;
 	@Nonnull private IProtectable.Protection protection;
 	@Nonnull private String name;
@@ -15,20 +18,39 @@ public class Method extends Subroutine<Method> implements IAnnotatable, IProtect
 	@Override
 	protected Method self() { return this; }
 
+	/** Sets the methods return type.
+	 * @param pType The methods return type. "void" for
+	 *   void methods.
+	 * @return This builder.
+	 */
 	@Nonnull public Method returnType(@Nonnull JQName pType) {
 		assertMutable();
 		type = pType;
 		return this;
 	}
 
+	/** Sets the methods return type.
+	 * @param pType The methods return type. {@link Void#TYPE} for
+	 *   void methods.
+	 * @return This builder.
+	 */
 	@Nonnull public Method returnType(@Nonnull Class<?> pType) {
 		return returnType(JQName.valueOf(pType));
 	}
 
+	/** Sets the methods return type.
+	 * @param pType The methods return type. {@link JQName#VOID_TYPE} for
+	 *   void methods.
+	 * @return This builder.
+	 */
 	@Nonnull public Method returnType(@Nonnull String pType) {
 		return returnType(JQName.valueOf(pType));
 	}
 
+	/** Returns the methods return type.
+	 * @return The methods return type. {@link JQName#VOID_TYPE} for
+	 *   void methods.
+	 */
 	@Nonnull public JQName getReturnType() {
 		return type;
 	}
@@ -39,20 +61,27 @@ public class Method extends Subroutine<Method> implements IAnnotatable, IProtect
 		return this;
 	}
 
+	/** Returns the methods name.
+	 * @return The methods name.
+	 */
 	@Nonnull public String getName() {
 		return name;
 	}
 
-	@Nonnull Method makeAbstract() {
+	
+	@Nonnull public Method makeAbstract() {
 		return makeAbstract(true);
 	}
 	
-	@Nonnull Method makeAbstract(boolean pAbstract) {
+	@Nonnull public Method makeAbstract(boolean pAbstract) {
 		assertMutable();
 		isAbstract = pAbstract;
 		return this;
 	}
-	
+
+	/** Returns, whether this method is abstract.
+	 * @return True, if this method is abstract, otherwise false.
+	 */
 	public boolean isAbstract() {
 		return isAbstract;
 	}
@@ -105,7 +134,10 @@ public class Method extends Subroutine<Method> implements IAnnotatable, IProtect
 	@Nonnull public Protection getProtection() {
 		return protection;
 	}
-	
+
+	/** Returns, whether this method is final.
+	 * @return True, if this method is final, otherwise false.
+	 */
 	public boolean isFinal() {
 		return isFinal;
 	}
@@ -120,12 +152,18 @@ public class Method extends Subroutine<Method> implements IAnnotatable, IProtect
 		return this;
 	}
 
+	/** Returns, whether this method is synchronized.
+	 * @return True, if this method is synchronized, otherwise false.
+	 */
 	public boolean isSynchronized() {
 		return isSynchronized;
 	}
 
 	private static final JQName OVERRIDE = JQName.valueOf(Override.class);
 
+	/** Specified, that this method is being annotated with {@link Override}.
+	 * @return This builder.
+	 */
 	@Nonnull
 	public Method overriding() {
 		return overriding(true);
@@ -138,7 +176,11 @@ public class Method extends Subroutine<Method> implements IAnnotatable, IProtect
 		}
 		return this;
 	}
-	
+
+	/** Returns, whether this method is annotated with {@link Override}.
+	 * @return True, if this method is annotated with {@link Override},
+	 *   otherwise false.
+	 */
 	public boolean isOverriding() {
 		return isAnnotatedWith(OVERRIDE);
 	}

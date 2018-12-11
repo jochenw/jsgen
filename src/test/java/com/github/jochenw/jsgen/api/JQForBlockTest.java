@@ -55,7 +55,7 @@ public class JQForBlockTest {
 
 	@Test
 	public void testForBlockJavaDefault() throws Exception {
-		final JSGFactory factory = JSGFactory.build();
+		final JSGFactory factory = JSGFactory.create();
 		generateForBlockJava(factory);
 		final String gotDefault = asString(factory, AbstractSourceWriter.DEFAULT_FORMATTER);
 		Assert.assertEquals(FOR_BLOCK_JAVA_DEFAULT, gotDefault);
@@ -63,7 +63,7 @@ public class JQForBlockTest {
 
 	@Test
 	public void testForBlockJavaMaven() throws Exception {
-		final JSGFactory factory = JSGFactory.build();
+		final JSGFactory factory = JSGFactory.create();
 		generateForBlockJava(factory);
 		final String gotDefault = asString(factory, AbstractSourceWriter.MAVEN_FORMATTER);
 		Assert.assertEquals(FOR_BLOCK_JAVA_MAVEN, gotDefault);

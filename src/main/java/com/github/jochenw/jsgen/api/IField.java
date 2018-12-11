@@ -4,8 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Common interface of a field. (Class members, local variables, and parameters.)
+ * @param <T> The actual object type. Used to specify the return type for builder methods.
  */
-public interface IField extends IAnnotatable {
+public interface IField<T extends IField<T>> extends IAnnotatable<T> {
 	/** Returns the fields name.
 	 * @return The fields name.
 	 */

@@ -11,8 +11,13 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
 import com.github.jochenw.jsgen.util.Objects;
 
 
-public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> implements IAnnotatable, IProtectable<T>, ICommentOwner {
-	public static class Parameter extends AbstractBuilder<Parameter> implements IField {
+/** Abstract base class for named code blocks, like methods, and constructors.
+ * @param <T> The actual object type. Used to specify the return type for builder methods.
+ */
+public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> implements IAnnotatable<T>, IProtectable<T>, ICommentOwner {
+	/** Representation of a method, or constructor parameter.
+	 */
+	public static class Parameter extends AbstractBuilder<Parameter> implements IField<Parameter> {
 		private final AnnotationSet annotations = new AnnotationSet();
 		private JQName type;
 		private String name;
@@ -22,7 +27,11 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 		public AnnotationSet getAnnotations() {
 			return annotations;
 		}
-	
+
+		/** Sets the parameters name.
+		 * @param pName The parameters name.
+		 * @return This builder.
+		 */
 		public Parameter name(String pName) {
 			assertMutable();
 			name = pName;
@@ -33,6 +42,10 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 			return name;
 		}
 	
+		/** Sets the parameters type.
+		 * @param pType The parameters type.
+		 * @return This builder.
+		 */
 		public Parameter type(JQName pType) {
 			assertMutable();
 			type = pType;
@@ -107,36 +120,96 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 		return protection;
 	}
 
-	public List<Parameter> getParameters() {
+	/** Returns the list of parameters.
+	 * @return The list of parameters, possibly empty. Never null.
+	 * @see #parameter(JQName, String)
+	 * @see #parameter(Class, String)
+	 * @see #parameter(String, String)
+	 */
+	@Nonnull public List<Parameter> getParameters() {
 		return parameters;
 	}
 
-	@Nonnull T exception(@Nonnull String pType) {
+	/** Declares am exception, which is thrown by this method, or constructor.
+	 * @param pType The exceptions type.
+	 * @return This builder.
+	 * @see #exception(JQName)
+	 * @see #exception(Class)
+	 * @see #getExceptions()
+	 */
+	@Nonnull public T exception(@Nonnull String pType) {
 		return exception(JQName.valueOf(pType));
 	}
 
-	@Nonnull T exception(@Nonnull Class<?> pType) {
+	/** Declares am exception, which is thrown by this method, or constructor.
+	 * @param pType The exceptions type.
+	 * @return This builder.
+	 * @see #exception(JQName)
+	 * @see #exception(String)
+	 * @see #getExceptions()
+	 */
+	@Nonnull public T exception(@Nonnull Class<? extends Throwable> pType) {
 		return exception(JQName.valueOf(pType));
 	}
 
-	@Nonnull T exception(@Nonnull JQName pType) {
+	/** Declares am exception, which is thrown by this method, or constructor.
+	 * @param pType The exceptions type.
+	 * @return This builder.
+	 * @see #exception(String)
+	 * @see #exception(Class)
+	 * @see #getExceptions()
+	 */
+	@Nonnull public T exception(@Nonnull JQName pType) {
 		assertMutable();
 		exceptions.add(Objects.requireNonNull(pType, "Exception"));
 		return self();
 	}
 
-	public List<JQName> getExceptions() {
+	/** Returns the list of thrown exceptions.
+	 * @return The list of thrown exceptions, possibly empty. Never null.
+	 */
+	@Nonnull public List<JQName> getExceptions() {
 		return exceptions;
 	}
 
-	public Parameter parameter(@Nonnull Class<?> pType, @Nonnull String pName) {
+	/** Creates a new parameter with the given type, and name, and adds it to the
+	 * methods, or constructors signatures.
+	 * @param pType The parameters type.
+	 * @param pName The parameters name.
+	 * @return The created parameter, a builder object, which can be used fo
+	 *   futher configuration.
+	 * @see #parameter(JQName, String)
+	 * @see #parameter(String, String)
+	 * @see #getParameters()
+	 */
+	@Nonnull public Parameter parameter(@Nonnull Class<?> pType, @Nonnull String pName) {
 		return parameter(JQName.valueOf(pType), pName);
 	}
 
+	/** Creates a new parameter with the given type, and name, and adds it to the
+	 * methods, or constructors signatures.
+	 * @param pType The parameters type.
+	 * @param pName The parameters name.
+	 * @return The created parameter, a builder object, which can be used fo
+	 *   futher configuration.
+	 * @see #parameter(JQName, String)
+	 * @see #parameter(Class, String)
+	 * @see #getParameters()
+	 */
 	public Parameter parameter(@Nonnull String pType, @Nonnull String pName) {
 		return parameter(JQName.valueOf(pType), pName);
 	}
 
+	/** Creates a new parameter with the given type, and name, and adds it to the
+	 * methods, or constructors signatures.
+	 * @param pType The parameters type.
+	 * @param pName The parameters name.
+	 * @return The created parameter, a builder object, which can be used fo
+	 *   futher configuration.
+	 * @see #parameter(JQName, String)
+	 * @see #parameter(String, String)
+	 * @see #getParameters()
+	 */
 	public Parameter parameter(@Nonnull JQName pType, @Nonnull String pName) {
 		assertMutable();
 		final Parameter pb = new Parameter().type(pType).name(pName);
@@ -150,7 +223,14 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 
 	private static final JQName SUPPRESSWARNINGS = JQName.valueOf(SuppressWarnings.class);
 	
-	@Nonnull T suppressWarning(String pValue, boolean pSuppressing) {
+	/** Sets, whether this method, or constructor is annotated with an
+	 * {@link SuppressWarnings} annotation with the given value.
+	 * @param pValue The warning type, which is being suppressed.
+	 * @param pSuppressing True, if this warning type is being suppressed, otherwise
+	 *   false (in which case the warning type may be removed).
+	 * @return This builder.
+	 */
+	@Nonnull public T suppressWarning(String pValue, boolean pSuppressing) {
 		final Annotation annotation = getAnnotation(SUPPRESSWARNINGS);
 		if (annotation == null) {
 			if (pSuppressing) {
@@ -190,6 +270,14 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 		return self();
 	}
 
+	/** Specifies, that this method, or constructor is annotated with an
+	 * {@link SuppressWarnings} annotation with the given value. Equivalent
+	 * to {@code suppressWarning(pValue, true)}.
+	 * @param pValue The warning type, which is being suppressed.
+	 * @return This builder.
+	 * @see #suppressWarning(String, boolean)
+	 * @see #isSuppressing(String)
+	 */
 	public boolean isSuppressing(String pValue) {
 		final Annotation annotation = getAnnotation(SUPPRESSWARNINGS);
 		if (annotation == null) {
