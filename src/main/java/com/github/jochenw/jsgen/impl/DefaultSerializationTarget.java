@@ -6,17 +6,17 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 
 
-/** Default implementation of {@link JSGSourceTarget}, which writes
+/** Default implementation of {@link SerializationTarget}, which writes
  * to an {@link Appendable} (typically a {@link Writer}).
  */
-public class DefaultJSGSourceTarget implements JSGSourceTarget {
+public class DefaultSerializationTarget implements SerializationTarget {
 	private final Appendable appendable;
 	private String lineTerminator = "\n";
 
 	/** Creates a new instance, which writes to the given {@link Appendable}.
 	 * @param pAppendable The actual target, to which generated code is being written.
 	 */
-	public DefaultJSGSourceTarget(Appendable pAppendable) {
+	public DefaultSerializationTarget(Appendable pAppendable) {
 		appendable = pAppendable;
 	}
 

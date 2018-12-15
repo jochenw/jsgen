@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 /** Representation of an inner class.
  */
-public class InnerClass extends JSGClass<InnerClass> implements IStaticable<InnerClass> {
+public class InnerClass extends ClassBase<InnerClass> implements IStaticable<InnerClass> {
 	private boolean isStatic;
 
 	/** Creates a new instance with the given type.

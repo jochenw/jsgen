@@ -17,7 +17,7 @@ import com.github.jochenw.jsgen.api.JQName;
 import com.github.jochenw.jsgen.api.Source;
 import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
 import com.github.jochenw.jsgen.impl.AbstractSourceWriter;
-import com.github.jochenw.jsgen.impl.JSGSourceFormatter;
+import com.github.jochenw.jsgen.impl.SourceSerializer;
 
 
 public class HelloWorldTest {
@@ -81,7 +81,7 @@ public class HelloWorldTest {
 		Assert.assertEquals(HELLO_WORLD_JAVA_MAVEN, got);
 	}
 
-	private String generateHelloWorld(JSGSourceFormatter pFormatter) throws UnsupportedEncodingException {
+	private String generateHelloWorld(SourceSerializer pFormatter) throws UnsupportedEncodingException {
 		final JSGFactory factory = JSGFactory.create();
 		final Source jsb = factory.newSource("com.foo.myapp.Main").makePublic();
 		final Method mainMethod = jsb.newMethod("main").makePublic().makeStatic();

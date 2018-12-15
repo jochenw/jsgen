@@ -28,13 +28,13 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 	/** The default value for {@link #getFormatter()}: An instance of
 	 * {@link DefaultFormat}.
 	 */
-	public static final JSGSourceFormatter DEFAULT_FORMATTER = new DefaultJavaSourceFormatter(new DefaultFormat("    ", "\n"));
-	/** An alternative value for {@link #setFormatter(JSGSourceFormatter)}: An instance of
+	public static final SourceSerializer DEFAULT_FORMATTER = new DefaultJavaSourceFormatter(new DefaultFormat("    ", "\n"));
+	/** An alternative value for {@link #setFormatter(SourceSerializer)}: An instance of
 	 * {@link MavenFormat}.
 	 */
-	public static final JSGSourceFormatter MAVEN_FORMATTER = new DefaultJavaSourceFormatter(new MavenFormat("    ", "\n"));
+	public static final SourceSerializer MAVEN_FORMATTER = new DefaultJavaSourceFormatter(new MavenFormat("    ", "\n"));
 	private IImportSorter importSorter = DEFAULT_IMPORT_SORTER;
-	private @Nonnull JSGSourceFormatter formatter = DEFAULT_FORMATTER;
+	private @Nonnull SourceSerializer formatter = DEFAULT_FORMATTER;
 	private Supplier<List<JQName>> scopeProvider;
 
 	/** Returns the scope provider: It supplies a list of names, which are in the current scope.
@@ -77,8 +77,8 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 		formatter.write(pSource, ict);
 		final List<JQName> importedNames = ict.getImportedNames();
 		final StringWriter sw = new StringWriter();
-		DefaultJSGSourceTarget target = new DefaultJSGSourceTarget(sw);
-		final JSGSourceTarget trgt = new JSGSourceTarget() {
+		DefaultSerializationTarget target = new DefaultSerializationTarget(sw);
+		final SerializationTarget trgt = new SerializationTarget() {
 			@Override
 			public void write(Object pObject) {
 				if (pObject instanceof JQName) {
@@ -186,7 +186,7 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 	 * Returns the formatter.
 	 * @return The formatter.
 	 */
-	public JSGSourceFormatter getFormatter() {
+	public SourceSerializer getFormatter() {
 		return formatter;
 	}
 
@@ -194,7 +194,7 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 	 * Sets the formatter.
 	 * @param pFormatter The formatter.
 	 */
-	public void setFormatter(@Nonnull JSGSourceFormatter pFormatter) {
+	public void setFormatter(@Nonnull SourceSerializer pFormatter) {
 		formatter = pFormatter;
 	}
 }

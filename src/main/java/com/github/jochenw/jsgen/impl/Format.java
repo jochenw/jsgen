@@ -213,36 +213,143 @@ public abstract class Format {
 	 */
 	public abstract Object getFieldSuffix();
 	/** Returns the prefix of a for ... blocks condition (default
-	 * {@ljnk #INDENT}, "for (").
+	 * {@link #INDENT}, "for (").
 	 * @return The prefix of a for ... blocks condition (default
-	 * {@ljnk #INDENT}, "for (").
+	 * {@link #INDENT}, "for (").
 	 */
 	public abstract Object getForConditionPrefix();
-	/** Returns the prefix of a for ... blocks condition (default
-	 * {@ljnk #INDENT}, "for (").
-	 * @return The prefix of a for ... blocks condition (default
-	 * {@ljnk #INDENT}, "for (").
+	/** Returns the suffix of a for ... blocks condition (default
+	 * ")", "{", {@link #INC_INDENT}, {@link #NEWLINE}.
+	 * @return The suffix of a for ... blocks condition (default
+	 * ")", "{", {@link #INC_INDENT}, {@link #NEWLINE}.
 	 */
 	public abstract Object getForConditionSuffix();
+	/** Returns the prefix of a for ... blocks condition (default
+	 * {@link #INDENT}, "if (").
+	 * @return The prefix of a for ... blocks condition (default
+	 * {@link #INDENT}, "if (").
+	 */
 	public abstract Object getIfConditionPrefix();
+	/** Returns the suffix of a for ... blocks condition (default
+	 * ")", "{", {@link #INC_INDENT}, {@link #NEWLINE}.
+	 * @return The suffix of a for ... blocks condition (default
+	 * ")", "{", {@link #INC_INDENT}, {@link #NEWLINE}.
+	 */
 	public abstract Object getIfConditionSuffix();
+	/** Returns the prefix for a static initializer (default
+	 * {@link #INDENT}, "{", {@link #INC_INDENT}, {@link #NEWLINE}).
+	 * @return The prefix for a static initializer (default
+	 * {@link #INDENT}, "{", {@link #INC_INDENT}, {@link #NEWLINE}).
+	 */
 	public abstract Object getInitializerHeader();
+	/** Returns the suffix for a static initializer (default
+	 * {@link #DEC_INDENT}, {@link #INDENT}, "}", {@link #NEWLINE}).
+	 * @return The suffix for a static initializer (default
+	 * {@link #DEC_INDENT}, {@link #INDENT}, "}", {@link #NEWLINE}).
+	 */
 	public abstract Object getInitializerFooter();
+	/** Returns the prefix for a basic line of code
+	 * (default {@link #INDENT}).
+	 * @return The prefix for a basic line of code
+	 *   (default {@link #INDENT}).
+	 */
 	public abstract Object getLinePrefix();
+	/** Returns the suffix for a basic line of code
+	 * (default {@link #NEWLINE}).
+	 * @return The suffix for a basic line of code
+	 *   (default {@link #NEWLINE}).
+	 */
 	public abstract Object getLineSuffix();
+	/** Returns the suffix for a basic line of code, which needs being
+	 *   terminated with a ";" (default ";", {@link #NEWLINE}).
+	 * @return The suffix for a basic line of code, which needs being
+	 *   terminated with a ";" (default {@link #NEWLINE}).
+	 */
 	public abstract Object getLineSuffixTerminated();
+	/** Returns the prefix for a method declaration (default
+	 * {@link #INDENT})
+	 * @return The prefix for a method declaration (default
+	 * {@link #INDENT})
+	 */
 	public abstract Object getMethodDeclarationPrefix();
+	/** Returns the suffix for a method declaration (default
+	 * "{", {@link #INC_INDENT}, {@link #NEWLINE}
+	 * @return The suffix for a method declaration (default
+	 * "{", {@link #INC_INDENT}, {@link #NEWLINE}
+	 */
 	public abstract Object getMethodDeclarationSuffix();
+	/** Returns the prefix of a methods parameter list (default
+	 * ")".
+	 * @return The prefix of a methods parameter list (default
+	 * ")".
+	 */
 	public abstract Object getMethodParameterPrefix();
+	/** Returns the separator for a methods parameter list (default
+	 * ", ").
+	 * @return The separator for a methods parameter list (default
+	 * ", ").
+	 */
 	public abstract Object getMethodParameterSeparator();
+	/** Returns the prefix of a methods parameter list (default
+	 * ") ").
+	 * @return The prefix of a methods parameter list (default
+	 * ") ").
+	 */
 	public abstract Object getMethodParameterSuffix();
-	public abstract Object getNestedBlockFooter();
+	/** Returns the prefix for a nested block (default
+	 * "{", {@link #INC_INDENT}, {@link #NEWLINE}).
+	 * @return The prefix for a nested block (default
+	 * "{", {@link #INC_INDENT}, {@link #NEWLINE}).
+	 */
 	public abstract Object getNestedBlockHeader();
+	/** Returns the prefix for a nested block (default
+	 * {@link #INDENT}, {@link #DEC_INDENT}, {@link #INDENT}, "}",
+	 * {@link #NEWLINE}).
+	 * @return The prefix for a nested block (default
+	 * {@link #INDENT}, {@link #DEC_INDENT}, {@link #INDENT}, "}",
+	 * {@link #NEWLINE}).
+	 */
+	public abstract Object getNestedBlockFooter();
+	/** Returns the prefix for the package comment
+	 * (default {@link #NOTHING}).
+	 * @return The prefix for the package comment
+	 * (default {@link #NOTHING}).
+	 */
 	public abstract Object getPackageCommentPrefix();
+	/** Returns the suffix for the package comment
+	 * (default {@link #INDENT}).
+	 * @return The suffix for the package comment
+	 * (default {@link #INDENT}).
+	 */
 	public abstract Object getPackageCommentSuffix();
+	/** Returns the prefix for a "throw new" statement
+	 * (default "throw new ").
+	 * @return The prefix for a "throw new" statement
+	 * (default "throw new ").
+	 */
 	public abstract Object getThrowsPrefix();
+	/** Returns the prefix for a "throw new" statements
+	 * list of constructor arguments (default "(").
+	 * @return The prefix for a "throw new" statements
+	 * list of constructor arguments (default "(").
+	 */
 	public abstract Object getThrowsConstructorArgsPrefix();
+	/** Returns the suffix for a "throw new" statements
+	 * list of constructor arguments (default ")").
+	 * @return The suffix for a "throw new" statements
+	 * list of constructor arguments (default ")").
+	 */
 	public abstract Object getThrowsConstructorArgsSuffix();
+	/** Returns the prefix for a "while ..." blocks
+	 * condition (default {@link #INDENT}, "while (").
+	 * @return The prefix for a "while ..." blocks
+	 * condition (default {@link #INDENT}, "while (").
+	 */
 	public abstract Object getWhileConditionPrefix();
+	/** Returns the suffix for a "while ..." blocks
+	 * condition (default ") {", INC_INDENT, NEWLINE).
+	 * @return The suffix for a "while ..." blocks
+	 * condition (default ") {", INC_INDENT, NEWLINE).
+	 */
 	public abstract Object getWhileConditionSuffix();
 }

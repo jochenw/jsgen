@@ -22,7 +22,7 @@ import com.github.jochenw.jsgen.api.LocalField;
 import com.github.jochenw.jsgen.api.IProtectable.Protection;
 import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
 import com.github.jochenw.jsgen.impl.AbstractSourceWriter;
-import com.github.jochenw.jsgen.impl.JSGSourceFormatter;
+import com.github.jochenw.jsgen.impl.SourceSerializer;
 
 public class JQStaticInitializerTest {
 	private static final String INIT_JAVA_DEFAULT =
@@ -94,7 +94,7 @@ public class JQStaticInitializerTest {
 		Assert.assertEquals(INIT_JAVA_MAVEN, gotDefault);
 	}
 	
-	private String asString(JSGFactory pFactory, JSGSourceFormatter pFormatter) throws UnsupportedEncodingException {
+	private String asString(JSGFactory pFactory, SourceSerializer pFormatter) throws UnsupportedEncodingException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		final AbstractSourceWriter jsgw = new AbstractSourceWriter() {
 			@Override

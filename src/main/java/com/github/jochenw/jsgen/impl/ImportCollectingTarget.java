@@ -12,12 +12,25 @@ import javax.annotation.Nonnull;
 
 import com.github.jochenw.jsgen.api.JQName;
 
-public class ImportCollectingTarget implements JSGSourceTarget {
+/** Ths implementation of {@link SerializationTarget} collects class
+ * names, which are being used, and counts the usage. The collected
+ * data is used for building the import lists.
+ */
+public class ImportCollectingTarget implements SerializationTarget {
+	/** The collected data: Basically a class name, and a usage
+	 * counter.
+	 */
 	public static class CountedName {
 		private int count;
 		private final JQName name;
 		private final CountedName next;
 
+		/**
+		 * Creates a new usage counter for the given class name.
+		 * @param pName The class name being counted.
+		 * @param pNext The next element in a linked list. (Null,
+		 *   if this is the last element in the list.)
+		 */
 		public CountedName(JQName pName, CountedName pNext) {
 			name = pName;
 			next = pNext;
@@ -29,20 +42,24 @@ public class ImportCollectingTarget implements JSGSourceTarget {
 	private Function<Object,Object> filter;
 	private JQName importingClass;
 
+	/**
+	 * Returns the class, which is currently being generated.
+	 * (And thus, the importing class.)
+	 * @return The class, which is currently being generated.
+	 * (And thus, the importing class.)
+	 */
 	public JQName getImportingClass() {
 		return importingClass;
 	}
 
-	public void setImportingClass(JQName importingClass) {
-		this.importingClass = importingClass;
-	}
-
-	public Function<Object, Object> getFilter() {
-		return filter;
-	}
-
-	public void setFilter(Function<Object, Object> filter) {
-		this.filter = filter;
+	/**
+	 * Sets the class, which is currently being generated.
+	 * (And thus, the importing class.)
+	 * @param pImportingClass The class, which is currently being generated.
+	 * (And thus, the importing class.)
+	 */
+	public void setImportingClass(JQName pImportingClass) {
+		importingClass = pImportingClass;
 	}
 
 	@Override
@@ -128,6 +145,9 @@ public class ImportCollectingTarget implements JSGSourceTarget {
 		return name;
 	}
 
+	/** Returns the list of names, which can be imported.
+	 * @return The list of names, which can be imported.
+	 */
 	public List<JQName> getImportedNames() {
 		close();
 		return new ArrayList<>(importedNames);

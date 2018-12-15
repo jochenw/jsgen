@@ -13,7 +13,7 @@ import com.github.jochenw.jsgen.util.AbstractBuilder;
  */
 public abstract class CodeBlock<T extends CodeBlock<T>> extends AbstractBuilder<T> implements IBodyProvider, IBlock<T> {
 	private final Block<?> body = new Block<>();
-	private JSGClass<?> sourceClass;
+	private ClassBase<?> sourceClass;
 	private Comment comment;
 
 	/**
@@ -30,7 +30,7 @@ public abstract class CodeBlock<T extends CodeBlock<T>> extends AbstractBuilder<
 	 * @return This code blocks outer Java class.
 	 */
 	@Nonnull
-	public JSGClass<?> getSourceClass() {
+	public ClassBase<?> getSourceClass() {
 		return sourceClass;
 	}
 
@@ -39,7 +39,7 @@ public abstract class CodeBlock<T extends CodeBlock<T>> extends AbstractBuilder<
 	 * object. Instead, it might be an inner class.
 	 * @return This code block.
 	 */
-	@Nonnull T sourceClass(JSGClass<?> pClass) {
+	@Nonnull T sourceClass(ClassBase<?> pClass) {
 		assertMutable();
 		sourceClass = pClass;
 		return self();

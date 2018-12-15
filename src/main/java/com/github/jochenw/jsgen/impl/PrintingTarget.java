@@ -3,16 +3,36 @@ package com.github.jochenw.jsgen.impl;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-public class PrintingTarget implements JSGSourceTarget {
+
+/** Implementation of a target, which logs its invocations.
+ * This is mainly usefull for debugging JSGen itself.
+ */
+public class PrintingTarget implements SerializationTarget {
 	private final Appendable appendable;
 	private final int maxLines;
 	private int lines;
 
+	/** Creates a new instance, which logs to the given
+	 * {@link Appendable}.
+	 * @param pAppendable The {@link Appendable}, to which
+	 *   method calls are being logged.
+	 * @param pMaxLines The maximum number of calls to log.
+	 *   An {@link IllegalStateException} is being thrown,
+	 *   if this number would be exceeded. Use -1 for unlimited.
+	 * @see #PrintingTarget(Appendable)
+	 */
 	public PrintingTarget(Appendable pAppendable, int pMaxLines) {
 		appendable = pAppendable;
 		maxLines = pMaxLines;
 	}
 
+	/** Creates a new instance, which logs to the given
+	 * {@link Appendable}. The number of lines being logged,
+	 * is unlimited.
+	 * @param pAppendable The {@link Appendable}, to which
+	 *   method calls are being logged.
+	 * @see #PrintingTarget(Appendable, int)
+	 */
 	public PrintingTarget(Appendable pAppendable) {
 		this(pAppendable,-1);
 	}

@@ -11,7 +11,7 @@ import com.github.jochenw.jsgen.api.IField;
 import com.github.jochenw.jsgen.api.IProtectable;
 import com.github.jochenw.jsgen.api.IStaticable;
 import com.github.jochenw.jsgen.api.IVolatilable;
-import com.github.jochenw.jsgen.api.JSGClass;
+import com.github.jochenw.jsgen.api.ClassBase;
 import com.github.jochenw.jsgen.api.Comment;
 import com.github.jochenw.jsgen.api.Constructor;
 import com.github.jochenw.jsgen.api.DoWhileBlock;
@@ -40,11 +40,11 @@ import com.github.jochenw.jsgen.util.Objects;
  * implementation uses a so-called {@link Format} object to determine the
  * layout.
  */
-public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
+public class DefaultJavaSourceFormatter implements SourceSerializer {
 	/** Internal data object, which is passed between method calls.
 	 */
-	public static class Data implements JSGSourceTarget {
-		private final JSGSourceTarget target;
+	public static class Data implements SerializationTarget {
+		private final SerializationTarget target;
 		private final Format format;
 		private int numIndents;
 
@@ -53,7 +53,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 		 * @param pTarget The target object
 		 * @param pFormat The format object.
 		 */
-		public Data(JSGSourceTarget pTarget, Format pFormat) {
+		public Data(SerializationTarget pTarget, Format pFormat) {
 			target = pTarget;
 			format = pFormat;
 		}
@@ -210,7 +210,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 	 * target.
 	 */
 	@Override
-	public void write(Source pSource, JSGSourceTarget pTarget) {
+	public void write(Source pSource, SerializationTarget pTarget) {
 		scope.clear();
 		scope.add(pSource.getType());
 		final Data data = new Data(pTarget, format);
@@ -239,13 +239,13 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 				}
 			}
 		}
-		writeClass((JSGClass<?>) pSource, data);
+		writeClass((ClassBase<?>) pSource, data);
 	}
 
 	/** Called to write the given Java class object to the given
 	 * target.
 	 */
-	protected void writeClass(JSGClass<?> pClass, Data pTarget) {
+	protected void writeClass(ClassBase<?> pClass, Data pTarget) {
 		writeObject(format.getClassCommentPrefix(), pTarget);
 		write(pClass.getComment(), pTarget);
 		writeObject(format.getClassCommentSuffix(), pTarget);
@@ -515,7 +515,7 @@ public class DefaultJavaSourceFormatter implements JSGSourceFormatter {
 			} else if (o instanceof Constructor) {
 				writeMethod((Constructor) o, pTarget);
 			} else if (o instanceof InnerClass) {
-				final JSGClass<?> clazz = (JSGClass<?>) o;
+				final ClassBase<?> clazz = (ClassBase<?>) o;
 				scope.add(clazz.getType());
 				writeClass(clazz, pTarget);
 				scope.remove(scope.size()-1);

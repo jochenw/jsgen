@@ -7,7 +7,7 @@ import com.github.jochenw.jsgen.impl.Quoter;
 
 /** Representation of a Java source file.
  */
-public class Source extends JSGClass<Source> {
+public class Source extends ClassBase<Source> {
 	private Comment packageComment;
 
 	/** Creates a new instance with the given type.

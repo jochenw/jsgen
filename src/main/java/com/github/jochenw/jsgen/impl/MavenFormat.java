@@ -1,6 +1,20 @@
 package com.github.jochenw.jsgen.impl;
 
+
+/** Alternative implementation of {@link Format}, which
+ * creates a layout, that matches the Maven code style,
+ * and conventions. (See <a href="https://maven.apache.org/developers/conventions/code.html">
+ * this</a> for details.
+ * @see DefaultFormat
+ */
 public class MavenFormat extends Format {
+	/** Creates a new instance with the given indentation string,
+	 * and the given line terminator.
+	 * @param pIndentString The indentation string, typically a sequence of
+	 * blanks, like "    ".
+	 * @param pLineTerminator The line terminator, typically "\n",
+	 *   or "\r\n".
+	 */
 	public MavenFormat(String pIndentString, String pLineTerminator) {
 		super(pIndentString, pLineTerminator);
 	}

@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.github.jochenw.jsgen.api.JSGFactory.NamedResource;
 import com.github.jochenw.jsgen.api.Subroutine.Parameter;
 import com.github.jochenw.jsgen.impl.AbstractSourceWriter;
-import com.github.jochenw.jsgen.impl.JSGSourceFormatter;
+import com.github.jochenw.jsgen.impl.SourceSerializer;
 
 public class JQForBlockTest {
 	private static final String FOR_BLOCK_JAVA_DEFAULT =
@@ -79,7 +79,7 @@ public class JQForBlockTest {
 			.line(listField, ".add(", args, "[i]);");
 	}
 
-	private String asString(JSGFactory pFactory, JSGSourceFormatter pFormatter) throws UnsupportedEncodingException {
+	private String asString(JSGFactory pFactory, SourceSerializer pFormatter) throws UnsupportedEncodingException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		final AbstractSourceWriter jsgw = new AbstractSourceWriter() {
 			@Override
