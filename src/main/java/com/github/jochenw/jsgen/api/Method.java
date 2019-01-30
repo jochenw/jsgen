@@ -86,11 +86,26 @@ public class Method extends Subroutine<Method>
 		return isAbstract;
 	}
 
-	@Nonnull Method makeStatic() {
+
+	/** Makes this method static. Equivalent to
+	 * <pre>
+	 *   makeStatic(true)
+	 * </pre>
+	 * @return This builder.
+	 * @see #makeStatic(boolean)
+	 * @see #isStatic()
+	 */
+	@Nonnull public Method makeStatic() {
 		return makeStatic(true);
 	}
 	
-	@Nonnull Method makeStatic(boolean pStatic) {
+	/** Sets, whether this method is static.
+	 * @param pStatic True, if the method should be static, or false otherwise.
+	 * @return This builder.
+	 * @see #makeStatic()
+	 * @see #isStatic()
+	 */
+	@Nonnull public Method makeStatic(boolean pStatic) {
 		assertMutable();
 		isStatic = pStatic;
 		return this;
@@ -100,11 +115,25 @@ public class Method extends Subroutine<Method>
 		return isStatic;
 	}
 
-	@Nonnull Method makeFinal() {
+	/** Makes this method final. Equivalent to
+	 * <pre>
+	 *   makeFinal(true)
+	 * </pre>
+	 * @return This builder.
+	 * @see #makeFinal(boolean)
+	 * @see #isFinal()
+	 */
+	@Nonnull public Method makeFinal() {
 		return makeFinal(true);
 	}
 
-	@Nonnull Method makeFinal(boolean pFinal) {
+	/** Sets, whether this method is final.
+	 * @param pFinal True, if the method should be final, or false otherwise.
+	 * @return This builder.
+	 * @see #makeFinal()
+	 * @see #isFinal()
+	 */
+	@Nonnull public Method makeFinal(boolean pFinal) {
 		assertMutable();
 		isFinal = pFinal;
 		return this;
@@ -142,11 +171,25 @@ public class Method extends Subroutine<Method>
 		return isFinal;
 	}
 
-	@Nonnull Method makeSynchronized() {
+	/** Makes this method synchronized. Equivalent to
+	 * <pre>
+	 *   makeSynchronized(true)
+	 * </pre>
+	 * @return This builder.
+	 * @see #makeSynchronized(boolean)
+	 * @see #isSynchronized()
+	 */
+	@Nonnull public Method makeSynchronized() {
 		return makeSynchronized(true);
 	}
 
-	@Nonnull Method makeSynchronized(boolean pSynchronized) {
+	/** Sets, whether this method is synchronized.
+	 * @param pSynchronized True, if the method should be synchronized, or false otherwise.
+	 * @return This builder.
+	 * @see #makeSynchronized()
+	 * @see #isSynchronized()
+	 */
+	@Nonnull public Method makeSynchronized(boolean pSynchronized) {
 		assertMutable();
 		isSynchronized = pSynchronized;
 		return this;
@@ -161,15 +204,24 @@ public class Method extends Subroutine<Method>
 
 	private static final JQName OVERRIDE = JQName.valueOf(Override.class);
 
-	/** Specified, that this method is being annotated with {@link Override}.
+	/** Specifies, that this method is being annotated with {@link Override}.
 	 * @return This builder.
+	 * @see #overriding(boolean)
+	 * @see #isOverriding()
 	 */
 	@Nonnull
 	public Method overriding() {
 		return overriding(true);
 	}
 
-	@Nonnull Method overriding(boolean pOverriding) {
+	/** Specifies, whether this method is being annotated with {@link Override}.
+	 * @param pOverriding True, to annotate the method with {@code @Override},
+	 *   or false, to remove the annotation.
+	 * @return This builder.
+	 * @see #overriding()
+	 * @see #isOverriding()
+	 */
+	@Nonnull public Method overriding(boolean pOverriding) {
 		assertMutable();
 		if (pOverriding) {
 			annotation(OVERRIDE);

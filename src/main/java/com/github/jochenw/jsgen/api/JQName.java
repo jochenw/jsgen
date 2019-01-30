@@ -438,7 +438,7 @@ public class JQName implements ILocation {
 
 	/** Representation of the type {@link ArrayList}.
 	 */
-	public static final JQName ARRAYLIST = valueOf(ArrayList.class);
+	public static final JQName ARRAY_LIST = valueOf(ArrayList.class);
 	/** Representation of the type {@link Boolean}.
 	 * @see #BOOLEAN_TYPE
 	 */
@@ -484,7 +484,7 @@ public class JQName implements ILocation {
 	public static final JQName FLOAT_TYPE = new JQName("float");
 	/** Representation of the type {@link HashMap}.
 	 */
-	public static final JQName HASHMAP = valueOf(HashMap.class);
+	public static final JQName HASH_MAP = valueOf(HashMap.class);
 	/** Representation of the type {@link Integer}.
 	 * @see #INT_TYPE
 	 */
@@ -493,9 +493,6 @@ public class JQName implements ILocation {
 	 * @see #INT_OBJ
 	 */
 	public static final JQName INT_TYPE = new JQName("int");
-	/** Representation of the type {@link Map}.
-	 */
-	public static final JQName MAP = valueOf(Map.class);
 	/** Representation of the type {@link List}.
 	 */
 	public static final JQName LIST = valueOf(List.class);
@@ -507,6 +504,9 @@ public class JQName implements ILocation {
 	 * @see #LONG_OBJ
 	 */
 	public static final JQName LONG_TYPE = new JQName("long");
+	/** Representation of the type {@link Map}.
+	 */
+	public static final JQName MAP = valueOf(Map.class);
 	/** Representation of the type {@link Object}.
 	 * @see #OBJECT_ARRAY
 	 */

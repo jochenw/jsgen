@@ -1,5 +1,6 @@
 package com.github.jochenw.jsgen.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -10,6 +11,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.github.jochenw.jsgen.api.IProtectable.Protection;
+import com.github.jochenw.jsgen.impl.AbstractSourceWriter;
+import com.github.jochenw.jsgen.impl.DefaultJavaSourceFormatter;
+import com.github.jochenw.jsgen.impl.FileJavaSourceWriter;
+import com.github.jochenw.jsgen.impl.Format;
 
 
 /** A factory for creating {@link Source} objects. The factory will
@@ -167,5 +172,29 @@ public class JSGFactory {
 	 */
 	public static JSGFactory create() {
 		return new JSGFactory();
+	}
+
+	/** Writes the factories source objects as files to the given directory,
+	 * using the {@link AbstractSourceWriter#DEFAULT_FORMAT default source code layout}.
+	 * Equivalent to {@code write(pTargetDir, AbstractSourceWriter.DEFAULT_FORMAT)}.
+	 * @param pTargetDir The target directory, where to write source files
+	 *   to. The directory itself, and subdirectories, are being created,
+	 *   if necessary, as required by the package structure.
+	 */
+	public void write(File pTargetDir) {
+		write(pTargetDir, AbstractSourceWriter.DEFAULT_FORMAT); 
+	}
+
+	/** Writes the factories source objects as files to the given directory,
+	 * using the given source code format.
+	 * @param pTargetDir The target directory, where to write source files
+	 *   to. The directory itself, and subdirectories, are being created,
+	 *   if necessary, as required by the package structure.
+	 * @param pFormat The source code layout to use.
+	 */
+	public void write(File pTargetDir, Format pFormat) {
+		final FileJavaSourceWriter fjsw = new FileJavaSourceWriter(pTargetDir);
+		fjsw.setFormatter(new DefaultJavaSourceFormatter(pFormat));
+		fjsw.write(this);
 	}
 }

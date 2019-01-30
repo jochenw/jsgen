@@ -62,8 +62,8 @@ public class JQNameTest {
 		assertObjectType(JQName.SET, Set.class);
 		assertObjectType(JQName.LIST, List.class);
 		assertObjectType(JQName.MAP, Map.class);
-		assertObjectType(JQName.ARRAYLIST, ArrayList.class);
-		assertObjectType(JQName.HASHMAP, HashMap.class);
+		assertObjectType(JQName.ARRAY_LIST, ArrayList.class);
+		assertObjectType(JQName.HASH_MAP, HashMap.class);
 	}
 
 	public static class InnerClass {

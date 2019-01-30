@@ -1,0 +1,172 @@
+	-----------
+	Class Names
+	-----------
+
+Class Names in JSGen
+
+  Within JSGen, a reference to a class name is expressed as an instance
+  of {{{./apidocs/com/github/jochenw/jsgen/api/JQName}JQName}}. A
+  JQName represents a class name, but only a name. It doesn't have any
+  idea about the class itself.
+
+    * {{{How to create instances of JQName}How to create instances of JQName}}
+
+    * {{{Generic classes}Generic classes}}
+
+    * {{{Array classes}Array classes}}
+
+    * {{{Predefined constants}Predefined constants}}
+
+    * {{{Why are class names so important?}Why are class names so important?}}
+
+    * {{{Overloaded methods}Overloaded methods}}
+
+* How to create instances of JQName
+
+  Here are three different variants to create a JQName, which represents
+  the class <<<java.util.Map>>>:
+
++------------------------------
+  JQName listName1 = JQName.valueOf("java.util.Map");
+  JQName listName2 = JQName.valueOf(java.util.Map.class);
+  JQName listName3 = JQName.MAP;
++------------------------------
+
+* Generic classes
+
+  Now, our examples would create raw types, as opposed to generic types.
+  To get <<<java.util.Map<String,Object> >>>, rather than <<<java.util.Map>>>, you could
+  use
+
++------------------------------
+  JQName(Map.class).qualifiedBy(String.class,Object.class);
++------------------------------
+
+  And, for <<<java.util.Map<String,?> >>>, this would be
+
++------------------------------
+  JQName(Map.class).qualifiedBy(String.class," ");
++------------------------------
+
+* Array classes
+
+  If you have a given type <<<someType>>> , you can use
+
++------------------------------
+  someType.arrayOf();
++------------------------------
+
+  to obtain a the corresponding array type.
+
+** Predefined constants
+
+  For the most important types, ther are predefined constants, which
+  you may use:
+
+*--------------------+---------------------+
+|| Constant         || Class              ||
+*--------------------+---------------------+
+|JQName.ARRAY_LIST   | java.util.ArrayList |
+*--------------------+---------------------+
+|JQName.BOOLEAN_OBJ  | java.lang.Boolean   |
+*--------------------+---------------------+
+|JQName.BOOLEAN_TYPE | primitive boolean   |
+*--------------------+---------------------+
+|JQName.BYTE_OBJ     | java.lang.Byte      |
+*--------------------+---------------------+
+|JQName.BYTE_TYPE    | primitive byte      |
+*--------------------+---------------------+
+|JQName.CHAR_OBJ     | java.lang.Character |
+*--------------------+---------------------+
+|JQName.CHAR_TYPE    | primitive char      |
+*--------------------+---------------------+
+|JQName.COLLECTION   | java.util.Collection|
+*--------------------+---------------------+
+|JQName.DOUBLE_OBJ   | java.lang.Double    |
+*--------------------+---------------------+
+|JQName.DOUBLE_TYPE  | primitive double    |
+*--------------------+---------------------+
+|JQName.FLOAT_OBJ    | java.lang.Float     |
+*--------------------+---------------------+
+|JQName.FLOAT_TYPE   | primitive float     |
+*--------------------+---------------------+
+|JQName.HASH_MAP     | java.util.HashMap   |
+*--------------------+---------------------+
+|JQName.INT_OBJ      | java.lang.Integer   |
+*--------------------+---------------------+
+|JQName.INT_TYPE     | primitive int       |
+*--------------------+---------------------+
+|JQName.LIST         | java.util.List      |
+*--------------------+---------------------+
+|JQName.LONG_OBJ     | java.lang.Long      |
+*--------------------+---------------------+
+|JQName.LONG_TYPE    | primitive long      |
+*--------------------+---------------------+
+|JQName.MAP          | java.util.Map       |
+*--------------------+---------------------+
+|JQName.OBJECT       | java.lang.Object    |
+*--------------------+---------------------+
+|JQName.OBJECT_ARRAY | java.lang.Object[]  |
+*--------------------+---------------------+
+|JQName.SET          | java.util.Set       |
+*--------------------+---------------------+
+|JQName.SHORT_OBJ    | java.lang.Short     |
+*--------------------+---------------------+
+|JQName.SHORT_TYPE   | primitive short     |
+*--------------------+---------------------+
+|JQName.STRING       | java.lang.String    |
+*--------------------+---------------------+
+|JQName.STRING_ARRAY | java.lang.String[]  |
+*--------------------+---------------------+
+|JQName.VOID         | java.lang.Void      |
+*--------------------+---------------------+
+|JQName.VOID_TYPE    | primitive void      |
+*--------------------+---------------------+
+
+* Why are class names so important?
+
+    Class names play an important role in JSGen, because they are required
+    for managing the imports automatically. Take a look at the following
+    examples:
+
+    [[1]] <<<method.line("java.util.List list = new java.util.ArrayList()")>>>
+
+    [[2]] <<<method.line("java.util.List", " list = new ", "java.util.ArrayList", "()")>>>
+    
+	[[3]] <<<method.line(List.class, " list = new", ArrayList.class, "()")>>>
+	
+	[[4]] <<<method.line(JQName.LIST, " list = new ", JQName.ARRAYLIST, "()")>>>
+
+    Now, all of these examples would do the same: Adding the following line
+    to the given method.
+
++-----------------------
+    java.util.List list = new java.util.ArrayList();
++-----------------------
+
+    However, there is an important difference between the first two examples,
+    and the other two: In the first two cases, the class names are written
+    as strings. As a result, JSGen has no possibility to detect, that there
+    are class names, which are being used.
+
+    This is different in examples 3), and 4), where JSGen will recognize
+    instances of java.lang.Class, or JQName, respectively. So, JSGen will
+    know, that the classes <<java.util.List>>, and <<java.util.ArrayList>>
+    are in use, and it will increment the respective usage counter.
+
+* Overloaded methods
+
+    JSGen tries very hard, to make working with class names easy. Whereever
+    possible, methods are overloaded to accept either an instance of
+    <JQName>, <<or>> an instance of <Class>, <<or>> a string. Use,
+    whatever's convenient to you.
+
+    For example, to create a getter method, which returns a boolean, you
+    could do either of the following:
+
++---------------------
+|   Source src;
+|   src.newMethod(JQName.BOOLEAN_OBJ, "isValid");
+|   src.newMethod(Boolean.class, "isValid");
+|   src.newMethod("java.lang.Boolean", "isValid");
++---------------------

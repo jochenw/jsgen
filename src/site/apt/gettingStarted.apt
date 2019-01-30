@@ -25,36 +25,32 @@ public class Main {
 
 --------------------
     public void generateHelloWorldJava(File pTargetDir) {
-		final JSGFactory factory = JSGFactory.build();
+		final JSGFactory factory = JSGFactory.create();
 		final Source s = factory.newSource("com.foo.myapp.Main").makePublic();
 		final Method mainMethod = s.newMethod("main").makePublic().makeStatic();
 		mainMethod.parameter(JSGQName.STRING_ARRAY, "pArgs");
 		mainMethod.body().line(System.class, ".out.println(", q("Hello, world!"), ");");
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final FileJavaSourceWriter jsgw = new FileJavaSourceWriter(pTargetDir);
-		jsgw.setFormatter(new DefaultJavaSourceFormatter());
-		jsgw.write(factory);
-		final String got = baos.toString(StandardCharsets.UTF_8.name());
-		return got;
+		// The class has been created, now have it written to disk:
+		factory.writeTo(new File("target/generated-sources/myapp");
     }
 --------------------
 
-* Example breakdown
+Example breakdown
 
     Having seen the example, let's break it down into the relevant parts:
 
-** Creating the factory
+* Creating the factory
 
     The first line is about creating a factory.
 
 --------------------
-		final JSGFactory factory = JSGFactory.build();
+		final JSGFactory factory = JSGFactory.create();
 --------------------
     The factory is an instance of {{{./apidocs/com/github/jochenw/jsgen/api/JSGFactory.html}JSGFactory}}.
     It is an object, that you will rarely notice, unless you are generating a real lot of Java source files. The purpose of the factory is
     basically to collect all the generated sources, so that you may persist them at a later point in one go.
  
- ** Creating a Source object
+* Creating a Source object
  
     The factory is being used to create {{{./apidocs/com/github/jochenw/jsgen/api/Source.html}Source}} objects. These objects are basically
     representations of a Java source file, which is being generated. For every Java source file, that you want to generate, you must create
@@ -69,4 +65,40 @@ public class Main {
    The Source object is a builder: In other words, it is configured by invoking other methods on it, which return the Source object. In the
    example, we want the generated class to be public. So, we invoke the method <<makePublic>> on it.
   
+* Creating the "main" method.
+ 
+     The next line uses the source builder to create a new method, named
+     "main". By creating the method, we do in fact create another builder,
+     so the creation looks like this:
+
+--------------------
+		final Method mainMethod = s.newMethod("main").makePublic().makeStatic();
+--------------------
+
+     The methods <<makePublic>>, and <<makeStatic>> are being invoked on the
+     method builder, declaring that the method should be "public", and "static".
+
+* Method parameters
+
+     The method builder is also used to add parameters to the method:
+
+--------------------
+		mainMethod.parameter(JSGQName.STRING_ARRAY, "pArgs");
+--------------------
+
+     Note the use of the builtin constant <JSGQName.STRING_ARRAY> to
+     specify the parameter types. Such constants exist for a lot of
+     commonly used types, including <java.lang.Integer>, <java.lang.Long>,
+     <java.lang.Boolean>, <java.lang.Object>, <java.lang.String>,
+     <java.util.List>, <java.util.Map>, and the primitive types.
+     For {{{./classNames.html}other types}}, see the dedicated document.
+
+Things to note
+
+    Some things should be noted, after studying the example:
+
+    [[1]] There is no need to specify any imports. JSGen has detected automatically,
+          that the class java.lang.System is being used, and will create
+          import statements, as necessary.
+
  

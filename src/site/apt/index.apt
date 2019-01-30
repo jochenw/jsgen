@@ -16,7 +16,7 @@ JSGen (Java Source Generation Framework)
   was adopted by the Apache Webservices project. And it was buried as part of the bigger project, when the latter was moved to the
   {{{http://svn.apache.org/repos/asf/webservices/archive/jaxme/}Apache Attic}}.
 
-  That was fine for quite some time, because the latest released version (JaxMeJS 0.5.2) did its job quite well.
+  That was fine for quite some time, because the latest released version (JaxMeJS 0.5.2) was still doing a decent job.
   Over the years, however, the Java language has evolved, and the lack of support for features like Generics, or
   Annotations, became a burden. Hence the Successor: Jsgen picks up, where JaxMeJS ended. It is, however, a complete
   rewrite with several additional features, that the author considers to be important for modern Java applications:
@@ -28,11 +28,12 @@ JSGen (Java Source Generation Framework)
     [[3]] The builder pattern has been adopted. Almost all important classes are implemented as builders. This should make
           writing the actual source generators much more concise, and maintainable, than it used to be before.
 
-    [[4]] The code style is configurable. Code styles allow you to concentrate on the actual work. The resulting Jave source will
-          look nicely formatted, anyways. As of this writing, you can select between two builtin code styles:
+    [[4]] The code style is configurable. Code styles allow you to concentrate on the actual work.
+          The resulting Jave source will look nicely formatted, anyways. As of this writing, you
+          can select between two builtin code styles:
 
-         * The default code style is basically the authors personal free style, roughly comparable to the default
-            code style of the Eclipse Java IDE.
+         * The default code style is basically the authors personal free style, roughly comparable
+           to the default code style of the Eclipse Java IDE.
 
          * As an alternative, there is also a Maven code style, which is widely used in the Open Source communities.
            Compared to the default style, it is less concise, if not even a bit verbose. On the other hand, it is
@@ -43,6 +44,7 @@ JSGen (Java Source Generation Framework)
  Further reading:
  
     * {{{./gettingStarted.html}Getting Started}}
+
     * {{{./status.html}Project Status}} (In short: Alpha quality, API not yet stable, immature.)
 
  

@@ -21,6 +21,12 @@ import com.github.jochenw.jsgen.util.Objects;
 /** Abstract base class for implementations of {@link ISourceWriter}.
  */
 public abstract class AbstractSourceWriter implements ISourceWriter {
+	/** The default source code layout.
+	 */
+	public static final DefaultFormat DEFAULT_FORMAT = new DefaultFormat("    ", "\n");
+	/** The Maven source code layout.
+	 */
+	public static final MavenFormat MAVEN_FORMAT = new MavenFormat("    ", "\n");
 	/** The default value for {@link #getImportSorter}: An instance of
 	 * {@link DefaultImportSorter}.
 	 */
@@ -28,11 +34,11 @@ public abstract class AbstractSourceWriter implements ISourceWriter {
 	/** The default value for {@link #getFormatter()}: An instance of
 	 * {@link DefaultFormat}.
 	 */
-	public static final SourceSerializer DEFAULT_FORMATTER = new DefaultJavaSourceFormatter(new DefaultFormat("    ", "\n"));
+	public static final SourceSerializer DEFAULT_FORMATTER = new DefaultJavaSourceFormatter(DEFAULT_FORMAT);
 	/** An alternative value for {@link #setFormatter(SourceSerializer)}: An instance of
 	 * {@link MavenFormat}.
 	 */
-	public static final SourceSerializer MAVEN_FORMATTER = new DefaultJavaSourceFormatter(new MavenFormat("    ", "\n"));
+	public static final SourceSerializer MAVEN_FORMATTER = new DefaultJavaSourceFormatter(MAVEN_FORMAT);
 	private IImportSorter importSorter = DEFAULT_IMPORT_SORTER;
 	private @Nonnull SourceSerializer formatter = DEFAULT_FORMATTER;
 	private Supplier<List<JQName>> scopeProvider;

@@ -458,17 +458,21 @@ public abstract class ClassBase<T extends ClassBase<T>> extends AbstractBuilder<
 	 * protection. Equivalent to {@code newInnerClass(pClassName, Protection.PACKAGE)}.
 	 * @param pClassName The inner classes name.
 	 * @return The inner classes builder.
+	 * @see #newInnerClass(String, com.github.jochenw.jsgen.api.IProtectable.Protection)
+	 * @see #getInnerClass(String)
 	 */
 	@Nonnull public InnerClass newInnerClass(String pClassName) {
 		return newInnerClass(pClassName, Protection.PACKAGE);
 	}
-
+	
 	/**
 	 * Creates a new inner class with the given simple name, and the given
 	 * protection.
 	 * @param pClassName The inner classes name.
 	 * @param pProtection The inner classes protection.
 	 * @return The inner classes builder.
+	 * @see #newInnerClass(String)
+	 * @see #getInnerClass(String)
 	 */
 	@Nonnull public InnerClass newInnerClass(String pClassName, Protection pProtection) {
 		assertMutable();
@@ -478,6 +482,32 @@ public abstract class ClassBase<T extends ClassBase<T>> extends AbstractBuilder<
 		return clazz;
 	}
 
+	/**
+	 * Returns the inner class with the given name, if such a class exists, or null.
+	 * The class must have previously been created with
+	 * <pre>
+	 *   newInnerClass(pClassName)
+	 * </pre>
+	 * @return The builder of the previously created inner class with the given local name, if such
+	 *   a class exists. Otherwise returns null.
+	 * @param pClassName 
+	 * @see #newInnerClass(String)
+	 * @see #newInnerClass(String, com.github.jochenw.jsgen.api.IProtectable.Protection)
+	 */
+	@Nullable
+	public InnerClass getInnerClass(String pClassName) {
+		final JQName type = JQName.valueOf(getType(), pClassName);
+		for (Object o : content) {
+			if (o instanceof InnerClass) {
+				final InnerClass ic = (InnerClass) o;
+				if (type.equals(ic.getType())) {
+					return ic;
+				}
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public boolean isAbstract() {
 		return isAbstract;
