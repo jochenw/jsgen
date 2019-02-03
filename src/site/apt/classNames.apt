@@ -24,17 +24,17 @@ Class Names in JSGen
   JQName represents a class name, but only a name. It doesn't have any
   idea about the class itself.
 
-    * {{{How to create instances of JQName}How to create instances of JQName}}
+    * {{{#How_to_create_instances_of_JQName}How to create instances of JQName}}
 
-    * {{{Generic classes}Generic classes}}
+    * {{{#Generic_classes}Generic classes}}
 
-    * {{{Array classes}Array classes}}
+    * {{{#Array_classes}Array classes}}
 
-    * {{{Predefined constants}Predefined constants}}
+    * {{{#Predefined_constants}Predefined constants}}
 
-    * {{{Why are class names so important?}Why are class names so important?}}
+    * {{{#Why_are_class_names_so_important}Why are class names so important?}}
 
-    * {{{Overloaded methods}Overloaded methods}}
+    * {{{#Overloaded_methods}Overloaded methods}}
 
 * How to create instances of JQName
 

@@ -4,6 +4,15 @@
   <artifactId>jsgen</artifactId>
   <version>0.1-SNAPSHOT</version>
   <name>JSGen (Java Source Generation Framework)</name>
+  <scm>
+    <connection>scm:git:https://github.com/jochenw/jsgen.git</connection>
+    <developerConnection>scm:git:https://github.com/jochenw/jsgen.git</developerConnection>
+    <url>https://github.com/jochenw/jsgen.git</url>
+  </scm>
+  <issueManagement>
+    <url>https://github.com/jochenw/jsgen/issues</url>
+    <system></system>
+  </issueManagement>
   <dependencies>
   	<dependency>
   		<groupId>junit</groupId>
@@ -29,6 +38,11 @@
 		    <target>1.8</target>
 		  </configuration>          
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -47,6 +61,24 @@
     	</plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.0.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.12.1</version>
+        <configuration>
+          <githubAPIPort>80</githubAPIPort>
+          <githubAPIScheme>http</githubAPIScheme>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
