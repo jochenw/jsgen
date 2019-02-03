@@ -1,3 +1,18 @@
+/**
+ * Copyright 2018 Jochen Wiedmann
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.jochenw.jsgen.api;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +30,9 @@ import com.github.jochenw.jsgen.api.Subroutine.Parameter;
 import com.github.jochenw.jsgen.impl.AbstractSourceWriter;
 import com.github.jochenw.jsgen.impl.SourceSerializer;
 
+
+/** Test for creating a "for" block.
+ */
 public class JQForBlockTest {
 	private static final String FOR_BLOCK_JAVA_DEFAULT =
 		    "package com.foo.myapp;\n" +
@@ -53,6 +71,9 @@ public class JQForBlockTest {
 		    "    }\n" +
 			"}\n";
 
+	/** Test using the default formatter.
+	 * @throws Exception The test failed.
+	 */
 	@Test
 	public void testForBlockJavaDefault() throws Exception {
 		final JSGFactory factory = JSGFactory.create();
@@ -61,6 +82,9 @@ public class JQForBlockTest {
 		Assert.assertEquals(FOR_BLOCK_JAVA_DEFAULT, gotDefault);
 	}
 
+	/** Test using the Maven formatter.
+	 * @throws Exception The test failed.
+	 */
 	@Test
 	public void testForBlockJavaMaven() throws Exception {
 		final JSGFactory factory = JSGFactory.create();
