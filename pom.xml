@@ -4,6 +4,7 @@
   <artifactId>jsgen</artifactId>
   <version>0.1-SNAPSHOT</version>
   <name>JSGen (Java Source Generation Framework)</name>
+  <url>https://jochenw.github.io/jsgen</url>
   <scm>
     <connection>scm:git:https://github.com/jochenw/jsgen.git</connection>
     <developerConnection>scm:git:https://github.com/jochenw/jsgen.git</developerConnection>
