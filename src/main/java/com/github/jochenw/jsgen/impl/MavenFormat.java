@@ -44,6 +44,7 @@ public class MavenFormat extends Format {
 	private static final Object ANNOTATION_VALUES_SUFFIX = ")";
 	private static final Object BLOCK_HEADER = new Object[] { NEWLINE, INDENT, "{", NEWLINE, INC_INDENT };
 	private static final Object BLOCK_TERMINATOR = new Object[] {DEC_INDENT, INDENT, "}", NEWLINE};
+	private static final Object BLOCK_TERMINATOR_TEMPORARY = new Object[] {DEC_INDENT, INDENT, "}", NEWLINE};
 	private static final Object CLASS_COMMENT_PREFIX = NOTHING;
 	private static final Object CLASS_COMMENT_SUFFIX = new Object[] { INDENT };
 	private static final Object COMMENT_SINGLE_LINE_PREFIX = new Object[] { INDENT, "// " };
@@ -59,6 +60,8 @@ public class MavenFormat extends Format {
 	private static final Object DO_WHILE_BLOCK_HEADER = new Object[] { INDENT, "do {", NEWLINE, INC_INDENT };
 	private static final Object DO_WHILE_BLOCK_TERMINATOR = new Object[] { DEC_INDENT, INDENT, "while ( " };
 	private static final Object DO_WHILE_TERMINATOR = new Object[] { " )", NEWLINE };
+	private static final Object ELSE_IF_CONDITION_PREFIX = new Object[] { INDENT, "else if ( " };
+	private static final Object ELSE_CONDITION = new Object[] { INDENT, "else", NEWLINE, INDENT, "{", INC_INDENT, NEWLINE, };
 	private static final Object FIELD_PREFIX = INDENT;
 	private static final Object FIELD_VALUE_ASSIGNMENT = " = ";
 	private static final Object FIELD_SUFFIX = new Object[] { ";", NEWLINE };
@@ -125,8 +128,14 @@ public class MavenFormat extends Format {
 	public Object getAnnotationValuesSuffix() {
 		return ANNOTATION_VALUES_SUFFIX;
 	}
+
 	@Override
 	public Object getBlockTerminator() {
+		return BLOCK_TERMINATOR;
+	}
+
+	@Override
+	public Object getBlockTerminatorTemporary() {
 		return BLOCK_TERMINATOR;
 	}
 
@@ -234,6 +243,17 @@ public class MavenFormat extends Format {
 	public Object getIfConditionPrefix() {
 		return IF_CONDITION_PREFIX;
 	}
+
+	@Override
+	public Object getElseIfConditionPrefix() {
+		return ELSE_IF_CONDITION_PREFIX;
+	}
+
+	@Override
+	public Object getElseCondition() {
+		return ELSE_CONDITION;
+	}
+
 
 	@Override
 	public Object getIfConditionSuffix() {

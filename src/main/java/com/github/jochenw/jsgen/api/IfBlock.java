@@ -21,11 +21,21 @@ import com.github.jochenw.jsgen.util.Objects;
 
 
 /**
- * Representation of an if(...) block.
+ * Representation of an "if(...) { ... }" block.
  */
 public class IfBlock extends Block<IfBlock> {
 	private Object condition;
+	private IfBlock nextIfBlock;
+	private ElseBlock elseBlock;
 
+	public IfBlock getNextIfBlock() {
+		return nextIfBlock;
+	}
+
+	public ElseBlock getElseBlock() {
+		return elseBlock;
+	}
+	
 	/** Specifies the if blocks condition. The array elements will be concatenated.
 	 * @param pValues The if blocks condition, as an array of elements. 
 	 * @return This builder.
@@ -59,5 +69,48 @@ public class IfBlock extends Block<IfBlock> {
 	 */
 	@Nonnull public Object getCondition() {
 		return condition;
+	}
+
+	/** Creates an "else if (condition) { ... }" block.
+	 * @param pCondition The else if blocks condition, an iterable of elements.
+	 * @return The else if blocks builder.
+	 */
+	public IfBlock elseIf(@Nonnull Object... pCondition) {
+		if (elseBlock != null) {
+			throw new IllegalStateException("An else block has already been created.");
+		}
+		if (nextIfBlock != null) {
+			throw new IllegalStateException("An else if block has already been created.");
+		}
+		nextIfBlock = new IfBlock();
+		nextIfBlock.condition = pCondition;
+		return nextIfBlock;
+	}
+
+	/** Creates an "else if (condition) { ... }" block.
+	 * @param pCondition The else if blocks condition, an iterable of elements.
+	 * @return The else if blocks builder.
+	 */
+	public IfBlock elseIf(@Nonnull Iterable<Object> pCondition) {
+		if (elseBlock != null) {
+			throw new IllegalStateException("An else block has already been created.");
+		}
+		if (nextIfBlock != null) {
+			throw new IllegalStateException("An else if block has already been created.");
+		}
+		nextIfBlock = new IfBlock();
+		nextIfBlock.condition = pCondition;
+		return nextIfBlock;
+	}
+
+	/** Creates an "else { ... }" block.
+	 * @return The else blocks builder.
+	 */
+	public ElseBlock otherwise() {
+		if (elseBlock != null) {
+			throw new IllegalStateException("An else block has already been created.");
+		}
+		elseBlock = new ElseBlock();
+		return elseBlock;
 	}
 }

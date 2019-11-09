@@ -1,0 +1,15 @@
+<document
+                 xmlns="http://maven.apache.org/changes/1.0.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+  <properties>
+    <author email="jochen.wiedmann@gmail.com">Jochen Wiedmann</author>
+    <title>JSGen: Java Source Generation Framework</title>
+  </properties>
+  <body>
+    <release date="2019-Nov-09" version="1.2" description="Followup version">
+      <action dev="jwi" type="add">Added support for "else if", and "else" blocks.</action>
+    </release>
+    <release date="2019-Feb-03" version="1.1" description="Initial version, used in the LidlCbx project."></release>
+  </body>
+</document>

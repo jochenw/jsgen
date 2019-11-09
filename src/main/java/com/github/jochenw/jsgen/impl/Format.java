@@ -112,7 +112,7 @@ public abstract class Format {
 	 */
 	public abstract Object getAnnotationValuesSuffix();
 	/** Returns the sequence for terminating an anonymous code block.
-	 * This sequence shoulf include, in particular, the values "}",
+	 * This sequence should include, in particular, the values "}",
 	 * {@link #NEWLINE}, and {@link #DEC_INDENT}, in a format specific
 	 * order. The default implementation is
 	 * {@link #DEC_INDENT}, {@link #INDENT}, "}", {@link #NEWLINE}.
@@ -120,6 +120,14 @@ public abstract class Format {
 	 * @return The sequence for terminating an anonymous code block.
 	 */
 	public abstract Object getBlockTerminator();
+	/** Returns the sequence for terminating an anonymous code block, which
+	 * is being followed by another, connected block. This is used, in
+	 * particular, before an "else if", or an "else" block.
+	 * 
+	 * @return The sequence for terminating an anonymous code block, which
+	 * is being followed by another, connected block.
+	 */
+	public abstract Object getBlockTerminatorTemporary();
 	/** Returns the sequence for starting a classes code block, This sequence will follow
 	 * the declaration of the classes properties, like "public class Foo extends Bar", etc.
 	 * The default implementation is " ", "{", {@link #INC_INDENT}, {@link #NEWLINE}
@@ -239,18 +247,30 @@ public abstract class Format {
 	 * ")", "{", {@link #INC_INDENT}, {@link #NEWLINE}.
 	 */
 	public abstract Object getForConditionSuffix();
-	/** Returns the prefix of a for ... blocks condition (default
+	/** Returns the prefix of an if ... blocks condition (default
 	 * {@link #INDENT}, "if (").
 	 * @return The prefix of a for ... blocks condition (default
 	 * {@link #INDENT}, "if (").
 	 */
 	public abstract Object getIfConditionPrefix();
-	/** Returns the suffix of a for ... blocks condition (default
+	/** Returns the suffix of an if ... blocks condition (default
 	 * ")", "{", {@link #INC_INDENT}, {@link #NEWLINE}.
 	 * @return The suffix of a for ... blocks condition (default
 	 * ")", "{", {@link #INC_INDENT}, {@link #NEWLINE}.
 	 */
 	public abstract Object getIfConditionSuffix();
+	/** Returns the prefix of an else if ... blocks condition (default
+	 * {@link #INDENT}, "else if (").
+	 * @return The prefix of a for ... blocks condition (default
+	 * {@link #INDENT}, "else if (").
+	 */
+	public abstract Object getElseIfConditionPrefix();
+	/** Returns an else blocks introduction (default
+	 * {@link #INDENT}, "else ").
+	 * @return An else blocks introduction (default
+	 * {@link #INDENT}, "else ").
+	 */
+	public abstract Object getElseCondition();
 	/** Returns the prefix for a static initializer (default
 	 * {@link #INDENT}, "{", {@link #INC_INDENT}, {@link #NEWLINE}).
 	 * @return The prefix for a static initializer (default

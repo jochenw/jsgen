@@ -30,6 +30,7 @@ import com.github.jochenw.jsgen.api.ClassBase;
 import com.github.jochenw.jsgen.api.Comment;
 import com.github.jochenw.jsgen.api.Constructor;
 import com.github.jochenw.jsgen.api.DoWhileBlock;
+import com.github.jochenw.jsgen.api.ElseBlock;
 import com.github.jochenw.jsgen.api.Field;
 import com.github.jochenw.jsgen.api.ForBlock;
 import com.github.jochenw.jsgen.api.IfBlock;
@@ -475,11 +476,35 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		writeObject(format.getNestedBlockFooter(), pTarget);
 	}
 	protected void writeIfBlock(IfBlock pIfBlock, Data pTarget) {
+		IfBlock nextBlock = pIfBlock.getNextIfBlock();
+		ElseBlock elseBlock = pIfBlock.getElseBlock();
 		writeObject(format.getIfConditionPrefix(), pTarget);
 		writeObject(pIfBlock.getCondition(), pTarget);
 		writeObject(format.getIfConditionSuffix(), pTarget);
 		writeList(pIfBlock.getContents(), pTarget);
-		writeObject(format.getBlockTerminator(), pTarget);
+		if (nextBlock == null  &&  elseBlock == null) {
+			writeObject(format.getBlockTerminator(), pTarget);
+		} else {
+			writeObject(format.getBlockTerminatorTemporary(), pTarget);
+		}
+		while (nextBlock != null) {
+			writeObject(format.getElseIfConditionPrefix(), pTarget);
+			writeObject(nextBlock.getCondition(), pTarget);
+			writeObject(format.getIfConditionSuffix(), pTarget);
+			writeList(nextBlock.getContents(), pTarget);
+			elseBlock = nextBlock.getElseBlock();
+			nextBlock = nextBlock.getNextIfBlock();
+			if (nextBlock == null  &&  elseBlock == null) {
+				writeObject(format.getBlockTerminator(), pTarget);
+			} else {
+				writeObject(format.getBlockTerminatorTemporary(), pTarget);
+			}
+		}
+		if (elseBlock != null) {
+			writeObject(format.getElseCondition(), pTarget);
+			writeList(elseBlock.getContents(), pTarget);
+			writeObject(format.getBlockTerminator(), pTarget);
+		}
 	}
 
 	protected void writeWhileBlock(WhileBlock pWhileBlock, Data pTarget) {

@@ -42,6 +42,7 @@ public class DefaultFormat extends Format {
 	private static final Object ANNOTATION_VALUES_SUFFIX = ")";
 	private static final Object BLOCK_HEADER = new Object[] { "{", INC_INDENT, NEWLINE };
 	private static final Object BLOCK_TERMINATOR = new Object[] {DEC_INDENT, INDENT, "}", NEWLINE};
+	private static final Object BLOCK_TERMINATOR_TEMPORARY = new Object[] {DEC_INDENT, INDENT, "} "};
 	private static final Object CLASS_COMMENT_PREFIX = NOTHING;
 	private static final Object CLASS_COMMENT_SUFFIX = new Object[] { INDENT };
 	private static final Object COMMENT_SINGLE_LINE_PREFIX = new Object[] { INDENT, "// " };
@@ -57,6 +58,8 @@ public class DefaultFormat extends Format {
 	private static final Object DO_WHILE_BLOCK_HEADER = new Object[] { INDENT, "do {", NEWLINE, INC_INDENT };
 	private static final Object DO_WHILE_BLOCK_TERMINATOR = new Object[] { DEC_INDENT, INDENT, "while (" };
 	private static final Object DO_WHILE_TERMINATOR = new Object[] { ")", NEWLINE };
+	private static final Object ELSE_CONDITION = new Object[] { "else {", NEWLINE, INC_INDENT };
+	private static final Object ELSE_IF_CONDITION_PREFIX = new Object[] { "else if (" };
 	private static final Object FIELD_PREFIX = INDENT;
 	private static final Object FIELD_VALUE_ASSIGNMENT = " = ";
 	private static final Object FIELD_SUFFIX = new Object[] { ";", NEWLINE };
@@ -123,9 +126,15 @@ public class DefaultFormat extends Format {
 	public Object getAnnotationValuesSuffix() {
 		return ANNOTATION_VALUES_SUFFIX;
 	}
+
 	@Override
 	public Object getBlockTerminator() {
 		return BLOCK_TERMINATOR;
+	}
+
+	@Override
+	public Object getBlockTerminatorTemporary() {
+		return BLOCK_TERMINATOR_TEMPORARY;
 	}
 
 	@Override
@@ -231,6 +240,16 @@ public class DefaultFormat extends Format {
 	@Override
 	public Object getIfConditionPrefix() {
 		return IF_CONDITION_PREFIX;
+	}
+
+	@Override
+	public Object getElseIfConditionPrefix() {
+		return ELSE_IF_CONDITION_PREFIX;
+	}
+
+	@Override
+	public Object getElseCondition() {
+		return ELSE_CONDITION;
 	}
 
 	@Override
