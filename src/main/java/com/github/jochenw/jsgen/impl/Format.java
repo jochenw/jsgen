@@ -79,12 +79,18 @@ public abstract class Format {
 	 *   annotations. The default implementation is {@link #INDENT}.
 	 */
 	public abstract Object getAnnotationSetPrefix();
-	/** Returns the annotation set prefix, which is used to introduce a non-empty set of
+	/** Returns the annotation set suffix, which is used to terminate a non-empty set of
 	 * annotations. The default implementation is {@link #NEWLINE}.
 	 * @return The annotation set prefix, which is used to introduce a non-empty set of
 	 *   annotations. The default implementation is {@link #NEWLINE}.
 	 */
 	public abstract Object getAnnotationSetSuffix();
+	/** Returns the annotation set suffix, which is used to terminate a non-empty set of
+	 * annotations. The default implementation is " " (a single blank).
+	 * @return The annotation set prefix, which is used to introduce a non-empty set of
+	 *   annotations. The default implementation is {@link #NEWLINE}.
+	 */
+	public abstract Object getAnnotationSetSuffixTerse();
 	/** Returns the prefix, which is used for introduction of an annotations attributes.
 	 * The default implementation is "(".
 	 * @return The prefix, which is used for introduction of an annotations attributes.
@@ -120,6 +126,12 @@ public abstract class Format {
 	 * @return The sequence for terminating an anonymous code block.
 	 */
 	public abstract Object getBlockTerminator();
+	/** Returns the sequence for terminating a terse, anonymous code block.
+	 * The default implementation is "}".
+	 * 
+	 * @return The sequence for terminating an anonymous code block.
+	 */
+	public abstract Object getBlockTerminatorTerse();
 	/** Returns the sequence for terminating an anonymous code block, which
 	 * is being followed by another, connected block. This is used, in
 	 * particular, before an "else if", or an "else" block.
@@ -295,24 +307,51 @@ public abstract class Format {
 	 *   (default {@link #NEWLINE}).
 	 */
 	public abstract Object getLineSuffix();
-	/** Returns the suffix for a basic line of code, which needs being
+	/** Returns the suffix for a basic line of code
+	 * in terse mode
+	 * (default "").
+	 * @return The suffix for a basic line of code
+	 *   in terse mode
+	 *   (default "").
+	 */
+	public abstract Object getLineSuffixTerse();
+	/** Returns the suffix for a basic line of code in terse mode,
+	 * which needs being
 	 *   terminated with a ";" (default ";", {@link #NEWLINE}).
 	 * @return The suffix for a basic line of code, which needs being
 	 *   terminated with a ";" (default {@link #NEWLINE}).
 	 */
 	public abstract Object getLineSuffixTerminated();
+	/** Returns the suffix for a basic line of code in terse mode,
+	 *   which needs being terminated with a ";" (default ";").
+	 * @return The suffix for a basic line of code, which needs being
+	 *   terminated with a ";" (default ";").
+	 */
+	public abstract Object getLineSuffixTerminatedTerse();
 	/** Returns the prefix for a method declaration (default
 	 * {@link #INDENT})
 	 * @return The prefix for a method declaration (default
 	 * {@link #INDENT})
 	 */
 	public abstract Object getMethodDeclarationPrefix();
+	/** Returns the prefix for a terse method declaration (default
+	 * {@link #INDENT})
+	 * @return The prefix for a terse method declaration (default
+	 * {@link #INDENT})
+	 */
+	public abstract Object getMethodDeclarationPrefixTerse();
 	/** Returns the suffix for a method declaration (default
 	 * "{", {@link #INC_INDENT}, {@link #NEWLINE}
 	 * @return The suffix for a method declaration (default
 	 * "{", {@link #INC_INDENT}, {@link #NEWLINE}
 	 */
 	public abstract Object getMethodDeclarationSuffix();
+	/** Returns the suffix for a terse method declaration (default
+	 * "{ ")
+	 * @return The suffix for a method declaration (default
+	 * "{ ")
+	 */
+	public abstract Object getMethodDeclarationSuffixTerse();
 	/** Returns the prefix of a methods parameter list (default
 	 * ")".
 	 * @return The prefix of a methods parameter list (default
@@ -387,4 +426,5 @@ public abstract class Format {
 	 * condition (default ") {", INC_INDENT, NEWLINE).
 	 */
 	public abstract Object getWhileConditionSuffix();
+
 }

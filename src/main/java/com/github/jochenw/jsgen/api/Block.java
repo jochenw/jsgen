@@ -254,4 +254,12 @@ public class Block<T extends Block<T>> extends AbstractBuilder<T> implements IBl
 		contents.add(block);
 		return block;
 	}
+
+	public boolean hasContent(boolean pMoreThanOne) {
+		if (pMoreThanOne) {
+			return contents.size() > 1;
+		} else {
+			return contents.isEmpty();
+		}
+	}
 }

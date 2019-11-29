@@ -63,6 +63,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		private final SerializationTarget target;
 		private final Format format;
 		private int numIndents;
+		private boolean isAfterNewLine;
 
 		/** Creates a new instance with the given target object, and
 		 * format.
@@ -101,6 +102,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 			if (indentString != null) {
 				for (int i = 0;  i < numIndents;  i++) {
 					write(indentString);
+					isAfterNewLine = false;
 				}
 			}
 		}
@@ -110,6 +112,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		@Override
 		public void write(Object pObject) {
 			target.write(pObject);
+			isAfterNewLine = false;
 		}
 
 		/** Called to terminate a single line by writing the
@@ -118,6 +121,11 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		@Override
 		public void newLine() {
 			write(format.getLineTerminator());
+			isAfterNewLine = true;
+		}
+
+		public boolean isAfterNewLine() {
+			return isAfterNewLine;
 		}
 
 		@Override
@@ -265,7 +273,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		writeObject(format.getClassCommentPrefix(), pTarget);
 		write(pClass.getComment(), pTarget);
 		writeObject(format.getClassCommentSuffix(), pTarget);
-		write(pClass.getAnnotations(), pTarget);
+		write(pClass.getAnnotations(), pTarget, false);
 		write(pClass.getProtection(), pTarget);
 		if (pClass instanceof InnerClass  &&  ((InnerClass) pClass).isStatic()) {
 			writeObject("static ", pTarget);
@@ -299,7 +307,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 			}
 		}
 		writeObject(format.getClassBlockHeader(), pTarget);
-		writeList(pClass.getContent(), pTarget);
+		writeList(pClass.getContent(), pTarget, false);
 		writeObject(format.getClassBlockFooter(), pTarget);
 	}
 
@@ -311,7 +319,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 			final Comment comment = ((ICommentOwner) pField).getComment();
 			write(comment, pTarget);
 		}
-		write(pField.getAnnotations(), pTarget);
+		write(pField.getAnnotations(), pTarget, false);
 		writeObject(format.getFieldPrefix(), pTarget);
 		if (pField instanceof IProtectable) {
 			final IProtectable<?> protectable = (IProtectable<?>) pField;
@@ -357,7 +365,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		}
 	}
 
-	protected void write(AnnotationSet pAnnotations, Data pTarget) {
+	protected void write(AnnotationSet pAnnotations, Data pTarget, boolean pTerse) {
 		if (!pAnnotations.isEmpty()) {
 			writeObject(format.getAnnotationSetPrefix(), pTarget);
 			boolean first = true;
@@ -369,7 +377,11 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 				}
 				write(annotation, pTarget);
 			}
-			writeObject(format.getAnnotationSetSuffix(), pTarget);
+			if (pTerse) {
+				writeObject(format.getAnnotationSetSuffixTerse(), pTarget);
+			} else {
+				writeObject(format.getAnnotationSetSuffix(), pTarget);
+			}
 		}
 	}
 
@@ -397,13 +409,21 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 	}
 
 	protected void writeMethod(Subroutine<?> pBlock, Data pTarget) {
+		final boolean terse = pBlock.isTerse()  &&
+				(format.getAnnotationSetSuffixTerse() != null);
 		final Subroutine<?> subroutine = (Subroutine<?>) pBlock;
 		write(subroutine.getComment(), pTarget);
-		write(subroutine.getAnnotations(), pTarget);
-		if (!subroutine.getAnnotations().isEmpty()) {
-			pTarget.newLine();
+		final AnnotationSet annotations = subroutine.getAnnotations();
+		if (annotations == null  ||  annotations.isEmpty()) {
+			writeObject(format.getMethodDeclarationPrefix(), pTarget);
+		} else {
+			write(annotations, pTarget, terse);
+			if (terse) {
+				writeObject(format.getMethodDeclarationPrefixTerse(), pTarget);
+			} else {
+				writeObject(format.getMethodDeclarationPrefix(), pTarget);
+			}
 		}
-		writeObject(format.getMethodDeclarationPrefix(), pTarget);
 		write(subroutine.getProtection(), pTarget);
 		if (subroutine instanceof Method) {
 			final Method method = (Method) subroutine;
@@ -437,7 +457,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 			if (i > 0) {
 				writeObject(format.getMethodParameterSeparator(), pTarget);
 			}
-			write(param.getAnnotations(), pTarget);
+			write(param.getAnnotations(), pTarget, true);
 			if (!param.getAnnotations().isEmpty()) {
 				writeObject(" ", pTarget);
 			}
@@ -458,21 +478,29 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 			}
 			writeObject(" ", pTarget);
 		}
-		writeObject(format.getMethodDeclarationSuffix(), pTarget);
-		writeList(pBlock.body().getContents(), pTarget);
-		writeObject(format.getBlockTerminator(), pTarget);
+		if (terse) {
+			writeObject(format.getMethodDeclarationSuffixTerse(), pTarget);
+		} else {
+			writeObject(format.getMethodDeclarationSuffix(), pTarget);
+		}
+		writeList(pBlock.body().getContents(), pTarget, terse);
+		if (terse) {
+			writeObject(format.getBlockTerminatorTerse(), pTarget);
+		} else {
+			writeObject(format.getBlockTerminator(), pTarget);
+		}
 	}
 
 	protected void writeInitializer(StaticInitializer pInitializer, Data pTarget) {
 		write(pInitializer.getComment(), pTarget);
 		writeObject(format.getInitializerHeader(), pTarget);
-		writeList(pInitializer.body().getContents(), pTarget);
+		writeList(pInitializer.body().getContents(), pTarget, false);
 		writeObject(format.getInitializerFooter(), pTarget);
 	}
 
 	protected void writeNestedBlock(NestedBlock pBlock, Data pTarget) {
 		writeObject(format.getNestedBlockHeader(), pTarget);
-		writeList(pBlock.getContents(), pTarget);
+		writeList(pBlock.getContents(), pTarget, false);
 		writeObject(format.getNestedBlockFooter(), pTarget);
 	}
 	protected void writeIfBlock(IfBlock pIfBlock, Data pTarget) {
@@ -481,7 +509,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		writeObject(format.getIfConditionPrefix(), pTarget);
 		writeObject(pIfBlock.getCondition(), pTarget);
 		writeObject(format.getIfConditionSuffix(), pTarget);
-		writeList(pIfBlock.getContents(), pTarget);
+		writeList(pIfBlock.getContents(), pTarget, false);
 		if (nextBlock == null  &&  elseBlock == null) {
 			writeObject(format.getBlockTerminator(), pTarget);
 		} else {
@@ -491,7 +519,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 			writeObject(format.getElseIfConditionPrefix(), pTarget);
 			writeObject(nextBlock.getCondition(), pTarget);
 			writeObject(format.getIfConditionSuffix(), pTarget);
-			writeList(nextBlock.getContents(), pTarget);
+			writeList(nextBlock.getContents(), pTarget, false);
 			elseBlock = nextBlock.getElseBlock();
 			nextBlock = nextBlock.getNextIfBlock();
 			if (nextBlock == null  &&  elseBlock == null) {
@@ -502,7 +530,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		}
 		if (elseBlock != null) {
 			writeObject(format.getElseCondition(), pTarget);
-			writeList(elseBlock.getContents(), pTarget);
+			writeList(elseBlock.getContents(), pTarget, false);
 			writeObject(format.getBlockTerminator(), pTarget);
 		}
 	}
@@ -511,7 +539,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		writeObject(format.getWhileConditionPrefix(), pTarget);
 		writeObject(pWhileBlock.getCondition(), pTarget);
 		writeObject(format.getWhileConditionSuffix(), pTarget);
-		writeList(pWhileBlock.getContents(), pTarget);
+		writeList(pWhileBlock.getContents(), pTarget, false);
 		writeObject(format.getBlockTerminator(), pTarget);
 	}
 
@@ -519,19 +547,19 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		writeObject(format.getForConditionPrefix(), pTarget);
 		writeObject(pForBlock.getCondition(), pTarget);
 		writeObject(format.getForConditionSuffix(), pTarget);
-		writeList(pForBlock.getContents(), pTarget);
+		writeList(pForBlock.getContents(), pTarget, false);
 		writeObject(format.getBlockTerminator(), pTarget);
 	}
 
 	protected void writeDoWhileBlock(DoWhileBlock pDoWhileBlock, Data pTarget) {
 		writeObject(format.getDoWhileBlockHeader(), pTarget);
-		writeList(pDoWhileBlock.getContents(), pTarget);
+		writeList(pDoWhileBlock.getContents(), pTarget, false);
 		writeObject(format.getDoWhileBlockTerminator(), pTarget);
 		writeObject(pDoWhileBlock.getCondition(), pTarget);
 		writeObject(format.getDoWhileTerminator(), pTarget);
 	}
 
-	protected void writeList(List<Object> pList, Data pTarget) {
+	protected void writeList(List<Object> pList, Data pTarget, boolean pTerse) {
 		boolean previousObjectWasField = false;
 		boolean first = true;
 		for (Object o : pList) {
@@ -570,7 +598,7 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 			} else if (o instanceof DoWhileBlock) {
 				writeDoWhileBlock((DoWhileBlock) o, pTarget);
 			} else if (o instanceof Line) {
-				writeLine((Line) o, pTarget);
+				writeLine((Line) o, pTarget, pTerse);
 			} else if (o instanceof Comment) {
 				write((Comment) o, pTarget);
 			} else if (o instanceof NestedBlock) {
@@ -581,13 +609,23 @@ public class DefaultJavaSourceFormatter implements SourceSerializer {
 		}
 	}
 
-	protected void writeLine(Line pLine, Data pTarget) {
-		writeObject(format.getLinePrefix(), pTarget);
+	protected void writeLine(Line pLine, Data pTarget, boolean pTerse) {
+		if (!pTerse) {
+			writeObject(format.getLinePrefix(), pTarget);
+		}
 		writeObject(pLine.getElements(), pTarget);
 		if (pLine.isTerminated()) {
-			writeObject(format.getLineSuffixTerminated(), pTarget);
+			if (pTerse) {
+				writeObject(format.getLineSuffixTerminatedTerse(), pTarget);
+			} else {
+				writeObject(format.getLineSuffixTerminated(), pTarget);
+			}
 		} else {
-			writeObject(format.getLineSuffix(), pTarget);
+			if (pTerse) {
+				writeObject(format.getLineSuffix(), pTarget);
+			} else {
+				writeObject(format.getLineSuffixTerse(), pTarget);
+			}
 		}
 	}
 

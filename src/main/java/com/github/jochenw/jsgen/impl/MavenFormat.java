@@ -37,13 +37,15 @@ public class MavenFormat extends Format {
 	private static final Object ANNOTATION_PREFIX = "@";
 	private static final Object ANNOTATION_SEPARATOR = " ";
 	private static final Object ANNOTATION_SET_PREFIX = INDENT;
-	private static final Object ANNOTATION_SET_SUFFIX = new Object[] { ";", NEWLINE };
+	private static final Object ANNOTATION_SET_SUFFIX = NEWLINE;
+	private static final Object ANNOTATION_SET_SUFFIX_TERSE = " ";
 	private static final Object ANNOTATION_VALUE_ASSIGNMENT = "=";
 	private static final Object ANNOTATION_VALUE_SEPARATOR = ", ";
 	private static final Object ANNOTATION_VALUES_PREFIX = "(";
 	private static final Object ANNOTATION_VALUES_SUFFIX = ")";
 	private static final Object BLOCK_HEADER = new Object[] { NEWLINE, INDENT, "{", NEWLINE, INC_INDENT };
 	private static final Object BLOCK_TERMINATOR = new Object[] {DEC_INDENT, INDENT, "}", NEWLINE};
+	private static final Object BLOCK_TERMINATOR_TERSE = new Object[] {" }", NEWLINE};
 	private static final Object BLOCK_TERMINATOR_TEMPORARY = new Object[] {DEC_INDENT, INDENT, "}", NEWLINE};
 	private static final Object CLASS_COMMENT_PREFIX = NOTHING;
 	private static final Object CLASS_COMMENT_SUFFIX = new Object[] { INDENT };
@@ -73,9 +75,13 @@ public class MavenFormat extends Format {
 	private static final Object INITIALIZER_FOOTER = new Object[] { DEC_INDENT, INDENT, "}", NEWLINE };
 	private static final Object LINE_PREFIX = INDENT;
 	private static final Object LINE_SUFFIX = NEWLINE;
+	private static final Object LINE_SUFFIX_TERSE = "";
 	private static final Object LINE_SUFFIX_TERMINATED = new Object[] { ";", NEWLINE };
+	private static final Object LINE_SUFFIX_TERMINATED_TERSE = ";";
 	private static final Object METHOD_DECLARATION_PREFIX = INDENT;
+	private static final Object METHOD_DECLARATION_PREFIX_TERSE = "";
 	private static final Object METHOD_DECLARATION_SUFFIX = BLOCK_HEADER;
+	private static final Object METHOD_DECLARATION_SUFFIX_TERSE = "{ ";
 	private static final Object METHOD_PARAMETER_PREFIX = "( ";
 	private static final Object METHOD_PARAMETER_SEPARATOR = ", ";
 	private static final Object METHOD_PARAMETER_SUFFIX = " ) ";
@@ -110,6 +116,11 @@ public class MavenFormat extends Format {
 	}
 
 	@Override
+	public Object getAnnotationSetSuffixTerse() {
+		return ANNOTATION_SET_SUFFIX_TERSE;
+	}
+
+	@Override
 	public Object getAnnotationValuesPrefix() {
 		return ANNOTATION_VALUES_PREFIX;
 	}
@@ -135,8 +146,13 @@ public class MavenFormat extends Format {
 	}
 
 	@Override
+	public Object getBlockTerminatorTerse() {
+		return BLOCK_TERMINATOR_TERSE;
+	}
+
+	@Override
 	public Object getBlockTerminatorTemporary() {
-		return BLOCK_TERMINATOR;
+		return BLOCK_TERMINATOR_TEMPORARY;
 	}
 
 	@Override
@@ -281,13 +297,28 @@ public class MavenFormat extends Format {
 	}
 
 	@Override
+	public Object getLineSuffixTerse() {
+		return LINE_SUFFIX_TERSE;
+	}
+
+	@Override
 	public Object getLineSuffixTerminated() {
 		return LINE_SUFFIX_TERMINATED;
 	}
 
 	@Override
+	public Object getLineSuffixTerminatedTerse() {
+		return LINE_SUFFIX_TERMINATED_TERSE;
+	}
+
+	@Override
 	public Object getMethodDeclarationPrefix() {
 		return METHOD_DECLARATION_PREFIX;
+	}
+
+	@Override
+	public Object getMethodDeclarationPrefixTerse() {
+		return METHOD_DECLARATION_PREFIX_TERSE;
 	}
 
 	@Override
@@ -308,6 +339,11 @@ public class MavenFormat extends Format {
 	@Override
 	public Object getMethodDeclarationSuffix() {
 		return METHOD_DECLARATION_SUFFIX;
+	}
+
+	@Override
+	public Object getMethodDeclarationSuffixTerse() {
+		return METHOD_DECLARATION_SUFFIX_TERSE;
 	}
 
 	@Override

@@ -33,6 +33,7 @@ import com.github.jochenw.jsgen.util.Objects;
 public class Comment extends AbstractBuilder<Comment> {
 	private final List<String> text = new ArrayList<String>();
 	private boolean isPublic;
+	private boolean terse;
 
 	/**
 	 * Adds the given text lines (one per element in the array {@code pText} to the
@@ -105,6 +106,35 @@ public class Comment extends AbstractBuilder<Comment> {
 	@Nonnull public Comment makePublic(boolean pPublic) {
 		assertMutable();
 		isPublic = pPublic;
+		return this;
+	}
+
+	/** Returns, whether this comment should use terse formatting. A
+	 * terse comment will use the {@code //} syntax.
+	 * @return True, if this comment will use terse formatting, otherwise
+	 * false.
+	 */
+	public boolean isTerse() {
+		return isPublic;
+	}
+
+	/** Sets, whether this comment should use terse formatting. A
+	 * terse comment will use the {@code //} syntax.
+	 * @return True, if this comment will use terse formatting, otherwise
+	 * false.
+	 */
+	@Nonnull public Comment terse() {
+		return terse(true);
+	}
+
+	/** Sets, whether this comment should use terse formatting. A
+	 * terse comment will use the {@code //} syntax.
+	 * @param pTerse True, if this comment will use terse formatting, otherwise
+	 * false.
+	 */
+	@Nonnull public Comment terse(boolean pTerse) {
+		assertMutable();
+		terse = pTerse;
 		return this;
 	}
 }

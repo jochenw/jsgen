@@ -102,6 +102,7 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 	private final List<JQName> exceptions = new ArrayList<>();
 	private Protection protection;
 	private Comment comment;
+	private boolean terse;
 
 	@Override
 	public AnnotationSet getAnnotations() {
@@ -330,4 +331,71 @@ public abstract class Subroutine<T extends Subroutine<T>> extends CodeBlock<T> i
 	@Nullable public Comment getComment() {
 		return comment;
 	}
+
+	/** Sets, that this object should be formatted in a terse style.
+	 * Equivalent to {@link #terse(boolean) terse(true)}.
+	 */
+	@Nullable public T terse() {
+		return terse(true);
+	}
+
+	/** Sets, whether this object should be formatted in a terse style.
+	 * @param pTerse True, if this object should be formatted in a terse style,
+	 *   otherwise false.
+	 */
+	@Nullable public T terse(boolean pTerse) {
+		assertMutable();
+		if (pTerse &&  body().hasContent(true)) {
+			throw new IllegalStateException("A terse method must not have multiple lines.");
+		}
+		terse = pTerse;
+		return self();
+	}
+
+	/** Returns, whether this object should be formatted in a terse style.
+	 * @return True, if this object should be formatted in a terse style,
+	 *   otherwise false.
+	 */
+	public boolean isTerse() {
+		return terse;
+	}
+
+	@Override
+	public T line(Iterable<Object> pObjects) {
+		if (isTerse()  &&  body().hasContent(false)) {
+			throw new IllegalStateException("A terse method must not have multiple lines.");
+		} else {
+			return super.line(pObjects);
+		}
+	}
+
+	@Override
+	public T line(Object... pObjects) {
+		if (isTerse()  &&  body().hasContent(false)) {
+			throw new IllegalStateException("A terse method must not have multiple lines.");
+		} else {
+			return super.line(pObjects);
+		}
+	}
+
+	@Override
+	public T tline(Iterable<Object> pObjects) {
+		if (isTerse()  &&  body().hasContent(false)) {
+			throw new IllegalStateException("A terse method must not have multiple lines.");
+		} else {
+			return super.tline(pObjects);
+		}
+	}
+
+	@Override
+	public T tline(Object... pObjects) {
+		if (isTerse()  &&  body().hasContent(false)) {
+			throw new IllegalStateException("A terse method must not have multiple lines.");
+		} else {
+			return super.tline(pObjects);
+		}
+	}
+
+	
+
 }
